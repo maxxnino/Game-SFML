@@ -4,16 +4,15 @@
 #include "PlayerControlSystem.h"
 #include "DrawSystem.h"
 #include "Mouse.h"
+#include "TextureManager.h"
+
 class World
 {
 public:
 	World()
 	{
-		if (!texture.loadFromFile("Data\\Images\\enemy_01.png"))
-		{
-			assert(false);
-		}
-		texture.setSmooth(true);
+		texManager.AddTexture("Enemy01", "Data\\Images\\enemy_01.png");
+		texManager.AddMesh("Enemy01", 100.0f);
 	}
 	void Update(float dt, Keyboard& kbd, Mouse& mouse)
 	{
@@ -22,20 +21,21 @@ public:
 	}
 	void Draw(Graphics& gfx)
 	{
-		drawSystem.Draw(ECS, gfx, texture);
+		drawSystem.Draw(ECS, gfx, texManager);
 	}
-	void AddPlayer()
+	void AddPlayer(sf::Vector2f pos)
 	{
 		auto entity = ECS.create();
 		ECS.assign<InputComponent>(entity);
-		ECS.assign<TransformComponent>(entity);
+		ECS.assign<TransformComponent>(entity).position = pos;
+		
 		ECS.assign<VelocityComponent>(entity);
-		ECS.assign<MeshComponent>(entity, sf::Vector2f( -50.0f,-50.0f ), sf::Vector2f(50.0f , -50.0f ), sf::Vector2f(50.0f ,50.0f ), sf::Vector2f(-50.0f ,50.0f ));
 		ECS.assign<TexCoordsComponent>(entity, sf::Vector2f(0.0f,0.0f ), sf::Vector2f(60.0f,0.0f ), sf::Vector2f(60.0f,60.0f ), sf::Vector2f(0.0f,60.0f ));
+		ECS.assign<entt::label<"Enemy01"_hs>>(entity);
 	}
 private:
 	entt::DefaultRegistry ECS;
-	sf::Texture texture;
+	TextureManager texManager;
 	InputSystem input;
 	PlayerControlSystem controlSystem;
 	DrawSystem drawSystem;

@@ -64,7 +64,7 @@ public:
 		********************************************************************************/
 	}
 
-	void Draw(sf::VertexArray& vertexArray, sf::Texture& texture)
+	void Draw(sf::VertexArray& vertexArray, const sf::Texture& texture)
 	{
 		//window.draw(sprite);
 		//window.draw(triangle);

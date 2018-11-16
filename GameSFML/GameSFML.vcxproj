@@ -132,6 +132,7 @@
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="PlayerControlSystem.h" />
     <ClInclude Include="TexCoordsComponent.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="TestVertex.h" />
     <ClInclude Include="VelocityComponent.h" />
