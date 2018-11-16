@@ -1,29 +1,21 @@
 #pragma once
 #include "Keyboard.h"
 #include "Mouse.h"
+#include "Graphics.h"
+#include "TestVertex.h"
+#include "World.h"
+class MainWindow;
 class Game
 {
 public:
-	Game(Keyboard& kbd, Mouse& mouse)
-		:
-		kbd(kbd),
-		mouse(mouse)
-	{}
-	void Go()
-	{
-		Update();
-		Draw();
-	}
+	Game(MainWindow& wnd);
+	void Go();
 private:
-	void Update()
-	{
-
-	}
-	void Draw()
-	{
-
-	}
+	void UpdateModel();
+	void ComposeFrame();
 private:
-	Keyboard& kbd;
-	Mouse& mouse;
+	MainWindow& wnd;
+	Graphics gfx;
+	sf::Clock clock;
+	World wld;
 };

@@ -10,8 +10,7 @@ public:
 	MainWindow()
 		:
 		window(sf::VideoMode(1280, 720), "SFML Game"),
-		gfx(window),
-		game(kbd,mouse)
+		game(*this)
 	{
 		//enable v-sync
 		window.setVerticalSyncEnabled(true);
@@ -27,17 +26,6 @@ public:
 			{
 				switch (event.type)
 				{
-					//happen when user closed the program by many way
-				case sf::Event::Closed:
-					window.close();
-					break;
-					//hapen when user change active window like alt+tab
-				case sf::Event::LostFocus:
-					mouse.Flush();
-					break;
-					//hapen when user comeback to program
-				case sf::Event::GainedFocus:
-					break;
 					/*----------------------Mouse Event---------------------*/
 				case sf::Event::MouseMoved:
 					mouse.OnMouseMove(event.mouseMove.x, event.mouseMove.y);
@@ -97,21 +85,39 @@ public:
 					break;
 
 					/*-------------------Keyboard Event-------------------*/
+
+					/*--------------------Window Event--------------------*/
+					//happen when user closed the program by many way
+				case sf::Event::Closed:
+					window.close();
+					break;
+					//hapen when user change active window like alt+tab
+				case sf::Event::LostFocus:
+					mouse.Flush();
+					break;
+					//hapen when user comeback to program
+				case sf::Event::GainedFocus:
+					break;
+					// catch the resize events
+				case sf::Event::Resized:
+				{
+					// update the view to the new size of the window
+					sf::FloatRect visibleArea(0.f, 0.f, (float)event.size.width, (float)event.size.height);
+					window.setView(sf::View(visibleArea));
+					break;
+				}
+					/*---------------------Window Event-------------------*/
 				default:
 					break;
 				}
 			}
-			gfx.BeginFrame();
 			game.Go();
-			gfx.Draw();
-			gfx.EndFrame();
 		}
 	}
-	
-private:
-	sf::RenderWindow window;
-	Graphics gfx;
-	Game game;
+public:
 	Mouse mouse;
 	Keyboard kbd;
+	sf::RenderWindow window;
+private:
+	Game game;	
 };
