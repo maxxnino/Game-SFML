@@ -124,14 +124,14 @@
     <ClInclude Include="DrawSystem.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="HashStringManager.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="InputSystem.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="MainWindow.h" />
-    <ClInclude Include="MeshComponent.h" />
+    <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="PlayerControlSystem.h" />
-    <ClInclude Include="TexCoordsComponent.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="TestVertex.h" />

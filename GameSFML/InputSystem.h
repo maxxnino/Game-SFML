@@ -29,11 +29,11 @@ public:
 			}
 			if (kbd.KeyIsPressed(sf::Keyboard::Q))
 			{
-				input.rot = 1.0f;
+				input.rot = -1.0f;
 			}
 			if (kbd.KeyIsPressed(sf::Keyboard::E))
 			{
-				input.rot = -1.0f;
+				input.rot = 1.0f;
 			}
 		});	
 	}

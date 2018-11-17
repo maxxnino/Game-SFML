@@ -7,9 +7,22 @@ Game::Game(MainWindow & wnd)
 {
 	std::uniform_real_distribution<float> rangeX(100.0f, 1180.0f);
 	std::uniform_real_distribution<float> rangeY(100.0f, 620.0f);
-	for (size_t i = 0; i < 100000; i++)
+	std::uniform_int_distribution<int> range(0, 2);
+	for (size_t i = 0; i < 50; i++)
 	{
-		wld.AddPlayer({ rangeX(rng),rangeY(rng) });
+		switch (range(rng))
+		{
+		case 0:
+			wld.AddPlayerWithTag<HashStringManager::Enemy01>({ rangeX(rng),rangeY(rng) });
+			break;
+		case 1:
+			wld.AddPlayerWithTag<HashStringManager::Enemy02>({ rangeX(rng),rangeY(rng) });
+			break;
+		case 2:
+			wld.AddPlayerWithTag<HashStringManager::Enemy03>({ rangeX(rng),rangeY(rng) });
+			break;
+		}
+		
 	}
 	
 }

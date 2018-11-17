@@ -1,42 +1,45 @@
 #pragma once
 #include "Graphics.h"
 #include "TransformComponent.h"
-#include "MeshComponent.h"
-#include "TexCoordsComponent.h"
+#include "ModelComponent.h"
 #include "TextureManager.h"
 #include "entt/entt.hpp"
-
+#include "HashStringManager.h"
 class DrawSystem
 {
 public:
 	void Draw(entt::DefaultRegistry& ECS, Graphics& gfx, TextureManager& manager)
+	{	
+		DrawByHashString<HashStringManager::Enemy01>(ECS, gfx, manager, HashStringManager::Enemy01);
+		DrawByHashString<HashStringManager::Enemy02>(ECS, gfx, manager, HashStringManager::Enemy02);
+		DrawByHashString<HashStringManager::Enemy03>(ECS, gfx, manager, HashStringManager::Enemy03);
+	}
+private:
+	template <typename entt::HashedString::hash_type value>
+	void DrawByHashString(entt::DefaultRegistry& ECS, Graphics& gfx, TextureManager& manager, const entt::HashedString& hs)
 	{
-		/*ECS.persistent_view<int, char>();
-		entt::Registry<> registry;
-		entt::registry<> registry;*/
-
-		const auto size = ECS.view<entt::label<"Enemy01"_hs>>().size();
+		const auto size = ECS.view<entt::label<value>>().size();
 		int count = 0;
 		sf::VertexArray quad = sf::VertexArray(sf::Quads, 4 * size);
-		const MeshComponent& mesh = manager.GetMesh("Enemy01");
+		const ModelComponent& mesh = manager.GetMesh(hs);
 
-		ECS.view<TransformComponent, TexCoordsComponent,entt::label<"Enemy01"_hs>>().each([&](const auto, TransformComponent& trans, TexCoordsComponent& texCoords, const auto) {
+		ECS.view<TransformComponent, entt::label<value>>().each([&](const auto, TransformComponent& trans, const auto) {
 			const auto amout = count * 4;
 			sf::Transform T;
 			T.translate(trans.position);
 			T.rotate(trans.rotation);
 
-			quad[0 + amout].position = T.transformPoint(mesh.point01);
-			quad[1 + amout].position = T.transformPoint(mesh.point02);
-			quad[2 + amout].position = T.transformPoint(mesh.point03);
-			quad[3 + amout].position = T.transformPoint(mesh.point04);
+			quad[0 + amout].position = T.transformPoint(mesh.meshP01);
+			quad[1 + amout].position = T.transformPoint(mesh.meshP02);
+			quad[2 + amout].position = T.transformPoint(mesh.meshP03);
+			quad[3 + amout].position = T.transformPoint(mesh.meshP04);
 
-			quad[0 + amout].texCoords = texCoords.point01;
-			quad[1 + amout].texCoords = texCoords.point02;
-			quad[2 + amout].texCoords = texCoords.point03;
-			quad[3 + amout].texCoords = texCoords.point04;
+			quad[0 + amout].texCoords = mesh.texCoord01;
+			quad[1 + amout].texCoords = mesh.texCoord02;
+			quad[2 + amout].texCoords = mesh.texCoord03;
+			quad[3 + amout].texCoords = mesh.texCoord04;
 			count++;
 		});
-		gfx.Draw(quad, manager.GetTexture("Enemy01"));
+		gfx.Draw(quad, manager.GetTexture(hs));
 	}
 };

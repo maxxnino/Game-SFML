@@ -1,7 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "entt/entt.hpp"
-#include "MeshComponent.h"
+#include "ModelComponent.h"
 #include <string>
 
 class TextureManager
@@ -19,16 +19,22 @@ class TextureManager
 			return texture;
 		}
 	};
-	struct MeshLoader final : entt::ResourceLoader<MeshLoader, MeshComponent>
+	struct MeshLoader final : entt::ResourceLoader<MeshLoader, ModelComponent>
 	{
-		std::shared_ptr<MeshComponent> load(float size) const
+		std::shared_ptr<ModelComponent> load(float size, float texCoordW, float texCoordH) const
 		{
-			const float halfSize = size / 2.0f;
-			auto mesh = std::make_shared<MeshComponent>();
-			mesh->point01 = sf::Vector2f(-halfSize, -halfSize);
-			mesh->point02 = sf::Vector2f(halfSize, -halfSize);
-			mesh->point03 = sf::Vector2f(halfSize, halfSize);
-			mesh->point04 = sf::Vector2f(-halfSize, halfSize);
+			const float halfWidth = size / 2.0f;
+			const float halfHeight = (size * texCoordH) / (2.0f * texCoordW);
+			auto mesh = std::make_shared<ModelComponent>();
+			mesh->meshP01 = sf::Vector2f(-halfWidth, -halfHeight);
+			mesh->meshP02 = sf::Vector2f(halfWidth, -halfHeight);
+			mesh->meshP03 = sf::Vector2f(halfWidth, halfHeight);
+			mesh->meshP04 = sf::Vector2f(-halfWidth, halfHeight);
+			//sf::Vector2f(0.0f, 0.0f), sf::Vector2f(60.0f, 0.0f), sf::Vector2f(60.0f, 60.0f), sf::Vector2f(0.0f, 60.0f)
+			mesh->texCoord01 = sf::Vector2f(0.0f, 0.0f);
+			mesh->texCoord02 = sf::Vector2f(texCoordW, 0.0f);
+			mesh->texCoord03 = sf::Vector2f(texCoordW, texCoordH);
+			mesh->texCoord04 = sf::Vector2f(0.0f, texCoordH);
 			return mesh;
 		}
 	};
@@ -37,7 +43,7 @@ public:
 	{
 		return textureCache.handle(identifier).get();
 	}
-	const MeshComponent& GetMesh(const entt::HashedString& identifier)
+	const ModelComponent& GetMesh(const entt::HashedString& identifier)
 	{
 		return meshCache.handle(identifier).get();
 	}
@@ -45,11 +51,11 @@ public:
 	{
 		textureCache.load<TextureLoader>(indentifier, filename);
 	}
-	void AddMesh(const entt::HashedString& indentifier, float size)
+	void AddMesh(const entt::HashedString& indentifier, float size, float texCoordW, float texCoordH)
 	{
-		meshCache.load<MeshLoader>(indentifier, size);
+		meshCache.load<MeshLoader>(indentifier, size, texCoordW, texCoordH);
 	}
 private:
 	entt::ResourceCache<sf::Texture> textureCache{};
-	entt::ResourceCache<MeshComponent> meshCache{};
+	entt::ResourceCache<ModelComponent> meshCache{};
 };
