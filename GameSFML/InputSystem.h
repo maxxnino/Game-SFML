@@ -2,12 +2,13 @@
 #include "Keyboard.h"
 #include "entt/entt.hpp"
 #include "InputComponent.h"
+#include "Camera.h"
 class InputSystem
 {
 public:
 	void Update(entt::DefaultRegistry& ECS, Keyboard& kbd)
 	{
-		ECS.view<InputComponent>().each([&](auto & entity, InputComponent& input) {
+		ECS.view<InputComponent>(entt::raw_t{}).each([&](InputComponent& input) {
 			input.dir.x = 0.0f;
 			input.dir.y = 0.0f;
 			input.rot = 0.0f;

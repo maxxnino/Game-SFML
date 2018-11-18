@@ -38,6 +38,7 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	const float dt = float(clock.restart().asMilliseconds()) / 1000.0f;
+	cam.Update(wnd.window, wnd.kbd, dt);
 	wld.Update(dt, wnd.kbd, wnd.mouse);
 }
 

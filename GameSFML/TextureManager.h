@@ -30,7 +30,7 @@ class TextureManager
 			mesh->meshP02 = sf::Vector2f(halfWidth, -halfHeight);
 			mesh->meshP03 = sf::Vector2f(halfWidth, halfHeight);
 			mesh->meshP04 = sf::Vector2f(-halfWidth, halfHeight);
-			//sf::Vector2f(0.0f, 0.0f), sf::Vector2f(60.0f, 0.0f), sf::Vector2f(60.0f, 60.0f), sf::Vector2f(0.0f, 60.0f)
+			
 			mesh->texCoord01 = sf::Vector2f(0.0f, 0.0f);
 			mesh->texCoord02 = sf::Vector2f(texCoordW, 0.0f);
 			mesh->texCoord03 = sf::Vector2f(texCoordW, texCoordH);

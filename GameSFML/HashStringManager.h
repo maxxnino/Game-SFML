@@ -1,5 +1,5 @@
 #pragma once
-#include "entt/core/hashed_string.hpp"
+#include "entt/entt.hpp"
 namespace HashStringManager
 {
 	constexpr auto Enemy01 = "Enemy01"_hs;

@@ -94,6 +94,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -108,6 +109,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -121,6 +123,9 @@
     <ClCompile Include="Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Box2DContactListener.h" />
+    <ClInclude Include="CameraMoveSystem.h" />
+    <ClInclude Include="CollisionFilter.h" />
     <ClInclude Include="DrawSystem.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
@@ -131,10 +136,10 @@
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="PhysicComponent.h" />
     <ClInclude Include="PlayerControlSystem.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TransformComponent.h" />
-    <ClInclude Include="TestVertex.h" />
     <ClInclude Include="VelocityComponent.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
