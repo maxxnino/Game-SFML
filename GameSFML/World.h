@@ -9,6 +9,8 @@ class World
 {
 public:
 	World()
+		:
+		drawSystem(ECS)
 	{
 		box2DEngine = std::make_unique<b2World>(b2Vec2(0.0f, 0.0f));
 		textureManager.AddTexture(HashStringManager::Enemy01, "Data\\Images\\enemy_01.png");

@@ -49,12 +49,12 @@ private:
 class DrawSystem
 {
 public:
-	/*DrawSystem(entt::DefaultRegistry& ECS)
+	DrawSystem(entt::DefaultRegistry& ECS)
 	{
 		Prepare<HashStringManager::Enemy01>(ECS);
 		Prepare<HashStringManager::Enemy02>(ECS);
 		Prepare<HashStringManager::Enemy03>(ECS);
-	}*/
+	}
 	void Draw(entt::DefaultRegistry& ECS, Graphics& gfx, b2World& box2DEngine,TextureManager& manager)
 	{	
 		PrepareDraw(ECS, gfx, box2DEngine);
@@ -66,7 +66,7 @@ private:
 	template <typename entt::HashedString::hash_type value>
 	void DrawByHashString(entt::DefaultRegistry& ECS, Graphics& gfx, TextureManager& manager, const entt::HashedString& hs)
 	{
-		auto view = ECS.view<entt::label<HashStringManager::Drawable>, PhysicComponent, entt::label<value>>();
+		auto view = ECS.view<entt::label<HashStringManager::Drawable>, PhysicComponent, entt::label<value>>(entt::persistent_t{});
 		sf::VertexArray quad = sf::VertexArray(sf::Quads, 4 * view.size());
 		const ModelComponent& mesh = manager.GetMesh(hs);
 
@@ -86,9 +86,12 @@ private:
 			quad[1 + amout].texCoords = mesh.texCoord02;
 			quad[2 + amout].texCoords = mesh.texCoord03;
 			quad[3 + amout].texCoords = mesh.texCoord04;
-			ECS.remove<entt::label<HashStringManager::Drawable>>(entity);
 			count++;
 		});
+		for (auto e : view)
+		{
+			ECS.remove<entt::label<HashStringManager::Drawable>>(e);
+		}
 		gfx.Draw(quad, manager.GetTexture(hs));
 	}
 	void PrepareDraw(entt::DefaultRegistry& ECS, Graphics& gfx, b2World& box2DEngine)
@@ -101,11 +104,11 @@ private:
 			ECS.assign<entt::label<HashStringManager::Drawable>>(e);
 		}
 	}
-	/*template <typename entt::HashedString::hash_type value>
+	template <typename entt::HashedString::hash_type value>
 	void Prepare(entt::DefaultRegistry& ECS)
 	{
-		ECS.prepare<TransformComponent, entt::label<value>>();	
-	}*/
+		ECS.prepare<PhysicComponent, entt::label<value>, entt::label<HashStringManager::Drawable>>();
+	}
 private:
 	CullingObject cullingObject;
 };
