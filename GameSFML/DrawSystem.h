@@ -1,21 +1,63 @@
 #pragma once
 #include "Graphics.h"
-#include "TransformComponent.h"
 #include "ModelComponent.h"
+#include "PhysicComponent.h"
 #include "TextureManager.h"
 #include "entt/entt.hpp"
 #include "HashStringManager.h"
+#include <iostream>
+#include <execution>
+class CullingObject
+{
+	//query for select by point
+	class CullingQuerySelector : public b2QueryCallback
+	{
+	public:
+		bool ReportFixture(b2Fixture* fixture) final
+		{
+			foundBodies.emplace_back(fixture->GetBody()->GetUserEntity());
+			return true;//keep going to find all fixtures in the query area
+		}
+		void Sort()
+		{
+			std::sort(std::execution::par_unseq, foundBodies.begin(), foundBodies.end());
+		}
+		std::vector<uint32_t> foundBodies;
+	};
+public:
+	const std::vector<uint32_t>& GetEntityList(b2World& box2DEngine, b2Vec2 p01, b2Vec2 p02)
+	{
+		cullingQueryCallback.foundBodies.clear();
+		b2AABB aabb;
+		if (p01.x > p02.x)
+		{
+			std::swap(p01.x, p02.x);
+		}
+		if (p01.y > p02.y)
+		{
+			std::swap(p01.y, p02.y);
+		}
+		aabb.lowerBound = p01;
+		aabb.upperBound = p02;
+		box2DEngine.QueryAABB(&cullingQueryCallback, aabb);
+		//cullingQueryCallback.Sort();
+		return cullingQueryCallback.foundBodies;
+	}
+private:
+	CullingQuerySelector cullingQueryCallback;
+};
 class DrawSystem
 {
 public:
-	DrawSystem(entt::DefaultRegistry& ECS)
+	/*DrawSystem(entt::DefaultRegistry& ECS)
 	{
 		Prepare<HashStringManager::Enemy01>(ECS);
 		Prepare<HashStringManager::Enemy02>(ECS);
 		Prepare<HashStringManager::Enemy03>(ECS);
-	}
-	void Draw(entt::DefaultRegistry& ECS, Graphics& gfx, TextureManager& manager)
+	}*/
+	void Draw(entt::DefaultRegistry& ECS, Graphics& gfx, b2World& box2DEngine,TextureManager& manager)
 	{	
+		PrepareDraw(ECS, gfx, box2DEngine);
 		DrawByHashString<HashStringManager::Enemy01>(ECS, gfx, manager, HashStringManager::Enemy01);
 		DrawByHashString<HashStringManager::Enemy02>(ECS, gfx, manager, HashStringManager::Enemy02);
 		DrawByHashString<HashStringManager::Enemy03>(ECS, gfx, manager, HashStringManager::Enemy03);
@@ -24,15 +66,16 @@ private:
 	template <typename entt::HashedString::hash_type value>
 	void DrawByHashString(entt::DefaultRegistry& ECS, Graphics& gfx, TextureManager& manager, const entt::HashedString& hs)
 	{
-		const auto size = ECS.view<entt::label<value>>().size();
-		int count = 0;
-		sf::VertexArray quad = sf::VertexArray(sf::Quads, 4 * size);
+		auto view = ECS.view<entt::label<HashStringManager::Drawable>, PhysicComponent, entt::label<value>>();
+		sf::VertexArray quad = sf::VertexArray(sf::Quads, 4 * view.size());
 		const ModelComponent& mesh = manager.GetMesh(hs);
-		ECS.view<TransformComponent, entt::label<value>>(entt::persistent_t{}).each([&](const auto, TransformComponent& trans, const auto) {
+
+		int count = 0;
+		view.each([&](const auto entity, const auto, PhysicComponent& physic, const auto) {
 			const auto amout = count * 4;
 			sf::Transform T;
-			T.translate(trans.position);
-			T.rotate(trans.rotation);
+			T.translate(gfx.GetDrawPosition(physic.body->GetPosition()));
+			T.rotate(physic.body->GetAngle());
 
 			quad[0 + amout].position = T.transformPoint(mesh.meshP01);
 			quad[1 + amout].position = T.transformPoint(mesh.meshP02);
@@ -43,13 +86,26 @@ private:
 			quad[1 + amout].texCoords = mesh.texCoord02;
 			quad[2 + amout].texCoords = mesh.texCoord03;
 			quad[3 + amout].texCoords = mesh.texCoord04;
+			ECS.remove<entt::label<HashStringManager::Drawable>>(entity);
 			count++;
 		});
 		gfx.Draw(quad, manager.GetTexture(hs));
 	}
-	template <typename entt::HashedString::hash_type value>
+	void PrepareDraw(entt::DefaultRegistry& ECS, Graphics& gfx, b2World& box2DEngine)
+	{
+		auto viewport = gfx.GetViewport();
+		auto entities = cullingObject.GetEntityList(box2DEngine, viewport.first, viewport.second);
+		std::cout << entities.size() << "\n";
+		for (auto e : entities)
+		{
+			ECS.assign<entt::label<HashStringManager::Drawable>>(e);
+		}
+	}
+	/*template <typename entt::HashedString::hash_type value>
 	void Prepare(entt::DefaultRegistry& ECS)
 	{
 		ECS.prepare<TransformComponent, entt::label<value>>();	
-	}
+	}*/
+private:
+	CullingObject cullingObject;
 };

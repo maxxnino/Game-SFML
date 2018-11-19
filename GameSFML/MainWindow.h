@@ -119,7 +119,7 @@ private:
 				break;
 			}
 		}
-		//std::cout << window.getView().getCenter().x << " " << window.getView().getCenter().y << "\n";
+		
 	}
 public:
 	Mouse mouse;

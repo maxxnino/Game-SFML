@@ -1,30 +1,15 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "Box2D/Box2D.h"
 #include <assert.h>
 class Graphics
 {
 public:
 	Graphics(sf::RenderWindow& window)
 		:
-		window(window)
-	{
-		/******************************************************************************
-
-		sprite.setTexture(texture);
-
-		 position
-		sprite.setPosition(sf::Vector2f(10.f, 50.f)); // absolute position
-		sprite.move(sf::Vector2f(5.f, 10.f)); // offset relative to the current position
-
-		 rotation
-		sprite.setRotation(90.f); // absolute angle
-		sprite.rotate(15.f); // offset relative to the current angle
-
-		 scale
-		sprite.setScale(sf::Vector2f(0.5f, 2.f)); // absolute scale factor
-		sprite.scale(sf::Vector2f(1.5f, 3.f)); // factor relative to the current scale
-		********************************************************************************/
-	}
+		window(window),
+		vertices(sf::Quads, 4)
+	{}
 
 	void Draw(sf::VertexArray& vertexArray, const sf::Texture& texture)
 	{
@@ -38,10 +23,32 @@ public:
 	{
 		window.display();
 	}
-	const sf::FloatRect& GetViewport() const
+	std::pair<b2Vec2, b2Vec2> GetViewport()
 	{
-		return window.getView().getViewport();
+		const auto center = window.getView().getCenter();
+		halfSize = 0.5f * window.getView().getSize();
+		const auto top = ScreenToWorldPos(center - halfSize);
+		const auto bottom = ScreenToWorldPos(center + halfSize);
+		/*auto draw01 = GetDrawPosition(top) + sf::Vector2f(10.0f,10.0f);
+		auto draw02 = GetDrawPosition(bottom) - sf::Vector2f(10.0f, 10.0f);
+		vertices[0] = draw01;
+		vertices[1] = sf::Vector2f(draw01.x,draw02.y);
+		vertices[2] = draw02;
+		vertices[3] = sf::Vector2f(draw02.x, draw01.y);
+		window.draw(vertices);*/
+		return { top, bottom };
 	}
+	b2Vec2 ScreenToWorldPos(const sf::Vector2f& screenPos) const
+	{
+		return b2Vec2((screenPos.x - halfSize.x) / scalePixel, (-screenPos.y + halfSize.y) / scalePixel);
+	}
+	sf::Vector2f GetDrawPosition(const b2Vec2& position) const
+	{
+		return { halfSize.x + position.x * scalePixel, halfSize.y - position.y * scalePixel};
+	}
+	static constexpr float scalePixel = 20.0f;
 private:
 	sf::RenderWindow& window;
+	sf::Vector2f halfSize;
+	sf::VertexArray vertices;
 };

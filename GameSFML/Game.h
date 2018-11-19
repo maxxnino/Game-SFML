@@ -2,8 +2,7 @@
 #include "MainWindow.h"
 #include "Graphics.h"
 #include "World.h"
-#include "Camera.h"
-#include "CameraMoveSystem.h"
+#include "CameraSystem.h"
 #include <random>
 
 class Game
@@ -19,9 +18,8 @@ private:
 	Graphics gfx;
 	/**************** User Variable *******************/
 	sf::Clock clock;
-	//Camera cam;
 	std::mt19937 rng = std::mt19937(std::random_device{}());
 	World wld;
-	CameraMoveSystem cam;
+	CameraSystem camSystem;
 	/**************** User Variable *******************/
 };

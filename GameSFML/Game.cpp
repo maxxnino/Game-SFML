@@ -5,8 +5,8 @@ Game::Game(MainWindow & wnd)
 	wnd(wnd),
 	gfx(wnd.window)
 {
-	std::uniform_real_distribution<float> rangeX(100.0f, 1180.0f);
-	std::uniform_real_distribution<float> rangeY(100.0f, 620.0f);
+	std::uniform_real_distribution<float> rangeX(-20.0f, 20.0f);
+	std::uniform_real_distribution<float> rangeY(-20.0f, 20.0f);
 	std::uniform_int_distribution<int> range(0, 2);
 	for (size_t i = 0; i < 50; i++)
 	{
@@ -22,7 +22,7 @@ Game::Game(MainWindow & wnd)
 			wld.AddPlayerWithTag<HashStringManager::Enemy03>({ rangeX(rng),rangeY(rng) });
 			break;
 		}
-		
+		//wld.AddPlayerWithTag<HashStringManager::Enemy01>({ rangeX(rng),rangeY(rng) });
 	}
 	
 }
@@ -38,7 +38,7 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	const float dt = float(clock.restart().asMilliseconds()) / 1000.0f;
-	cam.Update(wnd.window, wnd.kbd, dt);
+	camSystem.Update(wnd.window, wnd.kbd, dt);
 	wld.Update(dt, wnd.kbd, wnd.mouse);
 }
 

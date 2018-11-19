@@ -62,20 +62,8 @@
     <ClInclude Include="World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InputComponent.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="TransformComponent.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="InputSystem.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerControlSystem.h">
       <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="VelocityComponent.h">
-      <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="DrawSystem.h">
       <Filter>Header Files\System</Filter>
@@ -92,13 +80,10 @@
     <ClInclude Include="PhysicComponent.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionFilter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Box2DContactListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CameraMoveSystem.h">
+    <ClInclude Include="CameraSystem.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
   </ItemGroup>
