@@ -20,6 +20,5 @@ private:
 	sf::Clock clock;
 	std::mt19937 rng = std::mt19937(std::random_device{}());
 	World wld;
-	CameraSystem camSystem;
 	/**************** User Variable *******************/
 };

@@ -34,7 +34,7 @@ public:
 		}*/
 
 		auto view = wnd.getView();
-		view.move(dt * speed * dir);
+		//view.move(dt * speed * dir);
 		//view.rotate(rot * dt * rotSpeed);
 		wnd.setView(view);
 	}

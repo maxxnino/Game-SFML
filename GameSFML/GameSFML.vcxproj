@@ -125,6 +125,8 @@
     <ClCompile Include="Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationComponent.h" />
+    <ClInclude Include="AnimationSystem.h" />
     <ClInclude Include="Box2DContactListener.h" />
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="DrawSystem.h" />
@@ -133,11 +135,11 @@
     <ClInclude Include="HashStringManager.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="MainWindow.h" />
-    <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="PhysicComponent.h" />
+    <ClInclude Include="PhysicSystem.h" />
     <ClInclude Include="PlayerControlSystem.h" />
-    <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Codex.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

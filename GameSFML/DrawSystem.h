@@ -1,8 +1,8 @@
 #pragma once
 #include "Graphics.h"
-#include "ModelComponent.h"
 #include "PhysicComponent.h"
-#include "TextureManager.h"
+#include "Codex.h"
+#include "AnimationComponent.h"
 #include "entt/entt.hpp"
 #include "HashStringManager.h"
 #include <iostream>
@@ -46,24 +46,35 @@ public:
 private:
 	CullingQuerySelector cullingQueryCallback;
 };
+constexpr float radToDeg = 180.0f / 3.14f;
 class DrawSystem
 {
 public:
-	DrawSystem(entt::DefaultRegistry& ECS)
+	void Draw(entt::DefaultRegistry& ECS, Graphics& gfx, Codex& codex)
 	{
-		Prepare<HashStringManager::Enemy01>(ECS);
-		Prepare<HashStringManager::Enemy02>(ECS);
-		Prepare<HashStringManager::Enemy03>(ECS);
+		ECS.view<sf::Sprite, PhysicComponent>().each([&](const auto entity, sf::Sprite& sprite, const PhysicComponent& physic) {
+			
+			sprite.setPosition(gfx.GetDrawPosition(physic.body->GetPosition()));
+			sprite.setRotation(physic.body->GetAngle() * radToDeg);
+			gfx.DrawSprite(sprite);
+		});
+
+		ECS.view<entt::label<HS::Drawable>>().each([&](const auto entity, auto) {
+			ECS.remove<entt::label<HS::Drawable>>(entity);
+		});
 	}
-	void Draw(entt::DefaultRegistry& ECS, Graphics& gfx, b2World& box2DEngine,TextureManager& manager)
-	{	
-		PrepareDraw(ECS, gfx, box2DEngine);
-		DrawByHashString<HashStringManager::Enemy01>(ECS, gfx, manager, HashStringManager::Enemy01);
-		DrawByHashString<HashStringManager::Enemy02>(ECS, gfx, manager, HashStringManager::Enemy02);
-		DrawByHashString<HashStringManager::Enemy03>(ECS, gfx, manager, HashStringManager::Enemy03);
+	void Update(entt::DefaultRegistry& ECS, Graphics& gfx, b2World& box2DEngine)
+	{
+		auto viewport = gfx.GetViewport();
+		auto entities = cullingObject.GetEntityList(box2DEngine, viewport.first, viewport.second);
+		//std::cout << entities.size() << "\n";
+		for (auto e : entities)
+		{
+			ECS.assign<entt::label<HS::Drawable>>(e);
+		}
 	}
 private:
-	template <typename entt::HashedString::hash_type value>
+	/*template <typename entt::HashedString::hash_type value>
 	void DrawByHashString(entt::DefaultRegistry& ECS, Graphics& gfx, TextureManager& manager, const entt::HashedString& hs)
 	{
 		auto view = ECS.view<entt::label<HashStringManager::Drawable>, PhysicComponent, entt::label<value>>(entt::persistent_t{});
@@ -93,22 +104,7 @@ private:
 			ECS.remove<entt::label<HashStringManager::Drawable>>(e);
 		}
 		gfx.Draw(quad, manager.GetTexture(hs));
-	}
-	void PrepareDraw(entt::DefaultRegistry& ECS, Graphics& gfx, b2World& box2DEngine)
-	{
-		auto viewport = gfx.GetViewport();
-		auto entities = cullingObject.GetEntityList(box2DEngine, viewport.first, viewport.second);
-		std::cout << entities.size() << "\n";
-		for (auto e : entities)
-		{
-			ECS.assign<entt::label<HashStringManager::Drawable>>(e);
-		}
-	}
-	template <typename entt::HashedString::hash_type value>
-	void Prepare(entt::DefaultRegistry& ECS)
-	{
-		ECS.prepare<PhysicComponent, entt::label<value>, entt::label<HashStringManager::Drawable>>();
-	}
+	}*/
 private:
 	CullingObject cullingObject;
 };

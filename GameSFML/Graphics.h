@@ -11,9 +11,13 @@ public:
 		vertices(sf::Quads, 4)
 	{}
 
-	void Draw(sf::VertexArray& vertexArray, const sf::Texture& texture)
+	void DrawVertexArray(sf::VertexArray& vertexArray, const sf::Texture& texture) const
 	{
 		window.draw(vertexArray, &texture);
+	}
+	void DrawSprite(sf::Sprite& sprite) const
+	{
+		window.draw(sprite);
 	}
 	void BeginFrame()
 	{
@@ -45,6 +49,10 @@ public:
 	sf::Vector2f GetDrawPosition(const b2Vec2& position) const
 	{
 		return { halfSize.x + position.x * scalePixel, halfSize.y - position.y * scalePixel};
+	}
+	sf::RenderWindow& GetRenderWindow()
+	{
+		return window;
 	}
 	static constexpr float scalePixel = 20.0f;
 private:
