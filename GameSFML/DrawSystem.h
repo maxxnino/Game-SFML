@@ -52,7 +52,7 @@ class DrawSystem
 public:
 	void Draw(entt::DefaultRegistry& ECS, Graphics& gfx, Codex& codex)
 	{
-		ECS.view<sf::Sprite, PhysicComponent>().each([&](const auto entity, sf::Sprite& sprite, const PhysicComponent& physic) {
+		ECS.view<sf::Sprite, PhysicComponent, entt::label<HS::Drawable>>().each([&](const auto entity, sf::Sprite& sprite, const PhysicComponent& physic, const auto) {
 			
 			sprite.setPosition(gfx.GetDrawPosition(physic.body->GetPosition()));
 			sprite.setRotation(physic.body->GetAngle() * radToDeg);
