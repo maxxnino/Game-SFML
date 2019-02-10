@@ -2,7 +2,6 @@
 #include "MainWindow.h"
 #include "Graphics.h"
 #include "World.h"
-#include "CameraSystem.h"
 #include <random>
 
 class Game
