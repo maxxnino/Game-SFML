@@ -125,11 +125,22 @@
     <ClCompile Include="Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="Codex.h" />
+    <ClInclude Include="CollidableUI.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="HashStringDataBase.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="ListenerBox2DGUI.h" />
     <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="MenuManager.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="MouseGui.h" />
+    <ClInclude Include="MyBox2DListener.h" />
+    <ClInclude Include="PhysicObject.h" />
+    <ClInclude Include="QuerySelectorBox2D.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

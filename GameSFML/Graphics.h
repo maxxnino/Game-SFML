@@ -46,9 +46,9 @@ public:
 	{
 		return b2Vec2((screenPos.x - halfSize.x) / scalePixel, (-screenPos.y + halfSize.y) / scalePixel);
 	}
-	sf::Vector2f GetDrawPosition(const b2Vec2& position) const
+	sf::Vector2f WorldToScreenPos(const b2Vec2& worldPos) const
 	{
-		return { halfSize.x + position.x * scalePixel, halfSize.y - position.y * scalePixel};
+		return { halfSize.x + worldPos.x * scalePixel, halfSize.y - worldPos.y * scalePixel};
 	}
 	sf::RenderWindow& GetRenderWindow()
 	{
