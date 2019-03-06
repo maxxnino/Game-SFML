@@ -33,14 +33,20 @@ public:
 		halfSize = 0.5f * window.getView().getSize();
 		const auto top = ScreenToWorldPos(center - halfSize);
 		const auto bottom = ScreenToWorldPos(center + halfSize);
-		/*auto draw01 = GetDrawPosition(top) + sf::Vector2f(10.0f,10.0f);
-		auto draw02 = GetDrawPosition(bottom) - sf::Vector2f(10.0f, 10.0f);
+		/*auto draw01 = WorldToScreenPos(top) + sf::Vector2f(10.0f,10.0f);
+		auto draw02 = WorldToScreenPos(bottom) - sf::Vector2f(10.0f, 10.0f);
 		vertices[0] = draw01;
 		vertices[1] = sf::Vector2f(draw01.x,draw02.y);
 		vertices[2] = draw02;
 		vertices[3] = sf::Vector2f(draw02.x, draw01.y);
 		window.draw(vertices);*/
 		return { top, bottom };
+	}
+	void MoveViewport(const b2Vec2& newPos)
+	{
+		auto view = window.getView();
+		view.setCenter(WorldToScreenPos(newPos));
+		window.setView(view);
 	}
 	b2Vec2 ScreenToWorldPos(const sf::Vector2f& screenPos) const
 	{

@@ -5,6 +5,7 @@ Game::Game(MainWindow & wnd)
 	wnd(wnd),
 	gfx(wnd.window)
 {
+	gfx.MoveViewport(b2Vec2(0.0f, 0.0f));
 	std::uniform_real_distribution<float> rangeX(-20.0f, 20.0f);
 	std::uniform_real_distribution<float> rangeY(-20.0f, 20.0f);
 	std::uniform_int_distribution<int> range(0, 3);
