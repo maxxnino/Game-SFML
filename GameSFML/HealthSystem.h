@@ -17,12 +17,10 @@ public:
 				return;
 			}
 
-			if (Health.curHealth >= 100 && ECSEngine.has<PhysicComponent>(entity))
+			if (Health.curHealth >= 100)
 			{
-				Health.curHealth /= 2.0f;
-				auto newEntity = ECSEngine.create();
-				ECSEngine.assign<SpawnEnemyInfo>(newEntity, ECSEngine.get<PhysicComponent>(entity));
-
+				ECSEngine.assign<DeathTag>(entity);
+				ECSEngine.assign<SpawnEnemyInfo>(entity);
 			}
 		});
 	}

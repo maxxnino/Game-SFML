@@ -102,30 +102,29 @@ private:
 		}
 	}
 private:
-	void CreateEnemyArcheType()
+	/*void CreateEnemyArcheType()
 	{
-		//physic component
-		//{
-		//	b2BodyDef bodyDef;
-		//	bodyDef.type = b2_dynamicBody;
+		{
+			b2BodyDef bodyDef;
+			bodyDef.type = b2_dynamicBody;
 
-			/*b2PolygonShape dynamicBox;
-			dynamicBox.SetAsBox(2.0f, 2.0f);*/
+			b2PolygonShape dynamicBox;
+			dynamicBox.SetAsBox(2.0f, 2.0f);
 
-		//	b2FixtureDef fixtureDef;
-		//	fixtureDef.shape = &dynamicBox;
-		//	fixtureDef.filter.categoryBits = CollisionFillter::PLAYER;
-		//	fixtureDef.filter.maskBits = CollisionFillter::ENEMY | CollisionFillter::BORDER;
-		//	//fixtureDef.isSensor = isSensor;
-		//	fixtureDef.density = 1.0f;
-		//	fixtureDef.friction = 0.0f;
-		//	fixtureDef.restitution = 1.0f;
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &dynamicBox;
+			fixtureDef.filter.categoryBits = CollisionFillter::PLAYER;
+			fixtureDef.filter.maskBits = CollisionFillter::ENEMY | CollisionFillter::BORDER;
+			fixtureDef.isSensor = isSensor;
+			fixtureDef.density = 1.0f;
+			fixtureDef.friction = 0.0f;
+			fixtureDef.restitution = 1.0f;
 
-		//	enemyArcheType.set<PhysicComponent>(*box2DEngine, bodyDef, fixtureDef);
-		//}
+			enemyArcheType.set<PhysicComponent>(*box2DEngine, bodyDef, fixtureDef);
+		}
 		enemyArcheType.set<HealthComponent>(50.0f);
 		enemyArcheType.set<sf::Sprite>();
-	}
+	}*/
 private:
 	std::unique_ptr<b2World> box2DEngine;
 	entt::DefaultRegistry ECSEngine;
