@@ -119,7 +119,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mouse.cpp" />
@@ -137,6 +136,7 @@
     <ClInclude Include="HealthSystem.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="ListenerBox2DGUI.h" />
+    <ClInclude Include="Locator.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MenuManager.h" />

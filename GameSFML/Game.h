@@ -1,23 +1,29 @@
 #pragma once
-#include "MainWindow.h"
-#include "Graphics.h"
 #include "World.h"
-#include <random>
 
 class Game
 {
 public:
-	Game(MainWindow& wnd);
-	void Go();
+	void Go()
+	{
+		Locator::Graphic::ref().BeginFrame();
+		UpdateModel();
+		ComposeFrame();
+		Locator::Graphic::ref().EndFrame();
+	}
 private:
-	void UpdateModel();
-	void ComposeFrame();
+	void UpdateModel()
+	{
+		const float dt = float(clock.restart().asMilliseconds()) / 1000.0f;
+		wld.Update(dt);
+	}
+	void ComposeFrame()
+	{
+		wld.Draw();
+	}
 private:
-	MainWindow& wnd;
-	Graphics gfx;
 	/**************** User Variable *******************/
 	sf::Clock clock;
-	std::mt19937 rng = std::mt19937(std::random_device{}());
 	World wld;
 	/**************** User Variable *******************/
 };

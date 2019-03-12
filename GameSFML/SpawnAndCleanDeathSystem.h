@@ -1,21 +1,22 @@
 #pragma once
 #include "GameplayTags.h"
 #include "entt/entt.hpp"
-#include "Box2D/Box2D.h"
+#include "Locator.h"
 class CleanDeadSystem
 {
 public:
-	void Update(entt::DefaultRegistry& ECSEngine)
+	void Update()
 	{
-		ECSEngine.destroy<DeathTag>();
+		Locator::ECS::ref().destroy<DeathTag>();
 	}
 };
 class SpawnEnemySystem
 {
 public:
-	void Update(entt::DefaultRegistry& ECSEngine, b2World& box2DEngine)
+	void Update()
 	{
-		ECSEngine.view<SpawnEnemyInfo, PhysicComponent, sf::Sprite>().each([&ECSEngine,&box2DEngine](auto entity, 
+		auto& ECSEngine = Locator::ECS::ref();
+		ECSEngine.view<SpawnEnemyInfo, PhysicComponent, sf::Sprite>().each([&ECSEngine](auto entity,
 			SpawnEnemyInfo & info, PhysicComponent& physicCom, sf::Sprite& sprite) {
 
 			auto newEntity = ECSEngine.create();
@@ -32,10 +33,9 @@ public:
 				fixtureDef.density = physicCom.body->GetFixtureList()->GetDensity();
 				fixtureDef.friction = physicCom.body->GetFixtureList()->GetFriction();
 				fixtureDef.restitution = physicCom.body->GetFixtureList()->GetRestitution();
-				ECSEngine.assign<PhysicComponent>(newEntity, newEntity, box2DEngine, bodyDef, fixtureDef);
+				ECSEngine.assign<PhysicComponent>(newEntity, newEntity, bodyDef, fixtureDef);
 			}
 		});
 		ECSEngine.remove<SpawnEnemyInfo>();
-		auto newview = ECSEngine.view<SpawnEnemyInfo>();
 	}
 };

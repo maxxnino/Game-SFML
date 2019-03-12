@@ -1,8 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Mouse.h"
-#include "Keyboard.h"
-#include "Graphics.h"
+#include "Locator.h"
 //#include <iostream>
 class MainWindow
 {
@@ -15,6 +13,11 @@ public:
 		window.setVerticalSyncEnabled(true);
 		//disable key auto repeat
 		window.setKeyRepeatEnabled(false);
+		Locator::Graphic::set(window);
+		Locator::Graphic::ref().MoveViewport(b2Vec2(0.0f, 0.0f));
+		Locator::Mouse::set();
+		Locator::Keyboard::set();
+		
 	}
 	bool Update()
 	{
@@ -29,6 +32,8 @@ private:
 	void ProcessEvent()
 	{
 		sf::Event event;
+		auto& mouse = Locator::Mouse::ref();
+		auto& kbd = Locator::Keyboard::ref();
 		while (window.pollEvent(event))
 		{
 			switch (event.type)
@@ -122,7 +127,5 @@ private:
 		
 	}
 public:
-	Mouse mouse;
-	Keyboard kbd;
 	sf::RenderWindow window;
 };

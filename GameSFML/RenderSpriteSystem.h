@@ -1,5 +1,5 @@
 #pragma once
-#include "Graphics.h"
+#include "Locator.h"
 #include "PhysicComponent.h"
 #include "entt/entt.hpp"
 #include "HashStringDataBase.h"
@@ -48,18 +48,21 @@ private:
 class RenderSpriteSystem
 {
 public:
-	void Draw(entt::DefaultRegistry& ECSEngine, Graphics& gfx)
+	void Draw()
 	{
+		auto& ECSEngine = Locator::ECS::ref();
+		auto& gfx = Locator::Graphic::ref();
 		ECSEngine.view<sf::Sprite, PhysicComponent>().each([&gfx](auto entity, sf::Sprite &sprite, PhysicComponent &physic) {
 			sprite.setPosition(gfx.WorldToScreenPos(physic.body->GetPosition()));
 			gfx.DrawSprite(sprite);
 		});
 	}
-	void Update(entt::DefaultRegistry& ECSEngine, Graphics& gfx, b2World& box2DEngine)
+	void Update()
 	{
-		auto viewport = gfx.GetViewport();
-		auto entities = cullingObject.GetEntityList(box2DEngine, viewport.first, viewport.second);
+		auto viewport = Locator::Graphic::ref().GetViewport();
+		auto entities = cullingObject.GetEntityList(Locator::Physic::ref(), viewport.first, viewport.second);
 		//std::cout << entities.size() << "\n";
+		auto& ECSEngine = Locator::ECS::ref();
 		for (auto e : entities)
 		{
 			ECSEngine.assign<Drawable>(e);
