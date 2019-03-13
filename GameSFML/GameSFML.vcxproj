@@ -119,7 +119,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mouse.cpp" />
@@ -128,18 +127,30 @@
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AnimationSystem.h" />
     <ClInclude Include="Box2DContactListener.h" />
-    <ClInclude Include="CameraSystem.h" />
-    <ClInclude Include="DrawSystem.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Graphics.h" />
-    <ClInclude Include="HashStringManager.h" />
-    <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="MainWindow.h" />
-    <ClInclude Include="Mouse.h" />
-    <ClInclude Include="PhysicComponent.h" />
-    <ClInclude Include="PhysicSystem.h" />
-    <ClInclude Include="PlayerControlSystem.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Codex.h" />
+    <ClInclude Include="CollidableUI.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameplayTags.h" />
+    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="HashStringDataBase.h" />
+    <ClInclude Include="HealthComponent.h" />
+    <ClInclude Include="HealthSystem.h" />
+    <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="ListenerBox2DGUI.h" />
+    <ClInclude Include="Locator.h" />
+    <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="MenuManager.h" />
+    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="MouseGui.h" />
+    <ClInclude Include="MyBox2DListener.h" />
+    <ClInclude Include="MyFreeFunction.h" />
+    <ClInclude Include="PhysicComponent.h" />
+    <ClInclude Include="PhysicObject.h" />
+    <ClInclude Include="QuerySelectorBox2D.h" />
+    <ClInclude Include="RenderSpriteSystem.h" />
+    <ClInclude Include="SpawnAndCleanDeathSystem.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

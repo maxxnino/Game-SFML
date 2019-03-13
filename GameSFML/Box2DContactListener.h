@@ -1,18 +1,36 @@
 #pragma once
-#include "Box2D/Box2D.h"
-#include "entt/entt.hpp"
-#include <queue>
-class Box2DContactListener : public b2ContactListener
+#include "PhysicComponent.h"
+#include "HealthComponent.h"
+#include "Locator.h"
+class Box2DContactListener final : public b2ContactListener
 {
 public:
 	void BeginContact(b2Contact* contact) final
 	{
-		auto b1 = contact->GetFixtureA()->GetBody();
-		auto b2 = contact->GetFixtureB()->GetBody();
-		if (b1->GetType() == b2_dynamicBody && b2->GetType() == b2_dynamicBody)
+		auto categoryBits1 = contact->GetFixtureA()->GetFilterData().categoryBits;
+		auto entity1 = contact->GetFixtureA()->GetBody()->GetUserEntity();
+
+		auto categoryBits2 = contact->GetFixtureB()->GetFilterData().categoryBits;
+		auto entity2 = contact->GetFixtureB()->GetBody()->GetUserEntity();
+
+		if (categoryBits1 == categoryBits2) return;
+
+		switch (categoryBits1 | categoryBits2)
 		{
-			pairCollied.emplace(std::make_pair(b1->GetUserEntity(), b2->GetUserEntity()));
+		case CollisionFillter::ENEMY | CollisionFillter::PLAYER:
+		{
+			if (categoryBits1 == CollisionFillter::ENEMY)
+			{
+				Locator::ECS::ref().get<HealthComponent>(entity1).curHealth += 10;
+				Locator::ECS::ref().get<HealthComponent>(entity2).curHealth -= 10;
+				break;
+			}
+			Locator::ECS::ref().get<HealthComponent>(entity2).curHealth += 10;
+			Locator::ECS::ref().get<HealthComponent>(entity1).curHealth -= 10;
+			break;
+		}
+		default:
+			break;
 		}
 	}
-	std::queue<std::pair<uint32_t, uint32_t>> pairCollied;
 };

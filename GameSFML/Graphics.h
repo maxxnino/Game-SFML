@@ -9,7 +9,9 @@ public:
 		:
 		window(window),
 		vertices(sf::Quads, 4)
-	{}
+	{
+		MoveViewport(b2Vec2(0.0f,0.0f));
+	}
 
 	void DrawVertexArray(sf::VertexArray& vertexArray, const sf::Texture& texture) const
 	{
@@ -33,26 +35,28 @@ public:
 		halfSize = 0.5f * window.getView().getSize();
 		const auto top = ScreenToWorldPos(center - halfSize);
 		const auto bottom = ScreenToWorldPos(center + halfSize);
-		/*auto draw01 = GetDrawPosition(top) + sf::Vector2f(10.0f,10.0f);
-		auto draw02 = GetDrawPosition(bottom) - sf::Vector2f(10.0f, 10.0f);
+		auto draw01 = WorldToScreenPos(top) + sf::Vector2f(10.0f,10.0f);
+		auto draw02 = WorldToScreenPos(bottom) - sf::Vector2f(10.0f, 10.0f);
 		vertices[0] = draw01;
 		vertices[1] = sf::Vector2f(draw01.x,draw02.y);
 		vertices[2] = draw02;
 		vertices[3] = sf::Vector2f(draw02.x, draw01.y);
-		window.draw(vertices);*/
+		window.draw(vertices);
 		return { top, bottom };
+	}
+	void MoveViewport(const b2Vec2& newPos)
+	{
+		auto view = window.getView();
+		view.setCenter(WorldToScreenPos(newPos));
+		window.setView(view);
 	}
 	b2Vec2 ScreenToWorldPos(const sf::Vector2f& screenPos) const
 	{
-		return b2Vec2((screenPos.x - halfSize.x) / scalePixel, (-screenPos.y + halfSize.y) / scalePixel);
+		return b2Vec2((screenPos.x) / scalePixel, (-screenPos.y) / scalePixel);
 	}
-	sf::Vector2f GetDrawPosition(const b2Vec2& position) const
+	sf::Vector2f WorldToScreenPos(const b2Vec2& worldPos) const
 	{
-		return { halfSize.x + position.x * scalePixel, halfSize.y - position.y * scalePixel};
-	}
-	sf::RenderWindow& GetRenderWindow()
-	{
-		return window;
+		return { worldPos.x * scalePixel, - worldPos.y * scalePixel};
 	}
 	static constexpr float scalePixel = 20.0f;
 private:

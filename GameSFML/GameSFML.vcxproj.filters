@@ -19,20 +19,17 @@
     <Filter Include="Source Files\Engine">
       <UniqueIdentifier>{460e4c03-87c8-4cc8-ab3c-ec333e59c03b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{ea8c2f4a-2a6d-46a5-8d9c-38ce276bc97e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files\Component">
-      <UniqueIdentifier>{c550a52e-f6f2-40af-b628-d45fbb25b36b}</UniqueIdentifier>
+      <UniqueIdentifier>{1eb12e05-1af1-43cf-8e44-5c25c80d469d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\System">
-      <UniqueIdentifier>{369ffa80-ef09-4ff2-a54d-be8073d566ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Manager">
-      <UniqueIdentifier>{7a95c45c-a4f4-4878-a616-034356b33ace}</UniqueIdentifier>
+    <Filter Include="Header Files\Systems">
+      <UniqueIdentifier>{a7b84ca2-75e0-44fe-a9b2-8a520fac5dfd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Keyboard.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
@@ -62,35 +59,71 @@
     <ClInclude Include="World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerControlSystem.h">
-      <Filter>Header Files\System</Filter>
+    <ClInclude Include="CollidableUI.h">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="DrawSystem.h">
-      <Filter>Header Files\System</Filter>
+    <ClInclude Include="ListenerBox2DGUI.h">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="HashStringManager.h">
-      <Filter>Header Files\Manager</Filter>
+    <ClInclude Include="Menu.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuManager.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseGui.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MyBox2DListener.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="QuerySelectorBox2D.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicObject.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Codex.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="HashStringDataBase.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Locator.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFreeFunction.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="GameplayTags.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthComponent.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="PhysicComponent.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Box2DContactListener.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="HealthSystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="CameraSystem.h">
-      <Filter>Header Files\System</Filter>
+    <ClInclude Include="RenderSpriteSystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationSystem.h">
-      <Filter>Header Files\System</Filter>
+    <ClInclude Include="SpawnAndCleanDeathSystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="AnimationComponent.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Codex.h">
-      <Filter>Header Files\Manager</Filter>
+    <ClInclude Include="AnimationSystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicSystem.h">
-      <Filter>Header Files\System</Filter>
+    <ClInclude Include="Box2DContactListener.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

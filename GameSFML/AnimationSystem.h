@@ -1,24 +1,28 @@
 #pragma once
-#include "entt/entt.hpp"
+#include "Locator.h"
 #include "AnimationComponent.h"
 class AnimationSystem
 {
 public:
-	void Update(entt::DefaultRegistry& ECS, float dt)
+	void Update(float dt)
 	{
-		ECS.view<GroupAnimation, sf::Sprite>().each([&](const auto, GroupAnimation& animation, sf::Sprite& sprite) {
-			AnimationComponent& curAnimation = animation.animations[animation.iAnimation];
-
-			curAnimation.time += dt;
-			while (curAnimation.time >= curAnimation.holdTime)
+		Locator::ECS::ref().view<AnimationComponent>().each([dt](auto entity, AnimationComponent& animation) {
+			animation.curFrameTime += dt;
+			const auto prevFrame = animation.iCurFrame;
+			while (animation.curFrameTime >= animation.holdTime)
 			{
-				curAnimation.time -= curAnimation.holdTime;
-				if (++curAnimation.iFrame >= curAnimation.frames.size())
+				animation.curFrameTime -= animation.holdTime;
+				animation.iCurFrame++;
+				if (animation.iCurFrame >= animation.maxFrame)
 				{
-					curAnimation.iFrame = 0;
+					animation.iCurFrame = 0;
 				}
 			}
-			sprite.setTextureRect(curAnimation.frames[curAnimation.iFrame]);
+			if (Locator::ECS::ref().has<sf::Sprite>() && prevFrame != animation.iCurFrame)
+			{
+				auto& ECS = Locator::ECS::ref();
+				ECS.get<sf::Sprite>(1).setTextureRect(ECS.get<AnimationShareComponent>(animation.shareEntity).frames[animation.iCurFrame]);
+			}
 		});
 	}
 };
