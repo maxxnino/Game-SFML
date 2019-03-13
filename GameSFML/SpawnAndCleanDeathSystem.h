@@ -17,7 +17,7 @@ public:
 	{
 		auto& ECSEngine = Locator::ECS::ref();
 		ECSEngine.view<SpawnEnemyInfo, PhysicComponent, sf::Sprite>().each([&ECSEngine](auto entity,
-			SpawnEnemyInfo & info, PhysicComponent& physicCom, sf::Sprite& sprite) {
+			auto&, PhysicComponent& physicCom, sf::Sprite& sprite) {
 
 			auto newEntity = ECSEngine.create();
 			ECSEngine.assign<HealthComponent>(newEntity, 50.0f);
@@ -36,6 +36,6 @@ public:
 				ECSEngine.assign<PhysicComponent>(newEntity, newEntity, bodyDef, fixtureDef);
 			}
 		});
-		ECSEngine.remove<SpawnEnemyInfo>();
+		ECSEngine.reset<SpawnEnemyInfo>();
 	}
 };

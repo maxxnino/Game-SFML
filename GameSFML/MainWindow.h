@@ -13,10 +13,7 @@ public:
 		window.setVerticalSyncEnabled(true);
 		//disable key auto repeat
 		window.setKeyRepeatEnabled(false);
-		Locator::Graphic::set(window);
-		Locator::Graphic::ref().MoveViewport(b2Vec2(0.0f, 0.0f));
-		Locator::Mouse::set();
-		Locator::Keyboard::set();
+		InitServiceLocator();
 		
 	}
 	bool Update()
@@ -29,6 +26,12 @@ public:
 		return false;
 	}	
 private:
+	void InitServiceLocator()
+	{
+		Locator::Graphic::set(window);
+		Locator::Mouse::set();
+		Locator::Keyboard::set();
+	}
 	void ProcessEvent()
 	{
 		sf::Event event;

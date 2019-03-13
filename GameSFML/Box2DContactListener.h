@@ -1,13 +1,10 @@
 #pragma once
-#include "Box2D/Box2D.h"
-#include "entt/entt.hpp"
+#include "PhysicComponent.h"
+#include "HealthComponent.h"
+#include "Locator.h"
 class Box2DContactListener final : public b2ContactListener
 {
 public:
-	Box2DContactListener(entt::DefaultRegistry& ECSEngine)
-		:
-		ECSEngine(ECSEngine)
-	{}
 	void BeginContact(b2Contact* contact) final
 	{
 		auto categoryBits1 = contact->GetFixtureA()->GetFilterData().categoryBits;
@@ -24,18 +21,16 @@ public:
 		{
 			if (categoryBits1 == CollisionFillter::ENEMY)
 			{
-				ECSEngine.get<HealthComponent>(entity1).curHealth += 10;
-				ECSEngine.get<HealthComponent>(entity2).curHealth -= 10;
+				Locator::ECS::ref().get<HealthComponent>(entity1).curHealth += 10;
+				Locator::ECS::ref().get<HealthComponent>(entity2).curHealth -= 10;
 				break;
 			}
-			ECSEngine.get<HealthComponent>(entity2).curHealth += 10;
-			ECSEngine.get<HealthComponent>(entity1).curHealth -= 10;
+			Locator::ECS::ref().get<HealthComponent>(entity2).curHealth += 10;
+			Locator::ECS::ref().get<HealthComponent>(entity1).curHealth -= 10;
 			break;
 		}
 		default:
 			break;
 		}
 	}
-private:
-	entt::DefaultRegistry& ECSEngine;
 };

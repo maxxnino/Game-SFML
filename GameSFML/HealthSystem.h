@@ -10,18 +10,17 @@ class HealthSystem
 public:
 	void Update()
 	{
-		auto& ECSEngine = Locator::ECS::ref();
-		ECSEngine.view<HealthComponent>().each([&ECSEngine](auto entity, HealthComponent &Health) {
+		Locator::ECS::ref().view<HealthComponent>().each([](auto entity, HealthComponent &Health) {
 			if (Health.curHealth <= 0)
 			{
-				ECSEngine.assign<DeathTag>(entity);
+				Locator::ECS::ref().assign<DeathTag>(entity);
 				return;
 			}
 
 			if (Health.curHealth >= 100)
 			{
-				ECSEngine.assign<DeathTag>(entity);
-				ECSEngine.assign<SpawnEnemyInfo>(entity);
+				Locator::ECS::ref().assign<DeathTag>(entity);
+				Locator::ECS::ref().assign<SpawnEnemyInfo>(entity);
 			}
 		});
 	}

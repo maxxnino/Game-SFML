@@ -124,6 +124,8 @@
     <ClCompile Include="Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationComponent.h" />
+    <ClInclude Include="AnimationSystem.h" />
     <ClInclude Include="Box2DContactListener.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Codex.h" />
@@ -143,6 +145,7 @@
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="MouseGui.h" />
     <ClInclude Include="MyBox2DListener.h" />
+    <ClInclude Include="MyFreeFunction.h" />
     <ClInclude Include="PhysicComponent.h" />
     <ClInclude Include="PhysicObject.h" />
     <ClInclude Include="QuerySelectorBox2D.h" />
