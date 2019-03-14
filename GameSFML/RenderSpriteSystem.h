@@ -1,12 +1,13 @@
 #pragma once
 #include "Locator.h"
 #include "PhysicComponent.h"
+#include "AnimationComponent.h"
+#include "GameplayTags.h"
 #include "entt/entt.hpp"
 #include "HashStringDataBase.h"
 #include <algorithm>
 #include <execution>
 #include <iostream>
-struct Viewable {};
 class RenderSpriteSystem
 {
 	struct CullingQuerySelector final : public b2QueryCallback
@@ -26,12 +27,19 @@ public:
 	void Draw()
 	{
 		Culling();
-		Locator::ECS::ref().view<Viewable, sf::Sprite, PhysicComponent>().each([](auto entity, auto&, sf::Sprite &sprite, PhysicComponent &physic) {
+		auto& ECS = Locator::ECS::ref();
+
+		ECS.view<Viewable, UpdateAnimation, sf::Sprite>().each([&ECS](auto entity, auto&, UpdateAnimation &updateAnimation, sf::Sprite &sprite) {
+			sprite.setTextureRect(ECS.get<AnimationShareComponent>(updateAnimation.shareEntity).frames[updateAnimation.iCurFrame]);
+		});
+
+		ECS.view<Viewable, PhysicComponent, sf::Sprite>().each([](auto entity, auto&, PhysicComponent &physic, sf::Sprite &sprite) {
 			sprite.setPosition(
 				Locator::Graphic::ref().WorldToScreenPos(physic.body->GetPosition())
 			);
 			Locator::Graphic::ref().DrawSprite(sprite);
 		});
+
 	}
 private:
 	void Culling()
@@ -57,6 +65,7 @@ private:
 		{
 			ECS.assign<Viewable>(e);
 		}
+		std::cout << "Object on screen: "<< cullingQueryCallback.foundBodies.size() << std::endl;
 	}
 private:
 	CullingQuerySelector cullingQueryCallback;

@@ -2,13 +2,18 @@
 #include "SFML/Graphics.hpp"
 struct AnimationComponent
 {
-	uint32_t shareEntity;
-	uint32_t iCurFrame = 0;
-	float curFrameTime = 0.0f;
 	float holdTime;
+	float curFrameTime = 0.0f;
+	uint32_t iCurFrame = 0;
 	uint32_t maxFrame;
+	uint32_t shareEntity;
 };
 struct AnimationShareComponent
 {
 	std::vector<sf::IntRect> frames;
+};
+struct UpdateAnimation
+{
+	uint32_t shareEntity;
+	uint32_t iCurFrame;
 };

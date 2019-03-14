@@ -21,6 +21,11 @@ public:
 
 			auto newEntity = ECSEngine.create();
 			ECSEngine.assign<HealthComponent>(newEntity, 50.0f);
+			if (ECSEngine.has<AnimationComponent>(entity))
+			{
+				ECSEngine.assign<AnimationComponent>(newEntity, ECSEngine.get<AnimationComponent>(entity));
+			}
+			
 			ECSEngine.assign<sf::Sprite>(newEntity, sprite);
 
 			{

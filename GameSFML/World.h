@@ -6,6 +6,7 @@
 #include "HealthSystem.h"
 #include "SpawnAndCleanDeathSystem.h"
 #include "AnimationSystem.h"
+#include "MoveCameraSystem.h"
 #include <random>
 class World
 {
@@ -14,16 +15,16 @@ public:
 	{
 		InitServiceLocator();
 
-		AddWall(b2Vec2(32.0f,-18.0f),b2Vec2(32.0f, 18.0f));
-		AddWall(b2Vec2(32.0f, 18.0f), b2Vec2(-32.0f, 18.0f));
-		AddWall(b2Vec2(-32.0f, 18.0f), b2Vec2(-32.0f, -18.0f));
-		AddWall(b2Vec2(-32.0f, -18.0f), b2Vec2(32.0f, -18.0f));
+		AddWall(b2Vec2(100.0f,-50.0f),b2Vec2(100.0f, 50.0f));
+		AddWall(b2Vec2(100.0f, 50.0f), b2Vec2(-100.0f, 50.0f));
+		AddWall(b2Vec2(-100.0f, 50.0f), b2Vec2(-100.0f, -50.0f));
+		AddWall(b2Vec2(-100.0f, -50.0f), b2Vec2(100.0f, -50.0f));
 
 		b2BodyDef bodyDef;
 		bodyDef.type = b2_dynamicBody;
-
+		const float size = 0.4f;
 		b2CircleShape circle;
-		circle.m_radius = 1.5f;
+		circle.m_radius = size;
 
 		b2FixtureDef fixtureDef;
 		fixtureDef.shape = &circle;
@@ -44,22 +45,38 @@ public:
 		fixtureDef1.restitution = 1.0f;
 
 		std::uniform_int_distribution<int> rangeID(0, 10);
-		std::uniform_real_distribution<float> rangeX(-30.0f, 30.0f);
-		std::uniform_real_distribution<float> rangeY(-15.0f, 15.0f);
+		std::uniform_real_distribution<float> rangeX(-98.0f, 98.f);
+		std::uniform_real_distribution<float> rangeY(-48.0f, 48.0f);
 
 		auto& rng = Locator::Random::ref();
 		auto& ECS = Locator::ECS::ref();
-
-		for (size_t i = 0; i < 100; i++)
+		auto shareEntity = ECS.create();
+		
+		{
+			//share animation
+			auto& ShareAnimation = ECS.assign<AnimationShareComponent>(shareEntity);
+			for (int i = 0; i < 8; i++)
+			{
+				ShareAnimation.frames.emplace_back(sf::IntRect(i * 30, 0, 30, 30));
+			}
+		}
+		
+		for (size_t i = 0; i < 5000; i++)
 		{
 			auto entity = ECS.create();
-			auto& sprite = ECS.assign<sf::Sprite>(entity);
+			{
+				//sprite
+				auto& sprite = ECS.assign<sf::Sprite>(entity);
+				sprite.setTexture(Codex::GetTexture(Database::TBullet01));
+				sprite.setOrigin(2.0f * size * Locator::Graphic::ref().scalePixel, 2.0f * size * Locator::Graphic::ref().scalePixel);
+			}
+			
 			ECS.assign<HealthComponent>(entity, 50.0f);
-			sprite.setTexture(Codex::GetTexture(Database::TEnemy01));
-			const auto size = sprite.getTexture()->getSize();
-			sprite.setOrigin((float)size.x / 2.0f, (float)size.y / 2.0f);
+			ECS.assign<AnimationComponent>(entity, 0.1f, 0.0f,0u,8u, shareEntity);
+			ECS.assign<UpdateAnimation>(entity, shareEntity, 0u);
+			
 			bodyDef.position = b2Vec2(rangeX(rng), rangeY(rng));
-			bodyDef.linearVelocity = b2Vec2(rangeX(rng), rangeX(rng));
+			bodyDef.linearVelocity = b2Vec2(0.5f * rangeY(rng), 0.5f * rangeY(rng));
 			if (rangeID(rng) > 5)
 			{
 				ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
@@ -67,6 +84,7 @@ public:
 			}
 			ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef1);
 		}
+		WarmUp();
 	}
 	void Update(float dt)
 	{
@@ -74,6 +92,7 @@ public:
 		healthSystem.Update();
 		spawnEnemySystem.Update();
 		cleanDeadSystem.Update();
+		moveCameraSystem.Update();
 		animationSystem.Update(dt);
 	}
 	void Draw()
@@ -107,10 +126,15 @@ private:
 
 		Locator::ECS::ref().assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
 	}
+	void WarmUp()
+	{
+		animationSystem.WarmUp();
+	}
 private:
 	RenderSpriteSystem renderSystem;
 	HealthSystem healthSystem;
 	SpawnEnemySystem spawnEnemySystem;
 	CleanDeadSystem cleanDeadSystem;
 	AnimationSystem animationSystem;
+	MoveCameraSystem moveCameraSystem;
 };

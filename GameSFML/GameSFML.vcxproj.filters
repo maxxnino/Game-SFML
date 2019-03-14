@@ -125,5 +125,8 @@
     <ClInclude Include="Box2DContactListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MoveCameraSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
