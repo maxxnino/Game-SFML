@@ -1,8 +1,8 @@
 #pragma once
 #include "ISystem.h"
 #include "Locator.h"
-#include "GameplayTags.h"
-#include "AnimationComponent.h"
+#include "Component/GameplayTags.h"
+#include "Component/AnimationComponent.h"
 class PlayerControllerSystem : public ISystem
 {
 public:

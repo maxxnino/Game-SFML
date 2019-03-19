@@ -1,11 +1,11 @@
 #pragma once
 #include "ISystem.h"
 #include "Graphics.h"
-#include "HealthComponent.h"
-#include "PhysicComponent.h"
+#include "Component/HealthComponent.h"
+#include "Component/PhysicComponent.h"
 #include "Locator.h"
 #include "HashStringDataBase.h"
-#include "GameplayTags.h"
+#include "Component/GameplayTags.h"
 class HealthSystem : public ISystem
 {
 public:

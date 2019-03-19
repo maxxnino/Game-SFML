@@ -1,7 +1,7 @@
 #pragma once
 #include "ISystem.h"
 #include "Locator.h"
-#include "AnimationComponent.h"
+#include "Component/AnimationComponent.h"
 class AnimationSystem : public ISystem
 {
 public:

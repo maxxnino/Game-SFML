@@ -1,6 +1,6 @@
 #pragma once
 #include "ISystem.h"
-#include "GameplayTags.h"
+#include "Component/GameplayTags.h"
 #include "Locator.h"
 class CleanDeadSystem : public ISystem
 {

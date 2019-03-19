@@ -1,12 +1,12 @@
 #pragma once
 #include "HashStringDataBase.h"
 #include "Box2DContactListener.h"
-#include "RenderSpriteSystem.h"
-#include "HealthSystem.h"
-#include "SpawnAndCleanDeathSystem.h"
-#include "AnimationSystem.h"
-#include "MoveCameraSystem.h"
-#include "PlayerControllerSystem.h"
+#include "System/RenderSpriteSystem.h"
+#include "System/HealthSystem.h"
+#include "System/SpawnAndCleanDeathSystem.h"
+#include "System/AnimationSystem.h"
+#include "System/MoveCameraSystem.h"
+#include "System/PlayerControllerSystem.h"
 #include <random>
 class World
 {

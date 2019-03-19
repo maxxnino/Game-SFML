@@ -1,8 +1,8 @@
 #pragma once
 #include "Locator.h"
-#include "PhysicComponent.h"
-#include "AnimationComponent.h"
-#include "GameplayTags.h"
+#include "Component/PhysicComponent.h"
+#include "Component/AnimationComponent.h"
+#include "Component/GameplayTags.h"
 #include "entt/entt.hpp"
 #include "HashStringDataBase.h"
 #include <algorithm>

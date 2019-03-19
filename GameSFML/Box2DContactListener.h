@@ -1,6 +1,6 @@
 #pragma once
-#include "PhysicComponent.h"
-#include "HealthComponent.h"
+#include "Component/PhysicComponent.h"
+#include "Component/HealthComponent.h"
 #include "Locator.h"
 class Box2DContactListener final : public b2ContactListener
 {

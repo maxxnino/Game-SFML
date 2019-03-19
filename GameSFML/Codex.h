@@ -2,7 +2,7 @@
 #include "SFML/Graphics/Texture.hpp"
 #include <entt/resource/cache.hpp>
 #include "entt/core/hashed_string.hpp"
-#include "AnimationComponent.h"
+#include "Component/AnimationComponent.h"
 #include "json.hpp"
 #include <fstream>
 #include <sstream>
