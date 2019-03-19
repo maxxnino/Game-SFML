@@ -136,6 +136,7 @@
     <ClInclude Include="HashStringDataBase.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HealthSystem.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="ListenerBox2DGUI.h" />
     <ClInclude Include="Locator.h" />
@@ -149,6 +150,7 @@
     <ClInclude Include="MyFreeFunction.h" />
     <ClInclude Include="PhysicComponent.h" />
     <ClInclude Include="PhysicObject.h" />
+    <ClInclude Include="PlayerControllerSystem.h" />
     <ClInclude Include="QuerySelectorBox2D.h" />
     <ClInclude Include="RenderSpriteSystem.h" />
     <ClInclude Include="SpawnAndCleanDeathSystem.h" />

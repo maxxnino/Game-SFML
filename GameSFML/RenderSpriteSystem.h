@@ -28,9 +28,8 @@ public:
 	{
 		Culling();
 		auto& ECS = Locator::ECS::ref();
-
-		ECS.view<Viewable, UpdateAnimation, sf::Sprite>().each([&ECS](auto entity, auto&, UpdateAnimation &updateAnimation, sf::Sprite &sprite) {
-			sprite.setTextureRect(ECS.get<AnimationShareComponent>(updateAnimation.shareEntity).frames[updateAnimation.iCurFrame]);
+		ECS.view<Viewable, AnimationComponent, sf::Sprite>().each([&ECS](auto entity, auto&, AnimationComponent& animCom,sf::Sprite &sprite) {
+			sprite.setTextureRect(animCom.frames->at(animCom.iCurFrame));
 		});
 
 		ECS.view<Viewable, PhysicComponent, sf::Sprite>().each([](auto entity, auto&, PhysicComponent &physic, sf::Sprite &sprite) {

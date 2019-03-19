@@ -1,19 +1,23 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include <vector>
+struct FramesInfo
+{
+	FramesInfo(float holdFrame) : holdFrame(holdFrame) {}
+	std::vector<sf::IntRect> frames;
+	const float holdFrame;
+};
 struct AnimationComponent
 {
+	AnimationComponent(const FramesInfo& frameInfo)
+		:
+		holdTime(frameInfo.holdFrame),
+		maxFrame((uint32_t)frameInfo.frames.size()),
+		frames(&(frameInfo.frames))
+	{}
 	float holdTime;
 	float curFrameTime = 0.0f;
 	uint32_t iCurFrame = 0;
 	uint32_t maxFrame;
-	uint32_t shareEntity;
-};
-struct AnimationShareComponent
-{
-	std::vector<sf::IntRect> frames;
-};
-struct UpdateAnimation
-{
-	uint32_t shareEntity;
-	uint32_t iCurFrame;
+	const std::vector<sf::IntRect>* frames = nullptr;
 };

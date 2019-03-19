@@ -1,0 +1,20 @@
+{
+    "PlayerDown": {
+        "startY": 0
+    },
+    "filePath": "Data\\Images\\Player_12_4_95_159.png",
+    "heigh": 159,
+    "holdFrame": 6,
+    "PlayerLeft": {
+        "startY": 159
+    },
+    "maxFrame": 12,
+    "PlayerRight": {
+        "startY": 318
+    },
+    "startX": 0,
+    "PlayerUp": {
+        "startY": 477
+    },
+    "width": 95
+}

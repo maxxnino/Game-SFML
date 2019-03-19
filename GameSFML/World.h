@@ -1,5 +1,4 @@
 #pragma once
-#include "Codex.h"
 #include "HashStringDataBase.h"
 #include "Box2DContactListener.h"
 #include "RenderSpriteSystem.h"
@@ -22,7 +21,7 @@ public:
 
 		b2BodyDef bodyDef;
 		bodyDef.type = b2_dynamicBody;
-		const float size = 0.4f;
+		const float size = 3.0f;
 		b2CircleShape circle;
 		circle.m_radius = size;
 
@@ -52,28 +51,18 @@ public:
 		auto& ECS = Locator::ECS::ref();
 		auto shareEntity = ECS.create();
 		
-		{
-			//share animation
-			auto& ShareAnimation = ECS.assign<AnimationShareComponent>(shareEntity);
-			for (int i = 0; i < 8; i++)
-			{
-				ShareAnimation.frames.emplace_back(sf::IntRect(i * 30, 0, 30, 30));
-			}
-		}
-		
-		for (size_t i = 0; i < 5000; i++)
+		for (size_t i = 0; i < 500; i++)
 		{
 			auto entity = ECS.create();
 			{
 				//sprite
 				auto& sprite = ECS.assign<sf::Sprite>(entity);
-				sprite.setTexture(Codex::GetTexture(Database::TBullet01));
+				sprite.setTexture(Locator::Codex::ref().GetTexture(Database::TPlayer01));
 				sprite.setOrigin(2.0f * size * Locator::Graphic::ref().scalePixel, 2.0f * size * Locator::Graphic::ref().scalePixel);
 			}
 			
 			ECS.assign<HealthComponent>(entity, 50.0f);
-			ECS.assign<AnimationComponent>(entity, 0.1f, 0.0f,0u,8u, shareEntity);
-			ECS.assign<UpdateAnimation>(entity, shareEntity, 0u);
+			ECS.assign<AnimationComponent>(entity, Locator::Codex::ref().GetFramesRect("PlayerDown"_hs));
 			
 			bodyDef.position = b2Vec2(rangeX(rng), rangeY(rng));
 			bodyDef.linearVelocity = b2Vec2(0.5f * rangeY(rng), 0.5f * rangeY(rng));
@@ -110,6 +99,8 @@ private:
 		Locator::Physic::ref().SetContactListener(&mrListener);
 
 		Locator::ECS::set();
+
+		Locator::Codex::set();
 	}
 	void AddWall(b2Vec2 p1, b2Vec2 p2)
 	{
@@ -128,7 +119,7 @@ private:
 	}
 	void WarmUp()
 	{
-		animationSystem.WarmUp();
+		
 	}
 private:
 	RenderSpriteSystem renderSystem;

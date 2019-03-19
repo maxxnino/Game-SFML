@@ -14,4 +14,5 @@ struct Locator
 	using Random = entt::ServiceLocator<std::mt19937>;
 	using Mouse = entt::ServiceLocator<Mouse>;
 	using Keyboard = entt::ServiceLocator<Keyboard>;
+	using Codex = entt::ServiceLocator<Codex>;
 };
