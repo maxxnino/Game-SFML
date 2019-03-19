@@ -13,6 +13,9 @@ public:
 class SpawnEnemySystem
 {
 public:
+	/**
+	* Todo: add when spawn animationComponent...
+	*/
 	void Update()
 	{
 		auto& ECSEngine = Locator::ECS::ref();

@@ -6,6 +6,7 @@
 #include "SpawnAndCleanDeathSystem.h"
 #include "AnimationSystem.h"
 #include "MoveCameraSystem.h"
+#include "PlayerControllerSystem.h"
 #include <random>
 class World
 {
@@ -60,10 +61,11 @@ public:
 				sprite.setTexture(Locator::Codex::ref().GetTexture(Database::TPlayer01));
 				sprite.setOrigin(2.0f * size * Locator::Graphic::ref().scalePixel, 2.0f * size * Locator::Graphic::ref().scalePixel);
 			}
-			
 			ECS.assign<HealthComponent>(entity, 50.0f);
 			ECS.assign<AnimationComponent>(entity, Locator::Codex::ref().GetFramesRect("PlayerDown"_hs));
-			
+			ECS.assign<PlayerController>(entity);
+			ECS.assign<AnimationState>(entity) = AnimationState::WALKING;
+			ECS.assign<Direction>(entity) = Direction::DOWN;
 			bodyDef.position = b2Vec2(rangeX(rng), rangeY(rng));
 			bodyDef.linearVelocity = b2Vec2(0.5f * rangeY(rng), 0.5f * rangeY(rng));
 			if (rangeID(rng) > 5)
@@ -82,6 +84,7 @@ public:
 		spawnEnemySystem.Update();
 		cleanDeadSystem.Update();
 		moveCameraSystem.Update();
+		playerControllerSystem.Update();
 		animationSystem.Update(dt);
 	}
 	void Draw()
@@ -128,4 +131,5 @@ private:
 	CleanDeadSystem cleanDeadSystem;
 	AnimationSystem animationSystem;
 	MoveCameraSystem moveCameraSystem;
+	PlayerControllerSystem playerControllerSystem;
 };

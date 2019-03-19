@@ -25,39 +25,82 @@ public:
 		{
 			dir.y = 1;
 		}
-		Locator::ECS::ref().view<PlayerController>().each([&dir](auto entity, auto&) {
-			auto prevState = state.state;
+		Locator::ECS::ref().view<PlayerController, AnimationState>().each([&dir](auto entity, auto&, AnimationState& animState) {
 			if (dir == sf::Vector2i(0, 0))
 			{
-				state.state = AnimationState::State::Standing;
-				if (state.state == prevState) return;
+				if (animState == AnimationState::STANDING) return;
 
+				animState = AnimationState::STANDING;
 				Locator::ECS::ref().assign<ChangeState>(entity);
 				return;
 			}
-			state.state = AnimationState::State::Walking;
 
-			auto prevDir = state.direction;
+			if (animState == AnimationState::WALKING) return;
+
+			animState = AnimationState::WALKING;
+			Locator::ECS::ref().assign<ChangeState>(entity);
+		});
+
+		Locator::ECS::ref().view<PlayerController, Direction>().each([&dir](auto entity, auto&, Direction& direction) {
 			if (dir.x < 0)
 			{
-				state.direction = AnimationState::Direction::Left;
+				if (direction == Direction::LEFT) return;
+
+				direction = Direction::LEFT;
+				Locator::ECS::ref().assign<ChangeDirection>(entity);
+				return;
 			}
-			else
+			
+			if (dir.x > 0)
 			{
-				state.direction = AnimationState::Direction::Right;
+				if (direction == Direction::RIGHT) return;
+
+				direction = Direction::RIGHT;
+				Locator::ECS::ref().assign<ChangeDirection>(entity);
+				return;
 			}
+
 			if (dir.y < 0)
 			{
-				state.direction = AnimationState::Direction::Down;
+				if (direction == Direction::DOWN) return;
+
+				direction = Direction::DOWN;
+				Locator::ECS::ref().assign<ChangeDirection>(entity);
+				return;
 			}
-			else
+
+			if (dir.y > 0)
 			{
-				state.direction = AnimationState::Direction::Up;
+				if (direction == Direction::UP) return;
+
+				direction = Direction::UP;
+				Locator::ECS::ref().assign<ChangeDirection>(entity);
+				return;
 			}
-
-			if (prevDir == state.direction) return;
-
-			Locator::ECS::ref().assign<ChangeState>(entity);
 		});
 	}
 };
+//void aaaa()
+//{
+//	auto prevDir = state.direction;
+//	if (dir.x < 0)
+//	{
+//		state.direction = AnimationState::Direction::Left;
+//	}
+//	else
+//	{
+//		state.direction = AnimationState::Direction::Right;
+//	}
+//	if (dir.y < 0)
+//	{
+//		state.direction = AnimationState::Direction::Down;
+//	}
+//	else
+//	{
+//		state.direction = AnimationState::Direction::Up;
+//	}
+//
+//	if (prevDir == state.direction) return;
+//
+//	Locator::ECS::ref().assign<ChangeState>(entity);
+//}

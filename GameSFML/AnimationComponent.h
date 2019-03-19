@@ -21,3 +21,18 @@ struct AnimationComponent
 	uint32_t maxFrame;
 	const std::vector<sf::IntRect>* frames = nullptr;
 };
+
+struct ChangeState {};
+struct ChangeDirection {};
+enum AnimationState
+{
+	WALKING,
+	STANDING
+};
+enum Direction
+{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
+};
