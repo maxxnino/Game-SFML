@@ -1,9 +1,10 @@
 #pragma once
+#include "ISystem.h"
 #include "Locator.h"
-class MoveCameraSystem
+class MoveCameraSystem : public ISystem
 {
 public:
-	void Update()
+	void Update(entt::DefaultRegistry& ECS, float dt) final
 	{
 		auto& mouse = Locator::Mouse::ref();
 		while (!mouse.IsEmpty())

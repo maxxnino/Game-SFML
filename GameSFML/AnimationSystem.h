@@ -1,12 +1,12 @@
 #pragma once
+#include "ISystem.h"
 #include "Locator.h"
 #include "AnimationComponent.h"
-class AnimationSystem
+class AnimationSystem : public ISystem
 {
 public:
-	void Update(float dt)
+	void Update(entt::DefaultRegistry& ECS, float dt) final
 	{
-		auto& ECS = Locator::ECS::ref();
 		ECS.view<ChangeDirection, Direction, AnimationComponent>().each([](auto entity, auto&, Direction& direction, AnimationComponent& animation) {
 			switch (direction)
 			{

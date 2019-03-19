@@ -1,11 +1,12 @@
 #pragma once
+#include "ISystem.h"
 #include "Locator.h"
 #include "GameplayTags.h"
 #include "AnimationComponent.h"
-class PlayerControllerSystem
+class PlayerControllerSystem : public ISystem
 {
 public:
-	void Update()
+	void Update(entt::DefaultRegistry& ECS, float dt) final
 	{
 		auto& kbd = Locator::Keyboard::ref();
 		sf::Vector2i dir{ 0,0 };
@@ -25,29 +26,29 @@ public:
 		{
 			dir.y = 1;
 		}
-		Locator::ECS::ref().view<PlayerController, AnimationState>().each([&dir](auto entity, auto&, AnimationState& animState) {
+		ECS.view<PlayerController, AnimationState>().each([&dir,&ECS](auto entity, auto&, AnimationState& animState) {
 			if (dir == sf::Vector2i(0, 0))
 			{
 				if (animState == AnimationState::STANDING) return;
 
 				animState = AnimationState::STANDING;
-				Locator::ECS::ref().assign<ChangeState>(entity);
+				ECS.assign<ChangeState>(entity);
 				return;
 			}
 
 			if (animState == AnimationState::WALKING) return;
 
 			animState = AnimationState::WALKING;
-			Locator::ECS::ref().assign<ChangeState>(entity);
+			ECS.assign<ChangeState>(entity);
 		});
 
-		Locator::ECS::ref().view<PlayerController, Direction>().each([&dir](auto entity, auto&, Direction& direction) {
+		ECS.view<PlayerController, Direction>().each([&dir,&ECS](auto entity, auto&, Direction& direction) {
 			if (dir.x < 0)
 			{
 				if (direction == Direction::LEFT) return;
 
 				direction = Direction::LEFT;
-				Locator::ECS::ref().assign<ChangeDirection>(entity);
+				ECS.assign<ChangeDirection>(entity);
 				return;
 			}
 			
@@ -56,7 +57,7 @@ public:
 				if (direction == Direction::RIGHT) return;
 
 				direction = Direction::RIGHT;
-				Locator::ECS::ref().assign<ChangeDirection>(entity);
+				ECS.assign<ChangeDirection>(entity);
 				return;
 			}
 
@@ -65,7 +66,7 @@ public:
 				if (direction == Direction::DOWN) return;
 
 				direction = Direction::DOWN;
-				Locator::ECS::ref().assign<ChangeDirection>(entity);
+				ECS.assign<ChangeDirection>(entity);
 				return;
 			}
 
@@ -74,7 +75,7 @@ public:
 				if (direction == Direction::UP) return;
 
 				direction = Direction::UP;
-				Locator::ECS::ref().assign<ChangeDirection>(entity);
+				ECS.assign<ChangeDirection>(entity);
 				return;
 			}
 		});

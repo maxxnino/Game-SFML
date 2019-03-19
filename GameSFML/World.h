@@ -14,7 +14,7 @@ public:
 	World()
 	{
 		InitServiceLocator();
-
+		InitSystem();
 		AddWall(b2Vec2(100.0f,-50.0f),b2Vec2(100.0f, 50.0f));
 		AddWall(b2Vec2(100.0f, 50.0f), b2Vec2(-100.0f, 50.0f));
 		AddWall(b2Vec2(-100.0f, 50.0f), b2Vec2(-100.0f, -50.0f));
@@ -80,12 +80,12 @@ public:
 	void Update(float dt)
 	{
 		Locator::Physic::ref().Step(dt, 4, 2);
-		healthSystem.Update();
-		spawnEnemySystem.Update();
-		cleanDeadSystem.Update();
-		moveCameraSystem.Update();
-		playerControllerSystem.Update();
-		animationSystem.Update(dt);
+		if (Locator::ECS::empty()) return;
+		
+		for (auto& sys : systems)
+		{
+			sys->Update(Locator::ECS::ref(), dt);
+		}
 	}
 	void Draw()
 	{
@@ -104,6 +104,15 @@ private:
 		Locator::ECS::set();
 
 		Locator::Codex::set();
+	}
+	void InitSystem()
+	{
+		systems.emplace_back(std::make_unique<HealthSystem>());
+		systems.emplace_back(std::make_unique<SpawnEnemySystem>());
+		systems.emplace_back(std::make_unique<CleanDeadSystem>());
+		systems.emplace_back(std::make_unique<MoveCameraSystem>());
+		systems.emplace_back(std::make_unique<PlayerControllerSystem>());
+		systems.emplace_back(std::make_unique<AnimationSystem>());
 	}
 	void AddWall(b2Vec2 p1, b2Vec2 p2)
 	{
@@ -125,11 +134,6 @@ private:
 		
 	}
 private:
+	std::vector<std::unique_ptr<ISystem>> systems;
 	RenderSpriteSystem renderSystem;
-	HealthSystem healthSystem;
-	SpawnEnemySystem spawnEnemySystem;
-	CleanDeadSystem cleanDeadSystem;
-	AnimationSystem animationSystem;
-	MoveCameraSystem moveCameraSystem;
-	PlayerControllerSystem playerControllerSystem;
 };

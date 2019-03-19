@@ -1,35 +1,34 @@
 #pragma once
+#include "ISystem.h"
 #include "GameplayTags.h"
-#include "entt/entt.hpp"
 #include "Locator.h"
-class CleanDeadSystem
+class CleanDeadSystem : public ISystem
 {
 public:
-	void Update()
+	void Update(entt::DefaultRegistry& ECS, float dt) final
 	{
-		Locator::ECS::ref().destroy<DeathTag>();
+		ECS.destroy<DeathTag>();
 	}
 };
-class SpawnEnemySystem
+class SpawnEnemySystem : public ISystem
 {
 public:
 	/**
 	* Todo: add when spawn animationComponent...
 	*/
-	void Update()
+	void Update(entt::DefaultRegistry& ECS, float dt) final
 	{
-		auto& ECSEngine = Locator::ECS::ref();
-		ECSEngine.view<SpawnEnemyInfo, PhysicComponent, sf::Sprite>().each([&ECSEngine](auto entity,
+		ECS.view<SpawnEnemyInfo, PhysicComponent, sf::Sprite>().each([&ECS](auto entity,
 			auto&, PhysicComponent& physicCom, sf::Sprite& sprite) {
 
-			auto newEntity = ECSEngine.create();
-			ECSEngine.assign<HealthComponent>(newEntity, 50.0f);
-			if (ECSEngine.has<AnimationComponent>(entity))
+			auto newEntity = ECS.create();
+			ECS.assign<HealthComponent>(newEntity, 50.0f);
+			if (ECS.has<AnimationComponent>(entity))
 			{
-				ECSEngine.assign<AnimationComponent>(newEntity, ECSEngine.get<AnimationComponent>(entity));
+				ECS.assign<AnimationComponent>(newEntity, ECS.get<AnimationComponent>(entity));
 			}
 			
-			ECSEngine.assign<sf::Sprite>(newEntity, sprite);
+			ECS.assign<sf::Sprite>(newEntity, sprite);
 
 			{
 				b2BodyDef bodyDef;
@@ -41,9 +40,9 @@ public:
 				fixtureDef.density = physicCom.body->GetFixtureList()->GetDensity();
 				fixtureDef.friction = physicCom.body->GetFixtureList()->GetFriction();
 				fixtureDef.restitution = physicCom.body->GetFixtureList()->GetRestitution();
-				ECSEngine.assign<PhysicComponent>(newEntity, newEntity, bodyDef, fixtureDef);
+				ECS.assign<PhysicComponent>(newEntity, newEntity, bodyDef, fixtureDef);
 			}
 		});
-		ECSEngine.reset<SpawnEnemyInfo>();
+		ECS.reset<SpawnEnemyInfo>();
 	}
 };

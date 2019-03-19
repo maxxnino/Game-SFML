@@ -1,26 +1,27 @@
 #pragma once
+#include "ISystem.h"
 #include "Graphics.h"
 #include "HealthComponent.h"
 #include "PhysicComponent.h"
 #include "Locator.h"
 #include "HashStringDataBase.h"
 #include "GameplayTags.h"
-class HealthSystem
+class HealthSystem : public ISystem
 {
 public:
-	void Update()
+	void Update(entt::DefaultRegistry& ECS, float dt) final
 	{
-		Locator::ECS::ref().view<HealthComponent>().each([](auto entity, HealthComponent &Health) {
+		ECS.view<HealthComponent>().each([&ECS](auto entity, HealthComponent &Health) {
 			if (Health.curHealth <= 0)
 			{
-				Locator::ECS::ref().assign<DeathTag>(entity);
+				ECS.assign<DeathTag>(entity);
 				return;
 			}
 
 			if (Health.curHealth >= 100)
 			{
-				Locator::ECS::ref().assign<DeathTag>(entity);
-				Locator::ECS::ref().assign<SpawnEnemyInfo>(entity);
+				ECS.assign<DeathTag>(entity);
+				ECS.assign<SpawnEnemyInfo>(entity);
 			}
 		});
 	}

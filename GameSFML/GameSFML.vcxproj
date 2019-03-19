@@ -136,6 +136,7 @@
     <ClInclude Include="HashStringDataBase.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HealthSystem.h" />
+    <ClInclude Include="ISystem.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="ListenerBox2DGUI.h" />
