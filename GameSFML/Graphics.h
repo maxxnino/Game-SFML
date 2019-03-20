@@ -17,6 +17,10 @@ public:
 	{
 		window.draw(vertexArray, &texture);
 	}
+	void Draw(const sf::Drawable& drawable) const
+	{
+		window.draw(drawable);
+	}
 	void DrawSprite(sf::Sprite& sprite) const
 	{
 		window.draw(sprite);
@@ -43,6 +47,12 @@ public:
 		vertices[3] = sf::Vector2f(draw02.x, draw01.y);
 		window.draw(vertices);*/
 		return { top, bottom };
+	}
+	std::pair<sf::Vector2f, sf::Vector2f> GetViewportScreen()
+	{
+		const auto center = window.getView().getCenter();
+		halfSize = 0.5f * window.getView().getSize();
+		return { center - halfSize , center + halfSize };
 	}
 	void MoveViewport(const b2Vec2& newWorldPos)
 	{

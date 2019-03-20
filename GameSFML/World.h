@@ -2,6 +2,7 @@
 #include "HashStringDataBase.h"
 #include "Box2DContactListener.h"
 #include "System/RenderSpriteSystem.h"
+#include "System/RenderGridSystem.h"
 #include "System/HealthSystem.h"
 #include "System/SpawnAndCleanDeathSystem.h"
 #include "System/AnimationSystem.h"
@@ -89,6 +90,7 @@ public:
 	}
 	void Draw()
 	{
+		renderGridSystem.Draw();
 		renderSystem.Draw();
 	}
 	
@@ -104,6 +106,9 @@ private:
 		Locator::ECS::set();
 
 		Locator::Codex::set();
+
+		Locator::Grid::set();
+		Locator::Grid::ref().LoadFromFile(Locator::Codex::ref());
 	}
 	void InitSystem()
 	{
@@ -136,4 +141,5 @@ private:
 private:
 	std::vector<std::unique_ptr<ISystem>> systems;
 	RenderSpriteSystem renderSystem;
+	RenderGridSystem renderGridSystem;
 };

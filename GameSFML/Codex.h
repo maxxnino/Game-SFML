@@ -41,7 +41,11 @@ struct FrameLoader final : entt::ResourceLoader<FrameLoader, FramesInfo> {
 	}
 };
 
-
+struct GridResource
+{
+	int tileSize = 0, gridW = 0, gridH = 0;
+	const sf::Texture* tileTexture = nullptr;
+};
 class Codex
 {
 public:
@@ -62,6 +66,21 @@ public:
 	const FramesInfo& GetFramesRect(entt::HashedString filename)
 	{
 		return frameCache.handle(filename).get();
+	}
+	const GridResource GetGridResource(entt::HashedString filename)
+	{
+		const nlohmann::json Json = GetJson(filename);
+		//load texture
+		std::string filePath = Json["filePath"].get<std::string>();
+		entt::HashedString texturePath{ filePath.c_str() };
+		textureCache.load<TextureLoader>(texturePath, texturePath);
+
+		return GridResource{
+			Json["tileSize"].get<int>(),
+			Json["gridW"].get<int>(),
+			Json["gridH"].get<int>(),
+			&GetTexture(texturePath)
+		};
 	}
 private:
 	void Init()
@@ -100,6 +119,14 @@ private:
 				frameCache.load<FrameLoader>(identifier, def);
 			}
 		}
+	}
+	const nlohmann::json GetJson(entt::HashedString filename) const
+	{
+		std::ifstream input(static_cast<const char *>(filename));
+		nlohmann::json Json;
+		input >> Json;
+		input.close();
+		return Json;
 	}
 private:
 	entt::ResourceCache<sf::Texture> textureCache;

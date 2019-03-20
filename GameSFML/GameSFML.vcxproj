@@ -133,6 +133,7 @@
     <ClInclude Include="Component\HealthComponent.h" />
     <ClInclude Include="Component\PhysicComponent.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Gird.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="HashStringDataBase.h" />
     <ClInclude Include="ISystem.h" />
@@ -153,6 +154,7 @@
     <ClInclude Include="System\HealthSystem.h" />
     <ClInclude Include="System\MoveCameraSystem.h" />
     <ClInclude Include="System\PlayerControllerSystem.h" />
+    <ClInclude Include="System\RenderGridSystem.h" />
     <ClInclude Include="System\RenderSpriteSystem.h" />
     <ClInclude Include="System\SpawnAndCleanDeathSystem.h" />
     <ClInclude Include="World.h" />

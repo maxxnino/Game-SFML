@@ -5,6 +5,7 @@
 #include "Graphics.h"
 #include "Keyboard.h"
 #include "Mouse.h"
+#include "Gird.h"
 #include <random>
 struct Locator
 {
@@ -15,4 +16,5 @@ struct Locator
 	using Mouse = entt::ServiceLocator<Mouse>;
 	using Keyboard = entt::ServiceLocator<Keyboard>;
 	using Codex = entt::ServiceLocator<Codex>;
+	using Grid = entt::ServiceLocator<Grid>;
 };

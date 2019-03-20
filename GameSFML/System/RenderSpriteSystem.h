@@ -64,7 +64,7 @@ private:
 		{
 			ECS.assign<Viewable>(e);
 		}
-		std::cout << "Object on screen: "<< cullingQueryCallback.foundBodies.size() << std::endl;
+		//std::cout << "Object on screen: "<< cullingQueryCallback.foundBodies.size() << std::endl;
 	}
 private:
 	CullingQuerySelector cullingQueryCallback;
