@@ -10,41 +10,59 @@ public:
 	template<typename Loader>
 	void LoadFromFile(Loader& loader)
 	{
-		const GridResource resource = loader.GetGridResource(Database::GridMap);
+		const GridResource& resource = loader.GetGridResource(Database::GridMap);
 		if (resource.tileSize <= 0 || resource.gridW <= 0 || resource.gridH <= 0 || resource.tileTexture == nullptr)
 		{
 			assert(false);
 			return;
 		}
+		//grid
 		tileSize = resource.tileSize;
 		gridW = resource.gridW;
 		gridH = resource.gridH;
+
+		//texture
 		tileTexture = resource.tileTexture;
+		const int textureTileW = (int)tileTexture->getSize().x / tileSize;
+		const int textureTileH = (int)tileTexture->getSize().y / tileSize;
 
-		// resize the vertex array to fit the level size
-		m_vertices.setPrimitiveType(sf::Quads);
-		drawGid.setPrimitiveType(sf::Quads);
-		m_vertices.resize(gridW * gridH * 4);
-		
-		for (int i = 0; i < gridW; ++i)
-			for (int j = 0; j < gridH; ++j)
+		layers = &resource.layers;
+		for (auto& layer : resource.layers)
+		{
+			staticLayers.emplace_back(sf::VertexArray(sf::Quads, gridW * gridH * 4));
+			drawLayers.emplace_back(sf::VertexArray(sf::Quads));
+
+			for (int i = 0; i < gridW; ++i)
 			{
+				for (int j = 0; j < gridH; ++j)
+				{
+					//get texture position
+					const unsigned int textureLookup = layer[i + j * gridW];
+					if (textureLookup == 0)
+					{
+						continue;
+					}
 
-				// get a pointer to the current tile's quad
-				sf::Vertex* quad = &m_vertices[(i + j * gridW) * 4];
+					const int textureX = (textureLookup % textureTileW) == 0 ? textureTileW : textureLookup % textureTileW;
+					const int textureY = textureLookup / textureTileW;
+					// get a pointer to the current tile's quad
+					sf::Vertex* quad = &staticLayers.back()[(i + j * gridW) * 4];
 
-				// define its 4 corners
-				quad[0].position = sf::Vector2f(float(i * tileSize), float(j * tileSize));
-				quad[1].position = sf::Vector2f(float((i + 1) * tileSize), float(j * tileSize));
-				quad[2].position = sf::Vector2f(float((i + 1) * tileSize), float((j + 1) * tileSize));
-				quad[3].position = sf::Vector2f(float(i * tileSize), float((j + 1) * tileSize));
+					// define its 4 corners
+					quad[0].position = sf::Vector2f(float(i * tileSize), float(j * tileSize));
+					quad[1].position = sf::Vector2f(float((i + 1) * tileSize), float(j * tileSize));
+					quad[2].position = sf::Vector2f(float((i + 1) * tileSize), float((j + 1) * tileSize));
+					quad[3].position = sf::Vector2f(float(i * tileSize), float((j + 1) * tileSize));
 
-				// define its 4 texture coordinates
-				quad[0].texCoords = sf::Vector2f(0.0f, 0.0f);
-				quad[1].texCoords = sf::Vector2f((float)tileSize, 0.0f);
-				quad[2].texCoords = sf::Vector2f((float)tileSize, (float)tileSize);
-				quad[3].texCoords = sf::Vector2f(0.0f, (float)tileSize);
+					// define its 4 texture coordinates
+					quad[0].texCoords = sf::Vector2f(float((textureX - 1) * tileSize), float(textureY * tileSize));
+					quad[1].texCoords = sf::Vector2f(float(textureX * tileSize), float(textureY * tileSize));
+					quad[2].texCoords = sf::Vector2f(float(textureX * tileSize), float((textureY + 1) * tileSize));
+					quad[3].texCoords = sf::Vector2f(float((textureX - 1) * tileSize), float((textureY + 1) * tileSize));
+				}
 			}
+				
+		}
 	}
 	void Culling(sf::Vector2f topLeft, sf::Vector2f rightBottom)
 	{
@@ -66,23 +84,36 @@ public:
 		bottom = std::max(0, std::min(bottom, gridH));
 
 		//set texture and draw visible chunks:
-		drawGid.resize((right - left) * (bottom - top) * 4);
-		int iDraw = 0;
-		for (int i = left; i < right; ++i)
+		size_t totalVertercies = 0;
+		size_t totalTiles = 0;
+		for (int nl = 0; nl < staticLayers.size(); nl++)
 		{
-			for (int j = top; j < bottom; ++j)
+			drawLayers[nl].clear();
+			int iDraw = 0;
+			for (int i = left; i < right; ++i)
 			{
-				const int cur = (i + j * gridW) * 4;
+				for (int j = top; j < bottom; ++j)
+				{
+					//skip if current tile in texture map is 0
+					if ((*layers)[nl][i + j * gridW] == 0)
+					{
+						iDraw += 4;
+						continue;
+					}
+					const int cur = (i + j * gridW) * 4;
 
-				// define its 4 corners
-				drawGid[iDraw] = m_vertices[cur];
-				drawGid[iDraw + 1] = m_vertices[cur + 1];
-				drawGid[iDraw + 2] = m_vertices[cur + 2];
-				drawGid[iDraw + 3] = m_vertices[cur + 3];
-				iDraw += 4;
+					// define its 4 corners
+					drawLayers[nl].append(staticLayers[nl][cur]);
+					drawLayers[nl].append(staticLayers[nl][cur + 1]);
+					drawLayers[nl].append(staticLayers[nl][cur + 2]);
+					drawLayers[nl].append(staticLayers[nl][cur + 3]);
+					iDraw += 4;
+				}
 			}
+			totalVertercies += drawLayers[nl].getVertexCount();
 		}
-		std::cout << "Vertices: " << drawGid.getVertexCount() << ", Tiles: " << (right - left) * (bottom - top) << std::endl;
+		
+		std::cout << "Vertices: " << totalVertercies << ", Tiles: " << totalVertercies / 4 << std::endl;
 	}
 private:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const final
@@ -94,11 +125,16 @@ private:
 		}
 		states.texture = tileTexture;
 		states.transform *= getTransform();
-		target.draw(drawGid, states);
+		for (const auto& d : drawLayers)
+		{
+			target.draw(d, states);
+		}
+		
 	}
 private:
 	int tileSize = 40, gridW = 0, gridH = 0;
 	const sf::Texture* tileTexture = nullptr;
-	sf::VertexArray m_vertices;
-	sf::VertexArray drawGid;
+	const std::vector<std::vector<unsigned int>>* layers;
+	std::vector<sf::VertexArray> staticLayers;
+	std::vector<sf::VertexArray> drawLayers;
 };

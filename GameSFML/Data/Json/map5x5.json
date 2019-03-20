@@ -1,0 +1,32 @@
+{ "height":5,
+"filePath":"Data//Images//Tile//terrain.png",
+ "infinite":false,
+ "layers":[
+        {
+         "data":[187, 188, 188, 188, 189, 208, 209, 209, 209, 210, 208, 209, 209, 209, 210, 208, 209, 209, 209, 210, 229, 230, 230, 230, 231],
+         "height":5,
+         "id":1,
+         "name":"Tile Layer 1",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":5,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":2,
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.2.3",
+ "tileheight":32,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "source":"terrain.tsx"
+        }],
+ "tilewidth":32,
+ "type":"map",
+ "version":1.2,
+ "width":5
+}

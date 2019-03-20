@@ -45,6 +45,25 @@ struct GridResource
 {
 	int tileSize = 0, gridW = 0, gridH = 0;
 	const sf::Texture* tileTexture = nullptr;
+	std::vector<std::vector<unsigned int>> layers;
+};
+
+struct MapLoader final : entt::ResourceLoader<MapLoader, GridResource> {
+	std::shared_ptr<GridResource> load(const nlohmann::json& Json, const sf::Texture& texture) const
+	{
+		auto resource = std::make_shared<GridResource>();
+
+		//load texture
+		resource->tileSize = Json["tilewidth"].get<int>();
+		resource->gridW = Json["width"].get<int>();
+		resource->gridH = Json["height"].get<int>();
+		resource->tileTexture = &texture;
+		for (auto& layer : Json["layers"])
+		{
+			resource->layers.emplace_back(layer["data"].get<std::vector<unsigned int>>());
+		}
+		return resource;
+	}
 };
 class Codex
 {
@@ -67,21 +86,21 @@ public:
 	{
 		return frameCache.handle(filename).get();
 	}
-	const GridResource GetGridResource(entt::HashedString filename)
+	const GridResource& GetGridResource(entt::HashedString filename)
 	{
+		if (mapCache.contains(filename))
+		{
+			return mapCache.handle(filename).get();
+		}
 		const nlohmann::json Json = GetJson(filename);
-		//load texture
+
 		std::string filePath = Json["filePath"].get<std::string>();
 		entt::HashedString texturePath{ filePath.c_str() };
-		textureCache.load<TextureLoader>(texturePath, texturePath);
 
-		return GridResource{
-			Json["tileSize"].get<int>(),
-			Json["gridW"].get<int>(),
-			Json["gridH"].get<int>(),
-			&GetTexture(texturePath)
-		};
+		mapCache.load<MapLoader>(filename, Json, GetTexture(texturePath));
+		return mapCache.handle(filename).get();
 	}
+	
 private:
 	void Init()
 	{
@@ -131,4 +150,5 @@ private:
 private:
 	entt::ResourceCache<sf::Texture> textureCache;
 	entt::ResourceCache<FramesInfo> frameCache;
+	entt::ResourceCache<GridResource> mapCache;
 };
