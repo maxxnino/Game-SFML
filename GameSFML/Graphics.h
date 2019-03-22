@@ -75,6 +75,14 @@ public:
 	{
 		return { worldPos.x * scalePixel, - worldPos.y * scalePixel};
 	}
+	b2Vec2 GetWorldSize(const sf::Vector2f& screenSize) const
+	{
+		return b2Vec2(screenSize.x / scalePixel, screenSize.y / scalePixel);
+	}
+	sf::Vector2f GetScreenSize(const b2Vec2& worldSize) const
+	{
+		return { worldSize.x * scalePixel, worldSize.y * scalePixel };
+	}
 	static constexpr float scalePixel = 20.0f;
 private:
 	sf::RenderWindow& window;

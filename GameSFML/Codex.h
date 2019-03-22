@@ -43,9 +43,16 @@ struct FrameLoader final : entt::ResourceLoader<FrameLoader, FramesInfo> {
 
 struct GridResource
 {
+	struct Object
+	{
+		float height, width, x, y;
+		unsigned int rotation;
+	};
+
 	int tileSize = 0, gridW = 0, gridH = 0;
 	const sf::Texture* tileTexture = nullptr;
 	std::vector<std::vector<unsigned int>> layers;
+	std::unordered_map<unsigned int, Object> objects;
 };
 
 struct MapLoader final : entt::ResourceLoader<MapLoader, GridResource> {
@@ -58,10 +65,35 @@ struct MapLoader final : entt::ResourceLoader<MapLoader, GridResource> {
 		resource->gridW = Json["width"].get<int>();
 		resource->gridH = Json["height"].get<int>();
 		resource->tileTexture = &texture;
+
+		//load layer map
 		for (auto& layer : Json["layers"])
 		{
 			resource->layers.emplace_back(layer["data"].get<std::vector<unsigned int>>());
 		}
+
+		//load ofject per tile
+		for (auto& tileset : Json["tilesets"])
+		{
+			for (auto& tile : tileset["tiles"])
+			{
+				if (tile.find("objectgroup") != tile.end())
+				{
+					const unsigned int id = tile["id"].get<unsigned int>() + 1u;
+					for (auto& object : tile["objectgroup"]["objects"])
+					{
+						resource->objects.emplace(id, GridResource::Object{
+							object["height"].get<float>(),
+							object["width"].get<float>(),
+							object["x"].get<float>(),
+							object["y"].get<float>(),
+							object["rotation"].get<unsigned int>()
+						});
+					}
+				}
+			}
+		}
+
 		return resource;
 	}
 };
@@ -94,8 +126,13 @@ public:
 		}
 		const nlohmann::json Json = GetJson(filename);
 
-		std::string filePath = Json["filePath"].get<std::string>();
-		entt::HashedString texturePath{ filePath.c_str() };
+		std::string imageName{ "Data\\Images\\Tile\\" };
+		for (auto& tileset : Json["tilesets"])
+		{
+			imageName += tileset["image"].get<std::string>();
+			break;
+		}
+		entt::HashedString texturePath{ imageName.c_str() };
 
 		mapCache.load<MapLoader>(filename, Json, GetTexture(texturePath));
 		return mapCache.handle(filename).get();

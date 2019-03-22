@@ -4,11 +4,13 @@
 #include <iostream>
 #include "Codex.h"
 #include "HashStringDataBase.h"
+#include "Component/StaticObjectSpawnInfo.h"
+//moving grid not working yet
 class Grid : public sf::Drawable, public sf::Transformable
 {
 public:
 	template<typename Loader>
-	void LoadFromFile(Loader& loader)
+	void LoadFromFile(Loader& loader, entt::DefaultRegistry& ECS)
 	{
 		const GridResource& resource = loader.GetGridResource(Database::GridMap);
 		if (resource.tileSize <= 0 || resource.gridW <= 0 || resource.gridH <= 0 || resource.tileTexture == nullptr)
@@ -27,10 +29,11 @@ public:
 		const int textureTileH = (int)tileTexture->getSize().y / tileSize;
 
 		layers = &resource.layers;
+		drawLayers.setPrimitiveType(sf::Quads);
 		for (auto& layer : resource.layers)
 		{
 			staticLayers.emplace_back(sf::VertexArray(sf::Quads, gridW * gridH * 4));
-			drawLayers.emplace_back(sf::VertexArray(sf::Quads));
+			
 
 			for (int i = 0; i < gridW; ++i)
 			{
@@ -38,11 +41,8 @@ public:
 				{
 					//get texture position
 					const unsigned int textureLookup = layer[i + j * gridW];
-					if (textureLookup == 0)
-					{
-						continue;
-					}
-
+					if (textureLookup == 0) continue;
+					
 					const int textureX = (textureLookup % textureTileW) == 0 ? textureTileW : textureLookup % textureTileW;
 					const int textureY = textureLookup / textureTileW;
 					// get a pointer to the current tile's quad
@@ -59,6 +59,17 @@ public:
 					quad[1].texCoords = sf::Vector2f(float(textureX * tileSize), float(textureY * tileSize));
 					quad[2].texCoords = sf::Vector2f(float(textureX * tileSize), float((textureY + 1) * tileSize));
 					quad[3].texCoords = sf::Vector2f(float((textureX - 1) * tileSize), float((textureY + 1) * tileSize));
+
+					//find ofject location
+					auto object = resource.objects.find(textureLookup);
+					if (object == resource.objects.end()) continue;
+
+					auto entity = ECS.create();
+					auto& spawnInfo = ECS.assign<StaticObjectSpawnInfo>(entity);
+					spawnInfo.height = object->second.height * 0.5f;
+					spawnInfo.width = object->second.width * 0.5f;
+					spawnInfo.pos = quad[0].position + sf::Vector2f(object->second.x + spawnInfo.width, object->second.y + spawnInfo.height);
+					spawnInfo.rotation = object->second.rotation;
 				}
 			}
 				
@@ -68,12 +79,12 @@ public:
 	{
 		int left = 0, right = 0, top = 0, bottom = 0;
 		//get top left point of view
-		topLeft -= getPosition();
+		//topLeft -= getPosition();
 		left = int(topLeft.x / tileSize);
 		top = int(topLeft.y / tileSize);
 
 		//get bottom right point of view
-		rightBottom -= getPosition();
+		//rightBottom -= getPosition();
 		right = 1 + int(rightBottom.x / tileSize);
 		bottom = 1 + int(rightBottom.y / tileSize);
 
@@ -83,37 +94,29 @@ public:
 		right = std::max(0, std::min(right, gridW));
 		bottom = std::max(0, std::min(bottom, gridH));
 
-		//set texture and draw visible chunks:
-		size_t totalVertercies = 0;
-		size_t totalTiles = 0;
+		//build visible vertercies:
+		drawLayers.clear();
 		for (int nl = 0; nl < staticLayers.size(); nl++)
 		{
-			drawLayers[nl].clear();
-			int iDraw = 0;
 			for (int i = left; i < right; ++i)
 			{
 				for (int j = top; j < bottom; ++j)
 				{
 					//skip if current tile in texture map is 0
-					if ((*layers)[nl][i + j * gridW] == 0)
-					{
-						iDraw += 4;
-						continue;
-					}
+					if ((*layers)[nl][i + j * gridW] == 0) continue;
+
 					const int cur = (i + j * gridW) * 4;
 
 					// define its 4 corners
-					drawLayers[nl].append(staticLayers[nl][cur]);
-					drawLayers[nl].append(staticLayers[nl][cur + 1]);
-					drawLayers[nl].append(staticLayers[nl][cur + 2]);
-					drawLayers[nl].append(staticLayers[nl][cur + 3]);
-					iDraw += 4;
+					drawLayers.append(staticLayers[nl][cur]);
+					drawLayers.append(staticLayers[nl][cur + 1]);
+					drawLayers.append(staticLayers[nl][cur + 2]);
+					drawLayers.append(staticLayers[nl][cur + 3]);
 				}
 			}
-			totalVertercies += drawLayers[nl].getVertexCount();
 		}
 		
-		std::cout << "Vertices: " << totalVertercies << ", Tiles: " << totalVertercies / 4 << std::endl;
+		std::cout << "Vertices: " << drawLayers.getVertexCount() << ", Tiles: " << drawLayers.getVertexCount() / 4 << std::endl;
 	}
 private:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const final
@@ -124,17 +127,14 @@ private:
 			return;
 		}
 		states.texture = tileTexture;
-		states.transform *= getTransform();
-		for (const auto& d : drawLayers)
-		{
-			target.draw(d, states);
-		}
-		
+		//states.transform *= getTransform();
+		target.draw(drawLayers, states);	
 	}
 private:
 	int tileSize = 40, gridW = 0, gridH = 0;
 	const sf::Texture* tileTexture = nullptr;
 	const std::vector<std::vector<unsigned int>>* layers;
 	std::vector<sf::VertexArray> staticLayers;
-	std::vector<sf::VertexArray> drawLayers;
+	sf::VertexArray drawLayers;
+	std::vector<GridResource::Object> staticObjects;
 };

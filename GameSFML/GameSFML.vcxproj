@@ -132,6 +132,7 @@
     <ClInclude Include="Component\GameplayTags.h" />
     <ClInclude Include="Component\HealthComponent.h" />
     <ClInclude Include="Component\PhysicComponent.h" />
+    <ClInclude Include="Component\StaticObjectSpawnInfo.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gird.h" />
     <ClInclude Include="Graphics.h" />
@@ -151,12 +152,15 @@
     <ClInclude Include="PhysicObject.h" />
     <ClInclude Include="QuerySelectorBox2D.h" />
     <ClInclude Include="System\AnimationSystem.h" />
+    <ClInclude Include="System\CullingSystem.h" />
+    <ClInclude Include="System\DrawDebugSystem.h" />
     <ClInclude Include="System\HealthSystem.h" />
     <ClInclude Include="System\MoveCameraSystem.h" />
     <ClInclude Include="System\PlayerControllerSystem.h" />
     <ClInclude Include="System\RenderGridSystem.h" />
     <ClInclude Include="System\RenderSpriteSystem.h" />
     <ClInclude Include="System\SpawnAndCleanDeathSystem.h" />
+    <ClInclude Include="System\SpawnStaticObjectSystem.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
