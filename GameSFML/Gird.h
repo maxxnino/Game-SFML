@@ -131,7 +131,7 @@ public:
 			}
 		}
 		
-		std::cout << "Vertices: " << drawLayers.getVertexCount() << ", Tiles: " << drawLayers.getVertexCount() / 4 << std::endl;
+		//std::cout << "Vertices: " << drawLayers.getVertexCount() << ", Tiles: " << drawLayers.getVertexCount() / 4 << std::endl;
 	}
 private:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const final

@@ -41,14 +41,15 @@ public:
 		fixtureDef1.restitution = 1.0f;
 
 		std::uniform_int_distribution<int> rangeID(0, 10);
-		std::uniform_real_distribution<float> rangeX(-98.0f, 98.f);
-		std::uniform_real_distribution<float> rangeY(-48.0f, 48.0f);
+		std::uniform_real_distribution<float> rangeX(-1000.0f, 1000.0f);
+		std::uniform_real_distribution<float> rangeY(-1000.0f, 1000.0f);
+		std::uniform_real_distribution<float> speedRange(-20.0f, 20.0f);
 
 		auto& rng = Locator::Random::ref();
 		auto& ECS = Locator::ECS::ref();
 		auto shareEntity = ECS.create();
 		
-		for (size_t i = 0; i < 100; i++)
+		for (size_t i = 0; i < 15000; i++)
 		{
 			auto entity = ECS.create();
 			ECS.assign<HealthComponent>(entity, 50.0f);
@@ -67,7 +68,7 @@ public:
 				sprite.setOrigin(textSize);
 			}
 			bodyDef.position = b2Vec2(rangeX(rng), rangeY(rng));
-			bodyDef.linearVelocity = b2Vec2(0.5f * rangeY(rng), 0.5f * rangeY(rng));
+			bodyDef.linearVelocity = b2Vec2(speedRange(rng), speedRange(rng));
 
 			ECS.assign<PhysicDebug>(entity);
 			if (rangeID(rng) > 5)
