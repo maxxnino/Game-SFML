@@ -1,8 +1,8 @@
 #pragma once
-#include "ISystem.h"
+#include "System/ISystemECS.h"
 #include "Component/GameplayTags.h"
 #include "Locator.h"
-class CleanDeadSystem : public ISystem
+class CleanDeadSystem : public ISystemECS
 {
 public:
 	void Update(entt::DefaultRegistry& ECS, float dt) final
@@ -10,7 +10,7 @@ public:
 		ECS.destroy<DeathTag>();
 	}
 };
-class SpawnEnemySystem : public ISystem
+class SpawnEnemySystem : public ISystemECS
 {
 public:
 	/**

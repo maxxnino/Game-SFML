@@ -1,16 +1,7 @@
 #pragma once
 #include "HashStringDataBase.h"
 #include "Box2DContactListener.h"
-#include "System/RenderSpriteSystem.h"
-#include "System/RenderGridSystem.h"
-#include "System/HealthSystem.h"
-#include "System/SpawnAndCleanDeathSystem.h"
-#include "System/AnimationSystem.h"
-#include "System/MoveCameraSystem.h"
-#include "System/PlayerControllerSystem.h"
-#include "System/SpawnStaticObjectSystem.h"
-#include "System/DrawDebugSystem.h"
-#include "System/CullingSystem.h"
+#include "SystemInclude.h"
 #include <random>
 class World
 {
@@ -26,7 +17,7 @@ public:
 
 		b2BodyDef bodyDef;
 		bodyDef.type = b2_dynamicBody;
-		const float size = 1.0f;
+		const float size = 1.3f;
 		b2CircleShape circle;
 		circle.m_radius = size;
 
@@ -67,8 +58,8 @@ public:
 				sprite.setOrigin(textSize);
 			}
 			ECS.assign<HealthComponent>(entity, 50.0f);
+			ECS.assign<PlayerControllerComponent>(entity);
 			//ECS.assign<AnimationComponent>(entity, Locator::Codex::ref().GetFramesRect("PlayerDown"_hs));
-			//ECS.assign<PlayerController>(entity);
 			//ECS.assign<AnimationState>(entity) = AnimationState::WALKING;
 			//ECS.assign<Direction>(entity) = Direction::DOWN;
 			bodyDef.position = b2Vec2(rangeX(rng), rangeY(rng));
@@ -83,7 +74,6 @@ public:
 			{
 				ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef1);
 			}
-			
 		}
 		WarmUp();
 	}
@@ -92,23 +82,24 @@ public:
 		Locator::Physic::ref().Step(dt, 4, 2);
 		if (Locator::ECS::empty()) return;
 		
-		for (auto& sys : systems)
+		for (auto& sys : ecsSystems)
 		{
 			sys->Update(Locator::ECS::ref(), dt);
 		}
-		renderSystem.Update(Locator::ECS::ref(), dt);
 	}
-	void Draw()
+	void Draw()const
 	{
-		renderGridSystem.Draw();
-		renderSystem.Draw(Locator::Graphic::ref());
-		debugSystem.Draw();
-		/*sf::RectangleShape rectangle;
-
-		rectangle.setPosition(sf::Vector2f(0.0f,0.0f));
-		rectangle.setSize(sf::Vector2f(50.0f, 50.0f));
-		rectangle.setFillColor(sf::Color::Red);
-		Locator::Graphic::ref().Draw(rectangle);*/
+		if (Locator::Graphic::empty()) return;
+		auto& gfx = Locator::Graphic::ref();
+		for (auto sys : drawSystems)
+		{
+			if (sys != nullptr)
+			{
+				sys->Draw(gfx);
+			}
+		}
+		
+		debugSystem.Draw(gfx);
 	}
 	
 private:
@@ -129,14 +120,29 @@ private:
 	}
 	void InitSystem()
 	{
-		systems.emplace_back(std::make_unique<SpawnStaticObjectSystem>());
-		//systems.emplace_back(std::make_unique<HealthSystem>());
-		//systems.emplace_back(std::make_unique<SpawnEnemySystem>());
-		//systems.emplace_back(std::make_unique<CleanDeadSystem>());
-		systems.emplace_back(std::make_unique<MoveCameraSystem>());
-		systems.emplace_back(std::make_unique<CullingSystem>());
-		systems.emplace_back(std::make_unique<PlayerControllerSystem>());
-		systems.emplace_back(std::make_unique<AnimationSystem>());
+		ecsSystems.emplace_back(std::make_unique<SpawnStaticObjectSystem>());
+		ecsSystems.emplace_back(std::make_unique<HealthSystem>());
+		ecsSystems.emplace_back(std::make_unique<SpawnEnemySystem>());
+		ecsSystems.emplace_back(std::make_unique<CleanDeadSystem>());
+		ecsSystems.emplace_back(std::make_unique<MoveCameraSystem>());
+		ecsSystems.emplace_back(std::make_unique<CullingSystem>());
+		ecsSystems.emplace_back(std::make_unique<PlayerControllerSystem>());
+		ecsSystems.emplace_back(std::make_unique<AnimationStateSystem>());
+		ecsSystems.emplace_back(std::make_unique<AnimationSystem>());
+
+		//render Grid should be before render sprite and after move camera;
+		{
+			auto newSystem = std::make_unique<RenderGridSystem>();
+			drawSystems.emplace_back(static_cast<IDrawSystem*>(newSystem.get()));
+			ecsSystems.emplace_back(std::move(newSystem));
+			
+		}
+		//render Sprite should be the last
+		{
+			auto newSystem = std::make_unique<RenderSpriteSystem>();
+			drawSystems.emplace_back(static_cast<IDrawSystem*>(newSystem.get()));
+			ecsSystems.emplace_back(std::move(newSystem));
+		}
 	}
 	void AddWall(b2Vec2 p1, b2Vec2 p2)
 	{
@@ -158,8 +164,7 @@ private:
 		
 	}
 private:
-	std::vector<std::unique_ptr<ISystem>> systems;
-	RenderSpriteSystem renderSystem;
-	RenderGridSystem renderGridSystem;
+	std::vector<std::unique_ptr<ISystemECS>> ecsSystems;
+	std::vector<IDrawSystem*> drawSystems;
 	DrawDebugSystem debugSystem;
 };

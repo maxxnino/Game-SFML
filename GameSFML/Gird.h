@@ -1,8 +1,8 @@
 #pragma once
-#include "SFML/Graphics.hpp"
 #include <assert.h>
 #include <iostream>
-#include "Codex.h"
+#include "SFML/Graphics.hpp"
+#include "GameResource.h"
 #include "HashStringDataBase.h"
 #include "Component/StaticObjectSpawnInfo.h"
 #include "Component/GameplayTags.h"
@@ -13,7 +13,7 @@ public:
 	template<typename Loader>
 	void LoadFromFile(Loader& loader, entt::DefaultRegistry& ECS)
 	{
-		const GridResource& resource = loader.GetGridResource(Database::GridMap);
+		const auto& resource = loader.GetMapResource(Database::GridMap);
 		if (resource.tileSize <= 0 || resource.gridW <= 0 || resource.gridH <= 0 || resource.tileTexture == nullptr)
 		{
 			assert(false);
@@ -151,5 +151,5 @@ private:
 	const std::vector<std::vector<unsigned int>>* layers;
 	std::vector<sf::VertexArray> staticLayers;
 	sf::VertexArray drawLayers;
-	std::vector<GridResource::Object> staticObjects;
+	std::vector<MapResource::Object> staticObjects;
 };

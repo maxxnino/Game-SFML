@@ -1,8 +1,7 @@
 #pragma once
-#include "SFML/Graphics/Texture.hpp"
-#include <entt/resource/cache.hpp>
-#include "entt/core/hashed_string.hpp"
-#include "Component/AnimationComponent.h"
+
+#include "entt/resource/cache.hpp"
+#include "GameResource.h"
 #include "json.hpp"
 #include <fstream>
 #include <sstream>
@@ -19,46 +18,27 @@ struct TextureLoader final : entt::ResourceLoader<TextureLoader, sf::Texture> {
 		return texture;
 	}
 };
-struct FrameDef
-{
-	int holdFrame;
-	int maxFrame;
-	int startX;
-	int startY;
-	int width;
-	int heigh;
-};
-struct FrameLoader final : entt::ResourceLoader<FrameLoader, FramesInfo> {
-	std::shared_ptr<FramesInfo> load(const FrameDef& frameDef) const
+struct AnimationLoader final : entt::ResourceLoader<AnimationLoader, AnimationResource> {
+	std::shared_ptr<AnimationResource> load(const nlohmann::json& Json, const sf::Texture& texture) const
 	{
-		auto resource = std::make_shared<FramesInfo>((float)frameDef.holdFrame / 60.0f);
-
-		for (int i = 0; i < frameDef.maxFrame; i++)
+		auto resource = std::make_shared<AnimationResource>();
+		resource->texture = &texture;
+		resource->width = Json["width"].get<unsigned int>();
+		resource->height = Json["height"].get<unsigned int>();
+		resource->tileWidth = Json["tileWidth"].get<unsigned int>();
+		resource->tileHeight = Json["tileHeight"].get<unsigned int>();
+		resource->frameTime = Json["frameTime"].get<unsigned int>();
+		for (auto& set : Json["animationSets"])
 		{
-			resource->frames.emplace_back(sf::IntRect(frameDef.startX + i * frameDef.width, frameDef.startY, frameDef.width, frameDef.heigh));
+			resource->animationSets.emplace_back(set["index"].get<std::pair<unsigned int, unsigned int>>());
 		}
 		return resource;
 	}
 };
-
-struct GridResource
-{
-	struct Object
+struct MapLoader final : entt::ResourceLoader<MapLoader, MapResource> {
+	std::shared_ptr<MapResource> load(const nlohmann::json& Json, const sf::Texture& texture) const
 	{
-		float height, width, x, y;
-		unsigned int rotation;
-	};
-	int tileSize = 0, gridW = 0, gridH = 0;
-	const sf::Texture* tileTexture = nullptr;
-	std::vector<std::vector<unsigned int>> layers;
-	std::unordered_map<unsigned int, Object> objects;
-	std::vector<Object> objectLayer;
-};
-
-struct MapLoader final : entt::ResourceLoader<MapLoader, GridResource> {
-	std::shared_ptr<GridResource> load(const nlohmann::json& Json, const sf::Texture& texture) const
-	{
-		auto resource = std::make_shared<GridResource>();
+		auto resource = std::make_shared<MapResource>();
 
 		//load texture
 		resource->tileSize = Json["tilewidth"].get<int>();
@@ -80,7 +60,7 @@ struct MapLoader final : entt::ResourceLoader<MapLoader, GridResource> {
 			{
 				for (auto& object : layer["objects"])
 				{
-					resource->objectLayer.emplace_back(GridResource::Object{
+					resource->objectLayer.emplace_back(MapResource::Object{
 						object["height"].get<float>(),
 						object["width"].get<float>(),
 						object["x"].get<float>(),
@@ -101,7 +81,7 @@ struct MapLoader final : entt::ResourceLoader<MapLoader, GridResource> {
 					const unsigned int id = tile["id"].get<unsigned int>() + 1u;
 					for (auto& object : tile["objectgroup"]["objects"])
 					{
-						resource->objects.emplace(id, GridResource::Object{
+						resource->objects.emplace(id, MapResource::Object{
 							object["height"].get<float>(),
 							object["width"].get<float>(),
 							object["x"].get<float>(),
@@ -119,10 +99,6 @@ struct MapLoader final : entt::ResourceLoader<MapLoader, GridResource> {
 class Codex
 {
 public:
-	Codex()
-	{
-		Init();
-	}
 	const sf::Texture& GetTexture(entt::HashedString filename)
 	{
 		if (textureCache.contains(filename))
@@ -133,11 +109,22 @@ public:
 		textureCache.load<TextureLoader>(filename, filename);
 		return textureCache.handle(filename).get();
 	}
-	const FramesInfo& GetFramesRect(entt::HashedString filename)
+	const AnimationResource& GetAnimation(entt::HashedString filename)
 	{
-		return frameCache.handle(filename).get();
+		if (animationCache.contains(filename))
+		{
+			return animationCache.handle(filename).get();
+		}
+		const nlohmann::json Json = GetJson(filename);
+
+		std::string imageName{ "Data\\Images\\" };
+		imageName += Json["imageName"].get<std::string>();
+		entt::HashedString texturePath{ imageName.c_str() };
+
+		animationCache.load<AnimationLoader>(filename, Json, GetTexture(texturePath));
+		return animationCache.handle(filename).get();
 	}
-	const GridResource& GetGridResource(entt::HashedString filename)
+	const MapResource& GetMapResource(entt::HashedString filename)
 	{
 		if (mapCache.contains(filename))
 		{
@@ -158,43 +145,6 @@ public:
 	}
 	
 private:
-	void Init()
-	{
-		std::ifstream input("Data\\Json\\animation.json");
-		nlohmann::json animationJson;
-		input >> animationJson;
-		input.close();
-		//load texture
-		{
-			std::string filePath = animationJson["filePath"].get<std::string>();
-			entt::HashedString filename{ filePath.c_str() };
-			textureCache.load<TextureLoader>(filename, filename);
-		}
-
-		//load animation
-		{
-			FrameDef def{
-			animationJson["holdFrame"].get<int>(),
-			animationJson["maxFrame"].get<int>(),
-			animationJson["startX"].get<int>(),
-			0,
-			animationJson["width"].get<int>(),
-			animationJson["heigh"].get<int>(),
-			};
-
-			std::vector<std::string> animState;
-			animState.emplace_back("PlayerUp");
-			animState.emplace_back("PlayerDown");
-			animState.emplace_back("PlayerLeft");
-			animState.emplace_back("PlayerRight");
-			for (size_t i = 0; i < 4; i++)
-			{
-				def.startY = animationJson[animState[i]]["startY"].get<int>();
-				entt::HashedString identifier{ animState[i].c_str() };
-				frameCache.load<FrameLoader>(identifier, def);
-			}
-		}
-	}
 	const nlohmann::json GetJson(entt::HashedString filename) const
 	{
 		std::ifstream input(static_cast<const char *>(filename));
@@ -205,6 +155,6 @@ private:
 	}
 private:
 	entt::ResourceCache<sf::Texture> textureCache;
-	entt::ResourceCache<FramesInfo> frameCache;
-	entt::ResourceCache<GridResource> mapCache;
+	entt::ResourceCache<AnimationResource> animationCache;
+	entt::ResourceCache<MapResource> mapCache;
 };

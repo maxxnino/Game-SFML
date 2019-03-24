@@ -69,7 +69,18 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>D:\C++\GameSFML\GameSFML\System;D:\C++\GameSFML\GameSFML\Component;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>D:\C++\GameSFML\GameSFML\System;D:\C++\GameSFML\GameSFML\Component;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>D:\C++\GameSFML\GameSFML\System;D:\C++\GameSFML\GameSFML\Component;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>D:\C++\GameSFML\GameSFML\System;D:\C++\GameSFML\GameSFML\Component;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -129,16 +140,17 @@
     <ClInclude Include="Codex.h" />
     <ClInclude Include="CollidableUI.h" />
     <ClInclude Include="Component\AnimationComponent.h" />
+    <ClInclude Include="Component\AnimationStateComponent.h" />
     <ClInclude Include="Component\GameplayTags.h" />
     <ClInclude Include="Component\HealthComponent.h" />
     <ClInclude Include="Component\PhysicComponent.h" />
     <ClInclude Include="Component\PlayerControllerComponent.h" />
     <ClInclude Include="Component\StaticObjectSpawnInfo.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameResource.h" />
     <ClInclude Include="Gird.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="HashStringDataBase.h" />
-    <ClInclude Include="ISystem.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="ListenerBox2DGUI.h" />
@@ -152,11 +164,14 @@
     <ClInclude Include="MyFreeFunction.h" />
     <ClInclude Include="PhysicObject.h" />
     <ClInclude Include="QuerySelectorBox2D.h" />
+    <ClInclude Include="SystemInclude.h" />
     <ClInclude Include="System\AnimationStateSystem.h" />
     <ClInclude Include="System\AnimationSystem.h" />
     <ClInclude Include="System\CullingSystem.h" />
     <ClInclude Include="System\DrawDebugSystem.h" />
     <ClInclude Include="System\HealthSystem.h" />
+    <ClInclude Include="System\IDrawSystem.h" />
+    <ClInclude Include="System\ISystemECS.h" />
     <ClInclude Include="System\MoveCameraSystem.h" />
     <ClInclude Include="System\PlayerControllerSystem.h" />
     <ClInclude Include="System\RenderGridSystem.h" />

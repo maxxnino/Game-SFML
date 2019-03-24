@@ -1,15 +1,17 @@
 #pragma once
 #include "Graphics.h"
 #include "Component/PhysicComponent.h"
+#include "System/IDrawSystem.h"
 #include "Locator.h"
 #include "Component/GameplayTags.h"
-class DrawDebugSystem
+class DrawDebugSystem : public IDrawSystem
 {
 public:
-	void Draw()
+	void Draw(Graphics& gfx) const final
 	{
+		if (Locator::ECS::empty()) return;
+
 		auto& ECS = Locator::ECS::ref();
-		auto& gfx = Locator::Graphic::ref();
 		ECS.view<Viewable, PhysicDebug, PhysicComponent>().each([&ECS, &gfx](auto entity, auto&, auto&, PhysicComponent &physic) {
 			switch (physic.body->GetFixtureList()->GetShape()->m_type)
 			{

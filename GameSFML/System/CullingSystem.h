@@ -1,6 +1,6 @@
 #pragma once
 #include "Locator.h"
-#include "ISystem.h"
+#include "System/ISystemECS.h"
 #include "Component/PhysicComponent.h"
 #include "Component/AnimationComponent.h"
 #include "Component/GameplayTags.h"
@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <execution>
 #include <iostream>
-class CullingSystem : public ISystem
+class CullingSystem : public ISystemECS
 {
 	struct CullingQuerySelector final : public b2QueryCallback
 	{

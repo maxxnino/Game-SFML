@@ -1,35 +1,18 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "GameResource.h"
 #include <vector>
-struct FramesInfo
-{
-	FramesInfo(float holdFrame) : holdFrame(holdFrame) {}
-	std::vector<sf::IntRect> frames;
-	const float holdFrame;
-};
 struct AnimationComponent
 {
-	AnimationComponent(const FramesInfo& frameInfo)
+	AnimationComponent(const AnimationResource& resource, unsigned int iAnimationSet)
 		:
-		holdTime(frameInfo.holdFrame),
-		maxFrame((uint32_t)frameInfo.frames.size()),
-		frames(&(frameInfo.frames))
+		holdTime((float)resource.frameTime / 60.0f),
+		rangeIndex(resource.animationSets[iAnimationSet]),
+		frames(&resource.frames)
 	{}
 	float holdTime;
 	float curFrameTime = 0.0f;
-	uint32_t iCurFrame = 0;
-	uint32_t maxFrame;
+	unsigned int iCurFrame = 0;
+	std::pair<unsigned int, unsigned int> rangeIndex;
 	const std::vector<sf::IntRect>* frames = nullptr;
-};
-enum AnimationState
-{
-	WALKING,
-	STANDING
-};
-enum Direction
-{
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
 };

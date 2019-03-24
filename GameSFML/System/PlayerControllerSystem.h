@@ -1,9 +1,9 @@
 #pragma once
-#include "ISystem.h"
+#include "System/ISystemECS.h"
 #include "Locator.h"
 #include "Component/PlayerControllerComponent.h"
 #include "Component/AnimationComponent.h"
-class PlayerControllerSystem : public ISystem
+class PlayerControllerSystem : public ISystemECS
 {
 public:
 	void Update(entt::DefaultRegistry& ECS, float dt) final

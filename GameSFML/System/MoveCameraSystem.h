@@ -1,7 +1,7 @@
 #pragma once
-#include "ISystem.h"
+#include "System/ISystemECS.h"
 #include "Locator.h"
-class MoveCameraSystem : public ISystem
+class MoveCameraSystem : public ISystemECS
 {
 public:
 	void Update(entt::DefaultRegistry& ECS, float dt) final

@@ -1,6 +1,7 @@
 #pragma once
 #include "Locator.h"
-#include "ISystem.h"
+#include "System/ISystemECS.h"
+#include "System/IDrawSystem.h"
 #include "Component/PhysicComponent.h"
 #include "Component/AnimationComponent.h"
 #include "Component/GameplayTags.h"
@@ -9,7 +10,7 @@
 #include <algorithm>
 #include <execution>
 #include <iostream>
-class RenderSpriteSystem : public ISystem
+class RenderSpriteSystem : public ISystemECS, public IDrawSystem
 {
 public:
 	//update before Culling, animation, physic
@@ -35,7 +36,7 @@ public:
 			});
 		}
 	}
-	void Draw(Graphics& gfx)
+	void Draw(Graphics& gfx) const final
 	{
 		auto& ECS = Locator::ECS::ref();
 		ECS.view<Viewable, sf::Sprite>().each([&gfx](auto entity, auto&, sf::Sprite &sprite) {

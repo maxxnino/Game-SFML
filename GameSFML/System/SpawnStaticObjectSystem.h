@@ -1,10 +1,10 @@
 #pragma once
-#include "ISystem.h"
+#include "System/ISystemECS.h"
 #include "Component/PhysicComponent.h"
 #include "Locator.h"
 #include "Component/StaticObjectSpawnInfo.h"
 #include "Component/GameplayTags.h"
-class SpawnStaticObjectSystem : public ISystem
+class SpawnStaticObjectSystem : public ISystemECS
 {
 	struct OverlapQuerySelector final : public b2QueryCallback
 	{

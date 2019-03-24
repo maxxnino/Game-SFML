@@ -104,9 +104,6 @@
     <ClInclude Include="json.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="ISystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="System\AnimationSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
@@ -159,6 +156,21 @@
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="System\AnimationStateSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="GameResource.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\AnimationStateComponent.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemInclude.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="System\IDrawSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ISystemECS.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>

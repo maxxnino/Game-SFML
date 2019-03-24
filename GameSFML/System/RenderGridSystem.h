@@ -1,16 +1,21 @@
 #pragma once
 #include "Locator.h"
-class RenderGridSystem
+#include "System/ISystemECS.h"
+#include "System/IDrawSystem.h"
+class RenderGridSystem : public ISystemECS, public IDrawSystem
 {
 public:
-	void Draw()
+	void Update(entt::DefaultRegistry& ECS, float dt) final
 	{
-		auto& gfx = Locator::Graphic::ref();
-		auto& grid = Locator::Grid::ref();
+		if (Locator::Graphic::empty() || Locator::Grid::empty()) return;
 
-		auto viewport = gfx.GetViewportScreen();
-		grid.Culling(viewport.first, viewport.second);
+		auto viewport = Locator::Graphic::ref().GetViewportScreen();
+		Locator::Grid::ref().Culling(viewport.first, viewport.second);
+	}
+	void Draw(Graphics& gfx) const final
+	{
+		if (Locator::Grid::empty()) return;
 
-		gfx.Draw(grid);
+		gfx.Draw(Locator::Grid::ref());
 	}
 };

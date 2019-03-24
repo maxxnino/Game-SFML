@@ -1,7 +1,7 @@
 #pragma once
-#include "ISystem.h"
+#include "System/ISystemECS.h"
 #include "Component/AnimationComponent.h"
-class AnimationSystem : public ISystem
+class AnimationSystem : public ISystemECS
 {
 public:
 	void Update(entt::DefaultRegistry& ECS, float dt) final
@@ -11,17 +11,16 @@ public:
 			auto& animation = ECS.get<AnimationComponent>(entity);
 
 			animation.curFrameTime += dt;
-			const auto prevFrame = animation.iCurFrame;
+			//const auto prevFrame = animation.iCurFrame;
 			while (animation.curFrameTime >= animation.holdTime)
 			{
 				animation.curFrameTime -= animation.holdTime;
 				animation.iCurFrame++;
-				if (animation.iCurFrame >= animation.maxFrame)
+				if (animation.iCurFrame >= animation.rangeIndex.second)
 				{
-					animation.iCurFrame = 0;
+					animation.iCurFrame = animation.rangeIndex.first;
 				}
 			}
-
 		});
 	}
 };
