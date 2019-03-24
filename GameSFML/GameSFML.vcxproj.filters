@@ -155,5 +155,11 @@
     <ClInclude Include="System\CullingSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Component\PlayerControllerComponent.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="System\AnimationStateSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -56,7 +56,7 @@ public:
 		auto& ECS = Locator::ECS::ref();
 		auto shareEntity = ECS.create();
 		
-		for (size_t i = 0; i < 500; i++)
+		for (size_t i = 0; i < 100; i++)
 		{
 			auto entity = ECS.create();
 			{
@@ -96,11 +96,12 @@ public:
 		{
 			sys->Update(Locator::ECS::ref(), dt);
 		}
+		renderSystem.Update(Locator::ECS::ref(), dt);
 	}
 	void Draw()
 	{
 		renderGridSystem.Draw();
-		renderSystem.Draw();
+		renderSystem.Draw(Locator::Graphic::ref());
 		debugSystem.Draw();
 		/*sf::RectangleShape rectangle;
 

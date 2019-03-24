@@ -5,6 +5,7 @@
 #include "Codex.h"
 #include "HashStringDataBase.h"
 #include "Component/StaticObjectSpawnInfo.h"
+#include "Component/GameplayTags.h"
 //moving grid not working yet
 class Grid : public sf::Drawable, public sf::Transformable
 {
@@ -30,6 +31,8 @@ public:
 
 		layers = &resource.layers;
 		drawLayers.setPrimitiveType(sf::Quads);
+
+		//make vertex form layer map
 		for (auto& layer : resource.layers)
 		{
 			staticLayers.emplace_back(sf::VertexArray(sf::Quads, gridW * gridH * 4));
@@ -74,6 +77,18 @@ public:
 			}
 				
 		}
+
+		//make Object From Layer Object
+		for (auto& object : resource.objectLayer)
+		{
+			auto entity = ECS.create();
+			auto& spawnInfo = ECS.assign<StaticCustomObjectSpawnInfo>(entity);
+			spawnInfo.height = object.height * 0.5f;
+			spawnInfo.width = object.width * 0.5f;
+			spawnInfo.pos = {object.x + spawnInfo.width, object.y + spawnInfo.height };
+			spawnInfo.rotation = object.rotation;
+		}
+
 	}
 	void Culling(sf::Vector2f topLeft, sf::Vector2f rightBottom)
 	{

@@ -48,11 +48,11 @@ struct GridResource
 		float height, width, x, y;
 		unsigned int rotation;
 	};
-
 	int tileSize = 0, gridW = 0, gridH = 0;
 	const sf::Texture* tileTexture = nullptr;
 	std::vector<std::vector<unsigned int>> layers;
 	std::unordered_map<unsigned int, Object> objects;
+	std::vector<Object> objectLayer;
 };
 
 struct MapLoader final : entt::ResourceLoader<MapLoader, GridResource> {
@@ -69,7 +69,26 @@ struct MapLoader final : entt::ResourceLoader<MapLoader, GridResource> {
 		//load layer map
 		for (auto& layer : Json["layers"])
 		{
-			resource->layers.emplace_back(layer["data"].get<std::vector<unsigned int>>());
+			//add layer
+			if (layer.find("data") != layer.end())
+			{
+				resource->layers.emplace_back(layer["data"].get<std::vector<unsigned int>>());
+				continue;
+			}
+			// add object layer
+			if (layer.find("objects") != layer.end())
+			{
+				for (auto& object : layer["objects"])
+				{
+					resource->objectLayer.emplace_back(GridResource::Object{
+						object["height"].get<float>(),
+						object["width"].get<float>(),
+						object["x"].get<float>(),
+						object["y"].get<float>(),
+						object["rotation"].get<unsigned int>() 
+					});
+				}
+			}
 		}
 
 		//load ofject per tile

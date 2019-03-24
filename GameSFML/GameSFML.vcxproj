@@ -132,6 +132,7 @@
     <ClInclude Include="Component\GameplayTags.h" />
     <ClInclude Include="Component\HealthComponent.h" />
     <ClInclude Include="Component\PhysicComponent.h" />
+    <ClInclude Include="Component\PlayerControllerComponent.h" />
     <ClInclude Include="Component\StaticObjectSpawnInfo.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gird.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="MyFreeFunction.h" />
     <ClInclude Include="PhysicObject.h" />
     <ClInclude Include="QuerySelectorBox2D.h" />
+    <ClInclude Include="System\AnimationStateSystem.h" />
     <ClInclude Include="System\AnimationSystem.h" />
     <ClInclude Include="System\CullingSystem.h" />
     <ClInclude Include="System\DrawDebugSystem.h" />

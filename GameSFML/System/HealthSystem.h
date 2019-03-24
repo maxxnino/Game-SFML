@@ -3,8 +3,6 @@
 #include "Graphics.h"
 #include "Component/HealthComponent.h"
 #include "Component/PhysicComponent.h"
-#include "Locator.h"
-#include "HashStringDataBase.h"
 #include "Component/GameplayTags.h"
 class HealthSystem : public ISystem
 {

@@ -9,6 +9,6 @@ namespace Database
 	constexpr auto TEnemy03 = "Data\\Images\\enemy_03.png"_hs;
 	constexpr auto TBullet01 = "Data\\Images\\pro_04_30_30_8.png"_hs;
 	constexpr auto TPlayer01 = "Data\\Images\\Player_12_4_95_159.png"_hs;
-	constexpr auto GridMap = "Data\\Json\\map5x5.json"_hs;
+	constexpr auto GridMap = "Data\\Json\\map20x20.json"_hs;
 #pragma warning(pop)
 }
