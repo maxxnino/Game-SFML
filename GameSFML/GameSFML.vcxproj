@@ -140,7 +140,8 @@
     <ClInclude Include="Codex.h" />
     <ClInclude Include="CollidableUI.h" />
     <ClInclude Include="Component\AnimationComponent.h" />
-    <ClInclude Include="Component\AnimationStateComponent.h" />
+    <ClInclude Include="Component\PlayerStateComponent.h" />
+    <ClInclude Include="Component\TransitionStateComponent.h" />
     <ClInclude Include="Component\GameplayTags.h" />
     <ClInclude Include="Component\HealthComponent.h" />
     <ClInclude Include="Component\PhysicComponent.h" />
@@ -165,7 +166,7 @@
     <ClInclude Include="PhysicObject.h" />
     <ClInclude Include="QuerySelectorBox2D.h" />
     <ClInclude Include="SystemInclude.h" />
-    <ClInclude Include="System\AnimationStateSystem.h" />
+    <ClInclude Include="System\TransitionStateSystem.h" />
     <ClInclude Include="System\AnimationSystem.h" />
     <ClInclude Include="System\CullingSystem.h" />
     <ClInclude Include="System\DrawDebugSystem.h" />

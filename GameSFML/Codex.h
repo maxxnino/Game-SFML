@@ -28,6 +28,17 @@ struct AnimationLoader final : entt::ResourceLoader<AnimationLoader, AnimationRe
 		resource->tileWidth = Json["tileWidth"].get<unsigned int>();
 		resource->tileHeight = Json["tileHeight"].get<unsigned int>();
 		resource->frameTime = Json["frameTime"].get<unsigned int>();
+
+		const unsigned int frameX = resource->width / resource->tileWidth;
+		const unsigned int frameY = resource->height / resource->tileHeight;
+		for (unsigned int y = 0; y < frameY; y++)
+		{
+			for (unsigned int x = 0; x < frameX; x++)
+			{
+				resource->frames.emplace_back(sf::IntRect(x * resource->tileWidth, y * resource->tileHeight, resource->tileWidth, resource->tileHeight));
+			}
+		}
+		
 		for (auto& set : Json["animationSets"])
 		{
 			resource->animationSets.emplace_back(set["index"].get<std::pair<unsigned int, unsigned int>>());

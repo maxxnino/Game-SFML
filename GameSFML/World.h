@@ -2,6 +2,7 @@
 #include "HashStringDataBase.h"
 #include "Box2DContactListener.h"
 #include "SystemInclude.h"
+#include "MyFreeFunction.h"
 #include <random>
 class World
 {
@@ -50,18 +51,21 @@ public:
 		for (size_t i = 0; i < 100; i++)
 		{
 			auto entity = ECS.create();
-			{
-				//sprite
-				auto& sprite = ECS.assign<sf::Sprite>(entity);
-				sprite.setTexture(Locator::Codex::ref().GetTexture(Database::TEnemy01));
-				const auto textSize = 0.5f * sf::Vector2f(sprite.getTexture()->getSize());
-				sprite.setOrigin(textSize);
-			}
 			ECS.assign<HealthComponent>(entity, 50.0f);
 			ECS.assign<PlayerControllerComponent>(entity);
-			//ECS.assign<AnimationComponent>(entity, Locator::Codex::ref().GetFramesRect("PlayerDown"_hs));
-			//ECS.assign<AnimationState>(entity) = AnimationState::WALKING;
-			//ECS.assign<Direction>(entity) = Direction::DOWN;
+
+			auto& animation = ECS.assign<AnimationComponent>(entity, 
+				Locator::Codex::ref().GetAnimation(Database::PlayerAnimation), 
+				ECS.assign<PlayerStateComponent>(entity).state);
+
+			ECS.assign<TransitionStateComponent>(entity).transitionRule.sink().connect<&Maxx::PlayerUpdateState>();
+			//sprite
+			{
+				auto& sprite = ECS.assign<sf::Sprite>(entity);
+				sprite.setTexture(*animation.resource->texture);
+				const auto textSize = 0.5f * sf::Vector2f((float)animation.resource->tileWidth, (float)animation.resource->tileHeight);
+				sprite.setOrigin(textSize);
+			}
 			bodyDef.position = b2Vec2(rangeX(rng), rangeY(rng));
 			bodyDef.linearVelocity = b2Vec2(0.5f * rangeY(rng), 0.5f * rangeY(rng));
 
@@ -75,7 +79,6 @@ public:
 				ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef1);
 			}
 		}
-		WarmUp();
 	}
 	void Update(float dt)
 	{
@@ -98,10 +101,12 @@ public:
 				sys->Draw(gfx);
 			}
 		}
-		
-		debugSystem.Draw(gfx);
+		//debugSystem.Draw(gfx);
 	}
-	
+	void AddECSSystem(std::unique_ptr<ISystemECS> newSystem)
+	{
+		ecsSystems.emplace_back(std::move(newSystem));
+	}
 private:
 	void InitServiceLocator()
 	{
@@ -120,16 +125,15 @@ private:
 	}
 	void InitSystem()
 	{
-		ecsSystems.emplace_back(std::make_unique<SpawnStaticObjectSystem>());
-		ecsSystems.emplace_back(std::make_unique<HealthSystem>());
-		ecsSystems.emplace_back(std::make_unique<SpawnEnemySystem>());
-		ecsSystems.emplace_back(std::make_unique<CleanDeadSystem>());
-		ecsSystems.emplace_back(std::make_unique<MoveCameraSystem>());
-		ecsSystems.emplace_back(std::make_unique<CullingSystem>());
-		ecsSystems.emplace_back(std::make_unique<PlayerControllerSystem>());
-		ecsSystems.emplace_back(std::make_unique<AnimationStateSystem>());
-		ecsSystems.emplace_back(std::make_unique<AnimationSystem>());
-
+		AddECSSystem(std::make_unique<SpawnStaticObjectSystem>());
+		AddECSSystem(std::make_unique<HealthSystem>());
+		AddECSSystem(std::make_unique<SpawnEnemySystem>());
+		AddECSSystem(std::make_unique<CleanDeadSystem>());
+		AddECSSystem(std::make_unique<MoveCameraSystem>());
+		AddECSSystem(std::make_unique<CullingSystem>());
+		AddECSSystem(std::make_unique<PlayerControllerSystem>());
+		AddECSSystem(std::make_unique<TransitionStateSystem>());
+		AddECSSystem(std::make_unique<AnimationSystem>());
 		//render Grid should be before render sprite and after move camera;
 		{
 			auto newSystem = std::make_unique<RenderGridSystem>();
@@ -158,10 +162,6 @@ private:
 		fixtureDef.shape = &edgeShape;
 
 		Locator::ECS::ref().assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
-	}
-	void WarmUp()
-	{
-		
 	}
 private:
 	std::vector<std::unique_ptr<ISystemECS>> ecsSystems;

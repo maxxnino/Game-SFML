@@ -1,26 +1,26 @@
 {
-  "imageName": "animation.png",
-  "width": 100,
-  "height": 100,
-  "tileWidth": 20,
-  "tileHeight": 20,
+  "imageName": "PlayerAnimation_64_64_4_9.png",
+  "width": 576,
+  "height": 256,
+  "tileWidth": 64,
+  "tileHeight": 64,
   "frameTime": 150,
   "animationSets": [
     {
       "id": 1,
-      "index": [1, 2]
+      "index": [0, 8]
     },
     {
       "id": 2,
-      "index": [3, 4]
+      "index": [9, 17]
     },
     {
       "id": 3,
-      "index": [5, 6]
+      "index": [18, 26]
     },
     {
       "id": 4,
-      "index": [7, 8]
+      "index": [27, 35]
     }
   ]
 }
