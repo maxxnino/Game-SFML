@@ -63,7 +63,15 @@ struct MapLoader final : entt::ResourceLoader<MapLoader, MapResource> {
 			//add layer
 			if (layer.find("data") != layer.end())
 			{
-				resource->layers.emplace_back(layer["data"].get<std::vector<unsigned int>>());
+				if (layer["name"].get<std::string>() == "TileObject")
+				{
+					resource->tilesWithObject = layer["data"].get<std::vector<unsigned int>>();
+				}
+				else
+				{
+					resource->layers.emplace_back(layer["data"].get<std::vector<unsigned int>>());
+				}
+				
 				continue;
 			}
 			// add object layer

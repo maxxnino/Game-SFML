@@ -49,7 +49,7 @@ public:
 		auto& ECS = Locator::ECS::ref();
 		auto shareEntity = ECS.create();
 		
-		for (size_t i = 0; i < 15000; i++)
+		for (size_t i = 0; i < 1000; i++)
 		{
 			auto entity = ECS.create();
 			ECS.assign<HealthComponent>(entity, 50.0f);
@@ -102,7 +102,7 @@ public:
 				sys->Draw(gfx);
 			}
 		}
-		//debugSystem.Draw(gfx);
+		debugSystem.Draw(gfx);
 	}
 	void AddECSSystem(std::unique_ptr<ISystemECS> newSystem)
 	{

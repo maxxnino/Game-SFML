@@ -22,7 +22,7 @@ public:
 				const auto screenSize = 2.0f * gfx.GetScreenSize(boxExtents);
 				rectangle.setPosition(gfx.WorldToScreenPos(physic.body->GetPosition() + b2Vec2(-boxExtents.x, boxExtents.y)));
 				rectangle.setSize(screenSize);
-				rectangle.setFillColor(sf::Color::Red);
+				rectangle.setFillColor(sf::Color(255, 0, 0, 128));
 				gfx.Draw(rectangle);
 				break;
 			}
@@ -32,7 +32,7 @@ public:
 				const auto radius = physic.body->GetFixtureList()->GetShape()->m_radius;
 				shape.setRadius(radius * gfx.scalePixel);
 				shape.setPosition(gfx.WorldToScreenPos(physic.body->GetPosition() + b2Vec2(-radius, radius)));
-				shape.setFillColor(sf::Color::Blue);
+				shape.setFillColor(sf::Color(0, 0, 255, 128));
 				gfx.Draw(shape);
 				break;
 			}

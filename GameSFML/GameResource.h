@@ -23,8 +23,13 @@ struct MapResource
 	const sf::Texture* tileTexture = nullptr;
 	//layers tile
 	std::vector<std::vector<unsigned int>> layers;
+
+	//layer with tile has object
+	std::vector<unsigned int> tilesWithObject;
+
 	//object attached per tile
 	std::unordered_map<unsigned int, Object> objects;
-	//custom object
+
+	//custom object, will add more in the future with sensor or static objects
 	std::vector<Object> objectLayer;
 };

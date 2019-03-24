@@ -62,6 +62,39 @@ public:
 					quad[1].texCoords = sf::Vector2f(float(textureX * tileSize), float(textureY * tileSize));
 					quad[2].texCoords = sf::Vector2f(float(textureX * tileSize), float((textureY + 1) * tileSize));
 					quad[3].texCoords = sf::Vector2f(float((textureX - 1) * tileSize), float((textureY + 1) * tileSize));
+				}
+			}
+				
+		}
+
+		//make vertex form tileObject
+		{
+			staticLayers.emplace_back(sf::VertexArray(sf::Quads, gridW * gridH * 4));
+			tileObjectLayer = &resource.tilesWithObject;
+			for (int i = 0; i < gridW; ++i)
+			{
+				for (int j = 0; j < gridH; ++j)
+				{
+					//get texture position
+					const unsigned int textureLookup = resource.tilesWithObject[i + j * gridW];
+					if (textureLookup == 0) continue;
+
+					const int textureX = (textureLookup % textureTileW) == 0 ? textureTileW : textureLookup % textureTileW;
+					const int textureY = textureLookup / textureTileW;
+					// get a pointer to the current tile's quad
+					sf::Vertex* quad = &staticLayers.back()[(i + j * gridW) * 4];
+
+					// define its 4 corners
+					quad[0].position = sf::Vector2f(float(i * tileSize), float(j * tileSize));
+					quad[1].position = sf::Vector2f(float((i + 1) * tileSize), float(j * tileSize));
+					quad[2].position = sf::Vector2f(float((i + 1) * tileSize), float((j + 1) * tileSize));
+					quad[3].position = sf::Vector2f(float(i * tileSize), float((j + 1) * tileSize));
+
+					// define its 4 texture coordinates
+					quad[0].texCoords = sf::Vector2f(float((textureX - 1) * tileSize), float(textureY * tileSize));
+					quad[1].texCoords = sf::Vector2f(float(textureX * tileSize), float(textureY * tileSize));
+					quad[2].texCoords = sf::Vector2f(float(textureX * tileSize), float((textureY + 1) * tileSize));
+					quad[3].texCoords = sf::Vector2f(float((textureX - 1) * tileSize), float((textureY + 1) * tileSize));
 
 					//find ofject location
 					auto object = resource.objects.find(textureLookup);
@@ -75,9 +108,7 @@ public:
 					spawnInfo.rotation = object->second.rotation;
 				}
 			}
-				
 		}
-
 		//make Object From Layer Object
 		for (auto& object : resource.objectLayer)
 		{
@@ -111,7 +142,7 @@ public:
 
 		//build visible vertercies:
 		drawLayers.clear();
-		for (int nl = 0; nl < staticLayers.size(); nl++)
+		for (int nl = 0; nl < staticLayers.size() - 1; nl++)
 		{
 			for (int i = left; i < right; ++i)
 			{
@@ -131,6 +162,22 @@ public:
 			}
 		}
 		
+		for (int i = left; i < right; ++i)
+		{
+			for (int j = top; j < bottom; ++j)
+			{
+				//skip if current tile in texture map is 0
+				if ((*tileObjectLayer)[i + j * gridW] == 0) continue;
+
+				const int cur = (i + j * gridW) * 4;
+
+				// define its 4 corners
+				drawLayers.append(staticLayers.back()[cur]);
+				drawLayers.append(staticLayers.back()[cur + 1]);
+				drawLayers.append(staticLayers.back()[cur + 2]);
+				drawLayers.append(staticLayers.back()[cur + 3]);
+			}
+		}
 		//std::cout << "Vertices: " << drawLayers.getVertexCount() << ", Tiles: " << drawLayers.getVertexCount() / 4 << std::endl;
 	}
 private:
@@ -149,6 +196,7 @@ private:
 	int tileSize = 40, gridW = 0, gridH = 0;
 	const sf::Texture* tileTexture = nullptr;
 	const std::vector<std::vector<unsigned int>>* layers;
+	const std::vector<unsigned int>* tileObjectLayer;
 	std::vector<sf::VertexArray> staticLayers;
 	sf::VertexArray drawLayers;
 	std::vector<MapResource::Object> staticObjects;
