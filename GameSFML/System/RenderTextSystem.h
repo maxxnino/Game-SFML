@@ -1,9 +1,9 @@
 #pragma once
-#include "Locator.h"
+#include "../Locator.h"
 #include "ISystemECS.h"
 #include "IDrawSystem.h"
-#include "Component/TextComponent.h"
-#include "Component/GameplayTags.h"
+#include "../Component/TextComponent.h"
+#include "../Component/GameplayTags.h"
 class RenderTextSystem : public ISystemECS, public IDrawSystem
 {
 private:

@@ -1,5 +1,5 @@
 #pragma once
-#include "Graphics.h"
+#include "../Graphics.h"
 class IDrawSystem
 {
 public:

@@ -1,6 +1,6 @@
 #pragma once
-#include "Locator.h"
-#include "System/ISystemECS.h"
+#include "../Locator.h"
+#include "../System/ISystemECS.h"
 
 class PhysicSystem : public ISystemECS
 {

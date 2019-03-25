@@ -1,11 +1,11 @@
 #pragma once
-#include "Locator.h"
-#include "System/ISystemECS.h"
-#include "Component/PhysicComponent.h"
-#include "Component/AnimationComponent.h"
-#include "Component/GameplayTags.h"
+#include "../Locator.h"
+#include "../System/ISystemECS.h"
+#include "../Component/PhysicComponent.h"
+#include "../Component/AnimationComponent.h"
+#include "../Component/GameplayTags.h"
+#include "../HashStringDataBase.h"
 #include "entt/entt.hpp"
-#include "HashStringDataBase.h"
 #include <algorithm>
 #include <execution>
 #include <iostream>

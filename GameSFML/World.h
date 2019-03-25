@@ -68,7 +68,7 @@ public:
 				Locator::Codex::ref().GetAnimation(Database::PlayerAnimation), 
 				ECS.assign<PlayerStateComponent>(entity).state);
 
-			ECS.assign<TransitionStateComponent>(entity).transitionRule.sink().connect<&Maxx::PlayerUpdateState>();
+			ECS.assign<TransitionStateComponent>(entity).signal.sink().connect<&Maxx::PlayerUpdateState>();
 			//sprite
 			{
 				auto& sprite = ECS.assign<sf::Sprite>(entity);
@@ -138,7 +138,7 @@ private:
 	{
 		AddECSSystem(std::make_unique<PhysicSystem>());
 		AddECSSystem(std::make_unique<SpawnStaticObjectSystem>());
-		AddECSSystem(std::make_unique<CollisionCallbackSystem>());
+		AddECSSystem(std::make_unique<CollisionRespondSystem>());
 		AddECSSystem(std::make_unique<HealthSystem>());
 		AddECSSystem(std::make_unique<SpawnEnemySystem>());
 		AddECSSystem(std::make_unique<CleanDeadSystem>());

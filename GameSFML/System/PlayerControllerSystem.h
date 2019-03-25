@@ -1,8 +1,8 @@
 #pragma once
-#include "System/ISystemECS.h"
-#include "Locator.h"
-#include "Component/PlayerControllerComponent.h"
-#include "Component/AnimationComponent.h"
+#include "../System/ISystemECS.h"
+#include "../Locator.h"
+#include "../Component/PlayerControllerComponent.h"
+#include "../Component/AnimationComponent.h"
 class PlayerControllerSystem : public ISystemECS
 {
 public:

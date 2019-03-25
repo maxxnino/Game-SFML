@@ -1,6 +1,6 @@
 #pragma once
-#include "Component/CollisionCallbackComponent.h"
-#include"entt/entt.hpp"
+#include "Component/CollisionRespondComponent.h"
+#include "entt/entt.hpp"
 class Box2DContactListener final : public b2ContactListener
 {
 public:
@@ -15,29 +15,32 @@ public:
 		auto entity1 = ptrBody1->GetUserEntity();
 		auto categoryBits2 = contact->GetFixtureB()->GetFilterData().categoryBits;
 		auto entity2 = ptrBody2->GetUserEntity();
-
-		if (ECS.has<CollisionCallbackComponent>(entity1))
+		if (ECS.has<CollisionRespondComponent>(entity1))
 		{
-			ECS.get<CollisionCallbackComponent>(entity1).others.emplace_back(std::make_pair(entity2, categoryBits2));
+			if (ECS.has<CollisionCallbackData>(entity1))
+			{
+				ECS.get<CollisionCallbackData>(entity1).others.emplace_back(std::make_pair(entity2, categoryBits2));
+			}
+			else
+			{
+				auto& callbackData = ECS.assign<CollisionCallbackData>(entity1);
+				callbackData.selfCatagory = categoryBits1;
+				callbackData.others.emplace_back(std::make_pair(entity2, categoryBits2));
+			}
 		}
-		else
+		if (ECS.has<CollisionRespondComponent>(entity2))
 		{
-			auto& callbackData = ECS.assign<CollisionCallbackComponent>(entity1);
-			callbackData.selfCatagory = categoryBits1;
-			callbackData.others.emplace_back(std::make_pair(entity2, categoryBits2));
+			if (ECS.has<CollisionCallbackData>(entity2))
+			{
+				ECS.get<CollisionCallbackData>(entity2).others.emplace_back(std::make_pair(entity1, categoryBits1));
+			}
+			else
+			{
+				auto& callbackData = ECS.assign<CollisionCallbackData>(entity2);
+				callbackData.selfCatagory = categoryBits2;
+				callbackData.others.emplace_back(std::make_pair(entity1, categoryBits1));
+			}
 		}
-		
-		if (ECS.has<CollisionCallbackComponent>(entity2))
-		{
-			ECS.get<CollisionCallbackComponent>(entity2).others.emplace_back(std::make_pair(entity1, categoryBits1));
-		}
-		else
-		{
-			auto& callbackData = ECS.assign<CollisionCallbackComponent>(entity2);
-			callbackData.selfCatagory = categoryBits2;
-			callbackData.others.emplace_back(std::make_pair(entity1, categoryBits1));
-		}
-		
 	}
 private:
 	entt::DefaultRegistry& ECS;

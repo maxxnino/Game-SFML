@@ -1,6 +1,6 @@
 #pragma once
-#include "System/ISystemECS.h"
-#include "Locator.h"
+#include "../System/ISystemECS.h"
+#include "../Locator.h"
 class MoveCameraSystem : public ISystemECS
 {
 public:

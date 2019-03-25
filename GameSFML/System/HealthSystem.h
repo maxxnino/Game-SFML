@@ -1,9 +1,9 @@
 #pragma once
-#include "System/ISystemECS.h"
-#include "Graphics.h"
-#include "Component/HealthComponent.h"
-#include "Component/PhysicComponent.h"
-#include "Component/GameplayTags.h"
+#include "../System/ISystemECS.h"
+#include "../Graphics.h"
+#include "../Component/HealthComponent.h"
+#include "../Component/PhysicComponent.h"
+#include "../Component/GameplayTags.h"
 class HealthSystem : public ISystemECS
 {
 public:

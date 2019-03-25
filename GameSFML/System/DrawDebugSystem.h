@@ -1,9 +1,9 @@
 #pragma once
-#include "Graphics.h"
-#include "Component/PhysicComponent.h"
-#include "System/IDrawSystem.h"
-#include "Locator.h"
-#include "Component/GameplayTags.h"
+#include "../Graphics.h"
+#include "../Component/PhysicComponent.h"
+#include "../System/IDrawSystem.h"
+#include "../Locator.h"
+#include "../Component/GameplayTags.h"
 class DrawDebugSystem : public IDrawSystem
 {
 public:

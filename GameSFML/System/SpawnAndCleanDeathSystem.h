@@ -1,7 +1,7 @@
 #pragma once
-#include "System/ISystemECS.h"
-#include "Component/GameplayTags.h"
-#include "Locator.h"
+#include "../System/ISystemECS.h"
+#include "../Component/GameplayTags.h"
+#include "../Locator.h"
 class CleanDeadSystem : public ISystemECS
 {
 public:

@@ -1,6 +1,6 @@
 #pragma once
-#include "System/ISystemECS.h"
-#include "Component/AnimationComponent.h"
+#include "../System/ISystemECS.h"
+#include "../Component/AnimationComponent.h"
 class AnimationSystem : public ISystemECS
 {
 public:

@@ -1,7 +1,7 @@
 #pragma once
-#include "Locator.h"
-#include "System/ISystemECS.h"
-#include "System/IDrawSystem.h"
+#include "../Locator.h"
+#include "../System/ISystemECS.h"
+#include "../System/IDrawSystem.h"
 class RenderGridSystem : public ISystemECS, public IDrawSystem
 {
 public:
