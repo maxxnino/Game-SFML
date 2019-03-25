@@ -1,11 +1,13 @@
 #pragma once
 #include <memory>
 #include <functional>
+#include "Box2D/Box2D.h"
 #include "Locator.h"
 enum CollisionFillter {
 	STATIC = 0x0001,
 	ENEMY = 0x0002,
-	PLAYER = 0x0004
+	PLAYER = 0x0004,
+	BULLET = 0x0006
 };
 struct PhysicComponent
 {

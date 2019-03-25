@@ -13,3 +13,5 @@
 #include "System/SpawnStaticObjectSystem.h"
 #include "System/CullingSystem.h"
 #include "System/TransitionStateSystem.h"
+#include "System/PlayerUpdateSystem.h"
+#include "System/LifeTimeSystem.h"

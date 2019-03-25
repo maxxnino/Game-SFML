@@ -13,7 +13,7 @@ struct UpdateState
 		auto& controller = ECS.get<PlayerControllerComponent>(entity);
 		if (controller.direction == sf::Vector2i(0, 0))
 		{
-			if (state.state == PlayerStateComponent::State::Standing) return;
+			//if (state.state == PlayerStateComponent::State::Standing) return;
 
 			state.state = PlayerStateComponent::State::Standing;
 
@@ -89,7 +89,7 @@ struct CollisionRespond
 {
 	static void Player(uint32_t entity, entt::DefaultRegistry& ECS)
 	{
-		auto& callbackData = ECS.get<CollisionCallbackData>(entity);
+		/*auto& callbackData = ECS.get<CollisionCallbackData>(entity);
 
 		for (auto& other : callbackData.others)
 		{
@@ -102,7 +102,7 @@ struct CollisionRespond
 					ECS.get<HealthComponent>(entity).curHealth -= 5.0f;
 				}
 			}
-		}
+		}*/
 	}
 	static void Enemy(uint32_t entity, entt::DefaultRegistry& ECS)
 	{
@@ -117,6 +117,27 @@ struct CollisionRespond
 				if (ECS.has<HealthComponent>(entity))
 				{
 					ECS.get<HealthComponent>(entity).curHealth -= 5.0f;
+				}
+			}
+		}
+	}
+	static void Bullet(uint32_t entity, entt::DefaultRegistry& ECS)
+	{
+		auto& callbackData = ECS.get<CollisionCallbackData>(entity);
+
+		for (auto& other : callbackData.others)
+		{
+			if (other.second == CollisionFillter::BULLET) continue;
+
+			if (other.second == CollisionFillter::ENEMY)
+			{
+				if (ECS.has<HealthComponent>(entity))
+				{
+					ECS.get<HealthComponent>(entity).curHealth = 0.0f;
+				}
+				if (ECS.has<HealthComponent>(other.first))
+				{
+					ECS.get<HealthComponent>(other.first).curHealth -= 20.0f;
 				}
 			}
 		}

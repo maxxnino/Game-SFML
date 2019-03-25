@@ -12,85 +12,8 @@ public:
 	{
 		InitServiceLocator();
 		InitSystem();
-		const float worldSize = 100.0f;
-		AddWall(b2Vec2(worldSize,-worldSize),b2Vec2(worldSize, worldSize));
-		AddWall(b2Vec2(worldSize, worldSize), b2Vec2(-worldSize, worldSize));
-		AddWall(b2Vec2(-worldSize, worldSize), b2Vec2(-worldSize, -worldSize));
-		AddWall(b2Vec2(-worldSize, -worldSize), b2Vec2(worldSize, -worldSize));
-
+		TestSomething();
 		
-		b2BodyDef bodyDef;
-		bodyDef.type = b2_dynamicBody;
-		const float size = 1.3f;
-		b2CircleShape circle;
-		circle.m_radius = size;
-
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &circle;
-		fixtureDef.filter.categoryBits = CollisionFillter::PLAYER;
-		//fixtureDef.filter.maskBits = CollisionFillter::ENEMY | CollisionFillter::STATIC;
-		//fixtureDef.isSensor = isSensor;
-		fixtureDef.density = 1.0f;
-		fixtureDef.friction = 0.0f;
-		fixtureDef.restitution = 1.0f;
-
-		b2FixtureDef fixtureDef1;
-		fixtureDef1.shape = &circle;
-		fixtureDef1.filter.categoryBits = CollisionFillter::ENEMY;
-		//fixtureDef1.filter.maskBits = CollisionFillter::PLAYER | CollisionFillter::STATIC;
-		//fixtureDef.isSensor = isSensor;
-		fixtureDef1.density = 1.0f;
-		fixtureDef1.friction = 0.0f;
-		fixtureDef1.restitution = 1.0f;
-
-		std::uniform_int_distribution<int> rangeID(0, 10);
-		std::uniform_real_distribution<float> rangeX(-worldSize + 5.0f, worldSize - 5.0f);
-		std::uniform_real_distribution<float> rangeY(-worldSize + 5.0f, worldSize - 5.0f);
-		std::uniform_real_distribution<float> speedRange(-20.0f, 20.0f);
-
-		auto& rng = Locator::Random::ref();
-		auto& ECS = Locator::ECS::ref();
-		//test text
-		{
-			auto entity = ECS.create();
-			const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
-			ECS.assign<sf::Text>(entity, "This is qwertyuiop lkjhgfdsa zxcvbnm 1234567890", textFont,50);
-			ECS.assign<ScreenBaseUI>(entity);
-			ECS.assign<TextLocation>(entity, sf::Vector2f(-640.0f,-360.0f));
-		}
-		for (size_t i = 0; i < 1000; i++)
-		{
-			auto entity = ECS.create();
-			ECS.assign<HealthComponent>(entity, 50.0f);
-			ECS.assign<PlayerControllerComponent>(entity);
-
-			auto& animation = ECS.assign<AnimationComponent>(entity, 
-				Locator::Codex::ref().GetAnimation(Database::PlayerAnimation), 
-				ECS.assign<PlayerStateComponent>(entity).state);
-
-			ECS.assign<TransitionStateComponent>(entity).myDelegate.connect<&UpdateState::Player>();
-			//sprite
-			{
-				auto& sprite = ECS.assign<sf::Sprite>(entity);
-				sprite.setTexture(*animation.resource->texture);
-				const auto textSize = 0.5f * sf::Vector2f((float)animation.resource->tileWidth, (float)animation.resource->tileHeight);
-				sprite.setOrigin(textSize);
-			}
-			bodyDef.position = b2Vec2(rangeX(rng), rangeY(rng));
-			bodyDef.linearVelocity = b2Vec2(speedRange(rng), speedRange(rng));
-
-			ECS.assign<PhysicDebug>(entity);
-			if (rangeID(rng) > 5)
-			{
-				ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
-				ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespond::Player>();
-			}
-			else
-			{
-				ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef1);
-				ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespond::Enemy>();
-			}
-		}
 	}
 	void Update(float dt)
 	{
@@ -119,6 +42,78 @@ public:
 	{
 		ecsSystems.emplace_back(std::move(newSystem));
 	}
+	void AddEnemy(entt::DefaultRegistry& ECS, b2Vec2 position, b2Vec2 linerVel)
+	{
+		b2BodyDef bodyDef;
+		bodyDef.type = b2_dynamicBody;
+		bodyDef.position = position;
+		bodyDef.linearVelocity = linerVel;
+		const float size = 1.3f;
+		b2CircleShape circle;
+		circle.m_radius = size;
+
+		b2FixtureDef fixtureDef;
+		fixtureDef.shape = &circle;
+		fixtureDef.filter.categoryBits = CollisionFillter::ENEMY;
+		fixtureDef.filter.maskBits = CollisionFillter::PLAYER | CollisionFillter::STATIC | CollisionFillter::BULLET;
+		//fixtureDef.isSensor = isSensor;
+		fixtureDef.density = 1.0f;
+		fixtureDef.friction = 0.0f;
+		fixtureDef.restitution = 1.0f;
+
+		auto entity = ECS.create();
+		ECS.assign<HealthComponent>(entity, 50.0f);
+
+		//sprite
+		{
+			auto& sprite = ECS.assign<sf::Sprite>(entity, Locator::Codex::ref().GetTexture(Database::TEnemy));
+			const auto textSize = sf::Vector2f(0.5f * (float)sprite.getTexture()->getSize().x, 0.5f * (float)sprite.getTexture()->getSize().y);
+			sprite.setOrigin(textSize);
+		}
+
+		ECS.assign<PhysicDebug>(entity);
+		ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
+		ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespond::Enemy>();
+	}
+	void AddPlayer(entt::DefaultRegistry& ECS)
+	{
+		b2BodyDef bodyDef;
+		bodyDef.type = b2_dynamicBody;
+		const float size = 1.3f;
+		b2CircleShape circle;
+		circle.m_radius = size;
+
+		b2FixtureDef fixtureDef;
+		fixtureDef.shape = &circle;
+		fixtureDef.filter.categoryBits = CollisionFillter::PLAYER;
+		//fixtureDef.filter.maskBits = CollisionFillter::ENEMY | CollisionFillter::STATIC;
+		//fixtureDef.isSensor = isSensor;
+		fixtureDef.density = 1.0f;
+		fixtureDef.friction = 0.0f;
+		fixtureDef.restitution = 1.0f;
+		
+		auto entity = ECS.create();
+		ECS.assign<HealthComponent>(entity, 50.0f);
+		ECS.assign<PlayerControllerComponent>(entity);
+
+		auto& animation = ECS.assign<AnimationComponent>(entity,
+			Locator::Codex::ref().GetAnimation(Database::PlayerAnimation),
+			ECS.assign<PlayerStateComponent>(entity).state);
+
+		ECS.assign<TransitionStateComponent>(entity).myDelegate.connect<&UpdateState::Player>();
+		//sprite
+		{
+			auto& sprite = ECS.assign<sf::Sprite>(entity);
+			sprite.setTexture(*animation.resource->texture);
+			const auto textSize = 0.5f * sf::Vector2f((float)animation.resource->tileWidth, (float)animation.resource->tileHeight);
+			sprite.setOrigin(textSize);
+		}
+
+		ECS.assign<PhysicDebug>(entity);
+		ECS.assign<CameraTracking>(entity);
+		ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
+		ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespond::Player>();
+	}
 private:
 	void InitServiceLocator()
 	{
@@ -138,15 +133,17 @@ private:
 	}
 	void InitSystem()
 	{
-		AddECSSystem(std::make_unique<PhysicSystem>());
 		AddECSSystem(std::make_unique<SpawnStaticObjectSystem>());
+		AddECSSystem(std::make_unique<LifeTimeSystem>());
+		AddECSSystem(std::make_unique<PlayerControllerSystem>());
+		AddECSSystem(std::make_unique<PlayerUpdateSystem>());
+		AddECSSystem(std::make_unique<PhysicSystem>());
 		AddECSSystem(std::make_unique<CollisionRespondSystem>());
 		AddECSSystem(std::make_unique<HealthSystem>());
 		AddECSSystem(std::make_unique<SpawnEnemySystem>());
 		AddECSSystem(std::make_unique<CleanDeadSystem>());
 		AddECSSystem(std::make_unique<MoveCameraSystem>());
 		AddECSSystem(std::make_unique<CullingSystem>());
-		AddECSSystem(std::make_unique<PlayerControllerSystem>());
 		AddECSSystem(std::make_unique<TransitionStateSystem>());
 		AddECSSystem(std::make_unique<AnimationSystem>());
 		//render Grid should be before render sprite and after move camera;
@@ -183,6 +180,34 @@ private:
 		fixtureDef.shape = &edgeShape;
 
 		Locator::ECS::ref().assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
+	}
+	void TestSomething()
+	{
+		auto& ECS = Locator::ECS::ref();
+		auto& rng = Locator::Random::ref();
+		const float worldSize = 100.0f;
+		AddWall(b2Vec2(worldSize, -worldSize), b2Vec2(worldSize, worldSize));
+		AddWall(b2Vec2(worldSize, worldSize), b2Vec2(-worldSize, worldSize));
+		AddWall(b2Vec2(-worldSize, worldSize), b2Vec2(-worldSize, -worldSize));
+		AddWall(b2Vec2(-worldSize, -worldSize), b2Vec2(worldSize, -worldSize));
+		//test text
+		{
+			auto entity = ECS.create();
+			const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
+			ECS.assign<sf::Text>(entity, "This is qwertyuiop lkjhgfdsa zxcvbnm 1234567890", textFont, 50);
+			ECS.assign<ScreenBaseUI>(entity);
+			ECS.assign<TextLocation>(entity, sf::Vector2f(-640.0f, -360.0f));
+		}
+
+		AddPlayer(ECS);
+
+		std::uniform_real_distribution<float> pos(-worldSize + 5.0f, worldSize - 5.0f);
+		std::uniform_real_distribution<float> speed(-20.0f, 20.0f);
+		for (size_t i = 0; i < 500; i++)
+		{
+			AddEnemy(ECS, b2Vec2(pos(rng), pos(rng)), b2Vec2(speed(rng), speed(rng)));
+		}
+
 	}
 private:
 	std::vector<std::unique_ptr<ISystemECS>> ecsSystems;

@@ -1,0 +1,14 @@
+{
+  "imageName": "pro_04_30_30_8.png",
+  "width": 240,
+  "height": 30,
+  "tileWidth": 30,
+  "tileHeight": 30,
+  "frameTime": 150,
+  "animationSets": [
+    {
+      "id": 1,
+      "index": [0, 6]
+    }
+  ]
+}

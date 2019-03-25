@@ -1,13 +1,14 @@
 #pragma once
-#include "../System/ISystemECS.h"
 #include "../Locator.h"
+#include "../System/ISystemECS.h"
 #include "../Component/PlayerControllerComponent.h"
-#include "../Component/AnimationComponent.h"
+#include "../MaxxConsole.h"
 class PlayerControllerSystem : public ISystemECS
 {
 public:
 	void Update(entt::DefaultRegistry& ECS, float dt) final
 	{
+		//keyboard
 		auto& kbd = Locator::Keyboard::ref();
 		sf::Vector2i dir{ 0,0 };
 		if (kbd.KeyIsPressed(sf::Keyboard::A))
@@ -26,66 +27,38 @@ public:
 		{
 			dir.y = 1;
 		}
-		auto view = ECS.view<PlayerControllerComponent>();
-		std::for_each(std::execution::par, view.begin(), view.end(), [&dir, &ECS](auto entity) {
-			ECS.get<PlayerControllerComponent>(entity).direction = dir;
+		if (kbd.KeyIsPressed(sf::Keyboard::Space))
+		{
+			if (MaxxConsole::r_showDebugPhysic == 0)
+			{
+				MaxxConsole::r_showDebugPhysic = 1;
+			}
+			else
+			{
+				MaxxConsole::r_showDebugPhysic = 0;
+			}
+		}
+		//mouse
+		auto& mouse = Locator::Mouse::ref();
+		bool bIsShooting = false;
+		while (!mouse.IsEmpty())
+		{
+			auto e = mouse.Read();
+			if (e.GetType() == Mouse::Event::Type::LPress)
+			{
+				bIsShooting = true;
+				continue;
+			}
+			/*if (e.GetType() == Mouse::Event::Type::RPress)
+			{
+
+				continue;
+			}*/
+		}
+		ECS.view<PlayerControllerComponent>().each([&dir, bIsShooting, &mouse](auto entity, PlayerControllerComponent& controller) {
+			controller.direction = dir;
+			controller.bIsShooting = bIsShooting;
+			controller.mousePos = mouse.GetPos();
 		});
 	}
 };
-
-//void backup()
-//{
-//	ECS.view<PlayerControllerComponent>().each([&dir, &ECS](auto entity, PlayerControllerComponent& animState) {
-//		if (dir == sf::Vector2i(0, 0))
-//		{
-//			if (animState == AnimationState::STANDING) return;
-//
-//			animState = AnimationState::STANDING;
-//			ECS.assign<ChangeState>(entity);
-//			return;
-//		}
-//
-//		if (animState == AnimationState::WALKING) return;
-//
-//		animState = AnimationState::WALKING;
-//		ECS.assign<ChangeState>(entity);
-//	});
-//
-//	ECS.view<PlayerController, Direction>().each([&dir, &ECS](auto entity, auto&, Direction& direction) {
-//		if (dir.x < 0)
-//		{
-//			if (direction == Direction::LEFT) return;
-//
-//			direction = Direction::LEFT;
-//			ECS.assign<ChangeDirection>(entity);
-//			return;
-//		}
-//
-//		if (dir.x > 0)
-//		{
-//			if (direction == Direction::RIGHT) return;
-//
-//			direction = Direction::RIGHT;
-//			ECS.assign<ChangeDirection>(entity);
-//			return;
-//		}
-//
-//		if (dir.y < 0)
-//		{
-//			if (direction == Direction::DOWN) return;
-//
-//			direction = Direction::DOWN;
-//			ECS.assign<ChangeDirection>(entity);
-//			return;
-//		}
-//
-//		if (dir.y > 0)
-//		{
-//			if (direction == Direction::UP) return;
-//
-//			direction = Direction::UP;
-//			ECS.assign<ChangeDirection>(entity);
-//			return;
-//		}
-//	});
-//}

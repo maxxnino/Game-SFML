@@ -75,6 +75,12 @@ public:
 	{
 		return b2Vec2((screenPos.x) / scalePixel, (-screenPos.y) / scalePixel);
 	}
+	b2Vec2 MouseToWorldPos(const sf::Vector2i& mousePos) const
+	{
+		const auto newPosition = window.getView().getCenter() + sf::Vector2f(mousePos) - halfSize;
+
+		return b2Vec2((newPosition.x) / scalePixel, (-newPosition.y) / scalePixel);
+	}
 	sf::Vector2f WorldToScreenPos(const b2Vec2& worldPos) const
 	{
 		return { worldPos.x * scalePixel, - worldPos.y * scalePixel};

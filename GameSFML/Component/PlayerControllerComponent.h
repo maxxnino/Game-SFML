@@ -3,4 +3,6 @@
 struct PlayerControllerComponent
 {
 	sf::Vector2i direction;
+	bool bIsShooting = false;
+	sf::Vector2i mousePos;
 };

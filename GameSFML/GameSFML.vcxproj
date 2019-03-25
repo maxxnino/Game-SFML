@@ -170,7 +170,9 @@
     <ClInclude Include="QuerySelectorBox2D.h" />
     <ClInclude Include="SystemInclude.h" />
     <ClInclude Include="System\CollisionRespondSystem.h" />
+    <ClInclude Include="System\LifeTimeSystem.h" />
     <ClInclude Include="System\PhysicSystem.h" />
+    <ClInclude Include="System\PlayerUpdateSystem.h" />
     <ClInclude Include="System\RenderTextSystem.h" />
     <ClInclude Include="System\TransitionStateSystem.h" />
     <ClInclude Include="System\AnimationSystem.h" />
