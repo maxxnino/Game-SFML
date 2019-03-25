@@ -2,4 +2,5 @@
 struct HealthComponent
 {
 	float curHealth;
+	float maxHealth;
 };

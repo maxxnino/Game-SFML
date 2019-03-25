@@ -4,7 +4,7 @@
 #include "System/RenderSpriteSystem.h"
 #include "System/RenderGridSystem.h"
 #include "System/DrawDebugSystem.h"
-#include "System/RenderTextSystem.h"
+#include "System/RenderScreenBaseUISystem.h"
 #include "System/HealthSystem.h"
 #include "System/SpawnAndCleanDeathSystem.h"
 #include "System/AnimationSystem.h"
@@ -15,3 +15,4 @@
 #include "System/TransitionStateSystem.h"
 #include "System/PlayerUpdateSystem.h"
 #include "System/LifeTimeSystem.h"
+#include "System/UpdateUISystem.h"

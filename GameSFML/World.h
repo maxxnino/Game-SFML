@@ -3,7 +3,6 @@
 #include "Box2DContactListener.h"
 #include "SystemInclude.h"
 #include "MyFreeFunction.h"
-#include "MaxxConsole.h"
 #include <random>
 class World
 {
@@ -32,10 +31,6 @@ public:
 		{
 			sys->Draw(gfx);
 		}
-		if (MaxxConsole::r_showDebugPhysic > 0)
-		{
-			debugSystem.Draw(gfx);
-		}
 		
 	}
 	void AddECSSystem(std::unique_ptr<ISystemECS> newSystem)
@@ -62,7 +57,7 @@ public:
 		fixtureDef.restitution = 1.0f;
 
 		auto entity = ECS.create();
-		ECS.assign<HealthComponent>(entity, 50.0f);
+		ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
 
 		//sprite
 		{
@@ -93,7 +88,7 @@ public:
 		fixtureDef.restitution = 1.0f;
 		
 		auto entity = ECS.create();
-		ECS.assign<HealthComponent>(entity, 50.0f);
+		ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
 		ECS.assign<PlayerControllerComponent>(entity);
 
 		auto& animation = ECS.assign<AnimationComponent>(entity,
@@ -109,16 +104,31 @@ public:
 			sprite.setOrigin(textSize);
 		}
 
+
 		ECS.assign<PhysicDebug>(entity);
 		ECS.assign<CameraTracking>(entity);
 		ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
 		ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespond::Player>();
+
+		//font
+		auto entityUI = ECS.create();
+		ECS.assign<OwnedUIComponent>(entity).entities.emplace_back(entityUI);
+		const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
+		ECS.assign<sf::Text>(entityUI, "Health: ", textFont, 50);
+		ECS.assign<ScreenBaseUI>(entityUI, entity, sf::Vector2f(-640.0f, -360.0f));
+		ECS.assign<UpdateUIComponent>(entityUI).myDelegate.connect<&UpdateUI::ScreenBaseHealthText>();
+		
 	}
 private:
+	void SignalComponent(entt::DefaultRegistry& ECS)
+	{
+		ECS.destruction<OwnedUIComponent>().connect<&UpdateUI::DeleteOwnedUIComponent>();
+	}
 	void InitServiceLocator()
 	{
 		Locator::Random::set(std::random_device{}());
 		Locator::ECS::set();
+		SignalComponent(Locator::ECS::ref());
 
 		Locator::Physic::set(b2Vec2(0.0f, 0.0f));
 		if (!Locator::ECS::empty())
@@ -140,9 +150,10 @@ private:
 		AddECSSystem(std::make_unique<PhysicSystem>());
 		AddECSSystem(std::make_unique<CollisionRespondSystem>());
 		AddECSSystem(std::make_unique<HealthSystem>());
+		AddECSSystem(std::make_unique<MoveCameraSystem>());
+		AddECSSystem(std::make_unique<UpdateUISystem>());
 		AddECSSystem(std::make_unique<SpawnEnemySystem>());
 		AddECSSystem(std::make_unique<CleanDeadSystem>());
-		AddECSSystem(std::make_unique<MoveCameraSystem>());
 		AddECSSystem(std::make_unique<CullingSystem>());
 		AddECSSystem(std::make_unique<TransitionStateSystem>());
 		AddECSSystem(std::make_unique<AnimationSystem>());
@@ -159,12 +170,8 @@ private:
 			drawSystems.emplace_back(static_cast<IDrawSystem*>(newSystem.get()));
 			ecsSystems.emplace_back(std::move(newSystem));
 		}
-
-		{
-			auto newSystem = std::make_unique<RenderTextSystem>();
-			drawSystems.emplace_back(static_cast<IDrawSystem*>(newSystem.get()));
-			ecsSystems.emplace_back(std::move(newSystem));
-		}
+		drawSystems.emplace_back(static_cast<IDrawSystem*>(&debugSystem));
+		drawSystems.emplace_back(static_cast<IDrawSystem*>(&renderScreenBaseUISystem));
 	}
 	void AddWall(b2Vec2 p1, b2Vec2 p2)
 	{
@@ -190,14 +197,6 @@ private:
 		AddWall(b2Vec2(worldSize, worldSize), b2Vec2(-worldSize, worldSize));
 		AddWall(b2Vec2(-worldSize, worldSize), b2Vec2(-worldSize, -worldSize));
 		AddWall(b2Vec2(-worldSize, -worldSize), b2Vec2(worldSize, -worldSize));
-		//test text
-		{
-			auto entity = ECS.create();
-			const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
-			ECS.assign<sf::Text>(entity, "This is qwertyuiop lkjhgfdsa zxcvbnm 1234567890", textFont, 50);
-			ECS.assign<ScreenBaseUI>(entity);
-			ECS.assign<TextLocation>(entity, sf::Vector2f(-640.0f, -360.0f));
-		}
 
 		AddPlayer(ECS);
 
@@ -212,5 +211,6 @@ private:
 private:
 	std::vector<std::unique_ptr<ISystemECS>> ecsSystems;
 	std::vector<IDrawSystem*> drawSystems;
+	RenderScreenBaseUISystem renderScreenBaseUISystem;
 	DrawDebugSystem debugSystem;
 };

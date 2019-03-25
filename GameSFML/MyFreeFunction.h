@@ -1,4 +1,5 @@
 #pragma once
+#include <sstream>
 #include "Locator.h"
 #include "Component/PlayerStateComponent.h"
 #include "Component/PlayerControllerComponent.h"
@@ -89,7 +90,7 @@ struct CollisionRespond
 {
 	static void Player(uint32_t entity, entt::DefaultRegistry& ECS)
 	{
-		/*auto& callbackData = ECS.get<CollisionCallbackData>(entity);
+		auto& callbackData = ECS.get<CollisionCallbackData>(entity);
 
 		for (auto& other : callbackData.others)
 		{
@@ -99,10 +100,10 @@ struct CollisionRespond
 			{
 				if (ECS.has<HealthComponent>(entity))
 				{
-					ECS.get<HealthComponent>(entity).curHealth -= 5.0f;
+					ECS.get<HealthComponent>(entity).curHealth -= 1.0f;
 				}
 			}
-		}*/
+		}
 	}
 	static void Enemy(uint32_t entity, entt::DefaultRegistry& ECS)
 	{
@@ -140,6 +141,34 @@ struct CollisionRespond
 					ECS.get<HealthComponent>(other.first).curHealth -= 20.0f;
 				}
 			}
+		}
+	}
+};
+struct UpdateUI
+{
+	static void ScreenBaseHealthText(uint32_t entity, entt::DefaultRegistry& ECS)
+	{
+		if (!ECS.has<sf::Text>(entity) || !ECS.has<ScreenBaseUI>(entity)) return;
+
+		auto& UI = ECS.get<ScreenBaseUI>(entity);
+
+		if (!ECS.has<HealthComponent>(UI.ownerEntity)) return;
+
+		auto& text = ECS.get<sf::Text>(entity);
+		auto& health = ECS.get<HealthComponent>(UI.ownerEntity);
+		std::stringstream ss;
+		ss << "Health: " << (int)health.curHealth << " / " << (int)health.maxHealth;
+		text.setString(ss.str());
+		if (Locator::Graphic::empty()) return;
+
+		text.setPosition(Locator::Graphic::ref().GetViewportLocation() + UI.offsetLocaion);
+	}
+	static void DeleteOwnedUIComponent(entt::DefaultRegistry& ECS, uint32_t entity)
+	{
+		auto& owend = ECS.get<OwnedUIComponent>(entity);
+		for (auto& e : owend.entities)
+		{
+			ECS.destroy(e);
 		}
 	}
 };

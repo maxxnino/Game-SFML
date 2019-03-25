@@ -4,12 +4,15 @@
 #include "../System/IDrawSystem.h"
 #include "../Locator.h"
 #include "../Component/GameplayTags.h"
+#include "../MaxxConsole.h"
 class DrawDebugSystem : public IDrawSystem
 {
 public:
 	void Draw(Graphics& gfx) const final
 	{
 		if (Locator::ECS::empty()) return;
+
+		if (MaxxConsole::r_showDebugPhysic == 0) return;
 
 		auto& ECS = Locator::ECS::ref();
 		ECS.view<Viewable, PhysicDebug, PhysicComponent>().each([&ECS, &gfx](auto entity, auto&, auto&, PhysicComponent &physic) {

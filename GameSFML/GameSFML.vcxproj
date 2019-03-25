@@ -142,7 +142,7 @@
     <ClInclude Include="Component\AnimationComponent.h" />
     <ClInclude Include="Component\CollisionRespondComponent.h" />
     <ClInclude Include="Component\PlayerStateComponent.h" />
-    <ClInclude Include="Component\TextComponent.h" />
+    <ClInclude Include="Component\UIComponent.h" />
     <ClInclude Include="Component\TransitionStateComponent.h" />
     <ClInclude Include="Component\GameplayTags.h" />
     <ClInclude Include="Component\HealthComponent.h" />
@@ -173,7 +173,7 @@
     <ClInclude Include="System\LifeTimeSystem.h" />
     <ClInclude Include="System\PhysicSystem.h" />
     <ClInclude Include="System\PlayerUpdateSystem.h" />
-    <ClInclude Include="System\RenderTextSystem.h" />
+    <ClInclude Include="System\RenderScreenBaseUISystem.h" />
     <ClInclude Include="System\TransitionStateSystem.h" />
     <ClInclude Include="System\AnimationSystem.h" />
     <ClInclude Include="System\CullingSystem.h" />
@@ -187,6 +187,7 @@
     <ClInclude Include="System\RenderSpriteSystem.h" />
     <ClInclude Include="System\SpawnAndCleanDeathSystem.h" />
     <ClInclude Include="System\SpawnStaticObjectSystem.h" />
+    <ClInclude Include="System\UpdateUISystem.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -10,7 +10,12 @@ public:
 	void Update(entt::DefaultRegistry& ECS, float dt) final
 	{
 		ECS.view<HealthComponent>().each([&ECS](auto entity, HealthComponent &Health) {
-			if (Health.curHealth > 0.0f) return;
+			if (Health.curHealth > Health.maxHealth)
+			{
+				Health.curHealth = Health.maxHealth;
+				return;
+			}
+			if (Health.curHealth > 0) return;
 
 			ECS.assign<DeathTag>(entity);
 		});

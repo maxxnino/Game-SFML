@@ -5,8 +5,6 @@ struct Viewable {};
 struct PhysicDebug {};
 struct Overlaped {};
 struct CameraTracking {};
-struct ScreenBaseUI {};
-struct WorldBaseUI {};
 struct LifeTimeComponent
 {
 	float maxLifeTime = 0.0f;

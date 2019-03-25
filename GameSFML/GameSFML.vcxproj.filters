@@ -179,12 +179,6 @@
     <ClInclude Include="MaxxConsole.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="System\RenderTextSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\TextComponent.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
     <ClInclude Include="System\PhysicSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
@@ -198,6 +192,15 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="System\LifeTimeSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\UIComponent.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="System\RenderScreenBaseUISystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="System\UpdateUISystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>

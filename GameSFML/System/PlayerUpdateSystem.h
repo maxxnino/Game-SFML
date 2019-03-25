@@ -20,7 +20,7 @@ public:
 			{
 				auto entityBullet = ECS.create();
 				ECS.assign<LifeTimeComponent>(entityBullet, 5.0f, 0.0f);
-				ECS.assign<HealthComponent>(entityBullet, 10.0f);
+				ECS.assign<HealthComponent>(entityBullet, 10.0f, 10.0f);
 				//animation
 				auto& animation = ECS.assign<AnimationComponent>(entityBullet, Locator::Codex::ref().GetAnimation(Database::BulletAnimation));
 				b2CircleShape circle;
@@ -30,7 +30,7 @@ public:
 					sprite.setTexture(*animation.resource->texture);
 					const auto textSize = 0.5f * sf::Vector2f((float)animation.resource->tileWidth, (float)animation.resource->tileHeight);
 					sprite.setOrigin(textSize);
-					circle.m_radius = textSize.x / gfx.scalePixel;
+					circle.m_radius = 0.8f * textSize.x / gfx.scalePixel;
 				}
 
 				//physic
@@ -45,7 +45,7 @@ public:
 				b2FixtureDef fixtureDef;
 				fixtureDef.shape = &circle;
 				fixtureDef.filter.categoryBits = CollisionFillter::BULLET;
-				fixtureDef.filter.maskBits = CollisionFillter::STATIC | CollisionFillter::ENEMY;
+				fixtureDef.filter.maskBits = CollisionFillter::ENEMY;
 				//fixtureDef.isSensor = true;
 				fixtureDef.density = 1.0f;
 				fixtureDef.friction = 0.0f;
