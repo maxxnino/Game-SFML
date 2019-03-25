@@ -12,7 +12,7 @@ public:
 	{
 		InitServiceLocator();
 		InitSystem();
-		const float worldSize = 200.0f;
+		const float worldSize = 100.0f;
 		AddWall(b2Vec2(worldSize,-worldSize),b2Vec2(worldSize, worldSize));
 		AddWall(b2Vec2(worldSize, worldSize), b2Vec2(-worldSize, worldSize));
 		AddWall(b2Vec2(-worldSize, worldSize), b2Vec2(-worldSize, -worldSize));
@@ -58,7 +58,7 @@ public:
 			ECS.assign<ScreenBaseUI>(entity);
 			ECS.assign<TextLocation>(entity, sf::Vector2f(-640.0f,-360.0f));
 		}
-		for (size_t i = 0; i < 2000; i++)
+		for (size_t i = 0; i < 1000; i++)
 		{
 			auto entity = ECS.create();
 			ECS.assign<HealthComponent>(entity, 50.0f);
@@ -68,7 +68,7 @@ public:
 				Locator::Codex::ref().GetAnimation(Database::PlayerAnimation), 
 				ECS.assign<PlayerStateComponent>(entity).state);
 
-			ECS.assign<TransitionStateComponent>(entity).signal.sink().connect<&Maxx::PlayerUpdateState>();
+			ECS.assign<TransitionStateComponent>(entity).myDelegate.connect<&UpdateState::Player>();
 			//sprite
 			{
 				auto& sprite = ECS.assign<sf::Sprite>(entity);
@@ -83,10 +83,12 @@ public:
 			if (rangeID(rng) > 5)
 			{
 				ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
+				ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespond::Player>();
 			}
 			else
 			{
 				ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef1);
+				ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespond::Enemy>();
 			}
 		}
 	}

@@ -11,7 +11,10 @@ class CollisionRespondSystem : public ISystemECS
 	{
 		auto view = ECS.view<CollisionCallbackData, CollisionRespondComponent>();
 		std::for_each(std::execution::par, view.begin(), view.end(), [&ECS](auto entity) {
-			ECS.get<CollisionRespondComponent>(entity).signal.publish(entity, ECS);
+			auto& respond = ECS.get<CollisionRespondComponent>(entity);
+			if (respond.myDelegate.empty()) return;
+
+			respond.myDelegate(entity, ECS);
 		});
 
 		ECS.reset<CollisionCallbackData>();

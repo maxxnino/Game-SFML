@@ -8,7 +8,10 @@ public:
 	{
 		auto view = ECS.view<TransitionStateComponent>();
 		std::for_each(std::execution::par, view.begin(), view.end(), [&ECS](auto entity) {
-			ECS.get<TransitionStateComponent>(entity).signal.publish(entity, ECS);
+			auto& respond = ECS.get<TransitionStateComponent>(entity);
+			if (respond.myDelegate.empty()) return;
+
+			respond.myDelegate(entity, ECS);
 		});
 	}
 };

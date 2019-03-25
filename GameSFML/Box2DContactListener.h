@@ -23,9 +23,7 @@ public:
 			}
 			else
 			{
-				auto& callbackData = ECS.assign<CollisionCallbackData>(entity1);
-				callbackData.selfCatagory = categoryBits1;
-				callbackData.others.emplace_back(std::make_pair(entity2, categoryBits2));
+				ECS.assign<CollisionCallbackData>(entity1).others.emplace_back(std::make_pair(entity2, categoryBits2));
 			}
 		}
 		if (ECS.has<CollisionRespondComponent>(entity2))
@@ -36,9 +34,7 @@ public:
 			}
 			else
 			{
-				auto& callbackData = ECS.assign<CollisionCallbackData>(entity2);
-				callbackData.selfCatagory = categoryBits2;
-				callbackData.others.emplace_back(std::make_pair(entity1, categoryBits1));
+				ECS.assign<CollisionCallbackData>(entity2).others.emplace_back(std::make_pair(entity1, categoryBits1));
 			}
 		}
 	}

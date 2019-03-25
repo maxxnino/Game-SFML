@@ -3,9 +3,9 @@
 #include "Component/PlayerStateComponent.h"
 #include "Component/PlayerControllerComponent.h"
 #include "Component/AnimationComponent.h"
-namespace Maxx
+struct UpdateState
 {
-	void PlayerUpdateState(uint32_t entity, entt::DefaultRegistry& ECS)
+	static void Player(uint32_t entity, entt::DefaultRegistry& ECS)
 	{
 		if (!ECS.has<PlayerStateComponent>(entity) || !ECS.has<PlayerControllerComponent>(entity)) return;
 
@@ -14,9 +14,9 @@ namespace Maxx
 		if (controller.direction == sf::Vector2i(0, 0))
 		{
 			if (state.state == PlayerStateComponent::State::Standing) return;
-			
+
 			state.state = PlayerStateComponent::State::Standing;
-			
+
 			if (!ECS.has<AnimationComponent>(entity)) return;
 
 			auto& animation = ECS.get<AnimationComponent>(entity);
@@ -29,7 +29,7 @@ namespace Maxx
 			if (controller.direction.x < 0)
 			{
 				if (state.direction == PlayerStateComponent::Direction::Left) return;
-				
+
 				state.direction = PlayerStateComponent::Direction::Left;
 
 				if (!ECS.has<AnimationComponent>(entity)) return;
@@ -40,11 +40,11 @@ namespace Maxx
 				animation.iCurFrame = animation.rangeIndex.first;
 				return;
 			}
-				
+
 			if (controller.direction.x > 0)
 			{
 				if (state.direction == PlayerStateComponent::Direction::Right) return;
-				
+
 				state.direction = PlayerStateComponent::Direction::Right;
 				if (!ECS.has<AnimationComponent>(entity)) return;
 				auto& animation = ECS.get<AnimationComponent>(entity);
@@ -54,11 +54,11 @@ namespace Maxx
 				animation.iCurFrame = animation.rangeIndex.first;
 				return;
 			}
-				
+
 			if (controller.direction.y < 0)
 			{
 				if (state.direction == PlayerStateComponent::Direction::Down) return;
-				
+
 				state.direction = PlayerStateComponent::Direction::Down;
 				if (!ECS.has<AnimationComponent>(entity)) return;
 				auto& animation = ECS.get<AnimationComponent>(entity);
@@ -68,11 +68,11 @@ namespace Maxx
 				animation.iCurFrame = animation.rangeIndex.first;
 				return;
 			}
-				
+
 			if (controller.direction.y > 0)
 			{
 				if (state.direction == PlayerStateComponent::Direction::Up) return;
-				
+
 				state.direction = PlayerStateComponent::Direction::Up;
 				if (!ECS.has<AnimationComponent>(entity)) return;
 				auto& animation = ECS.get<AnimationComponent>(entity);
@@ -84,4 +84,41 @@ namespace Maxx
 			}
 		}
 	}
-}
+};
+struct CollisionRespond
+{
+	static void Player(uint32_t entity, entt::DefaultRegistry& ECS)
+	{
+		auto& callbackData = ECS.get<CollisionCallbackData>(entity);
+
+		for (auto& other : callbackData.others)
+		{
+			if (other.second == CollisionFillter::PLAYER) continue;
+
+			if (other.second == CollisionFillter::ENEMY)
+			{
+				if (ECS.has<HealthComponent>(entity))
+				{
+					ECS.get<HealthComponent>(entity).curHealth -= 5.0f;
+				}
+			}
+		}
+	}
+	static void Enemy(uint32_t entity, entt::DefaultRegistry& ECS)
+	{
+		auto& callbackData = ECS.get<CollisionCallbackData>(entity);
+
+		for (auto& other : callbackData.others)
+		{
+			if (other.second == CollisionFillter::ENEMY) continue;
+
+			if (other.second == CollisionFillter::PLAYER)
+			{
+				if (ECS.has<HealthComponent>(entity))
+				{
+					ECS.get<HealthComponent>(entity).curHealth -= 5.0f;
+				}
+			}
+		}
+	}
+};
