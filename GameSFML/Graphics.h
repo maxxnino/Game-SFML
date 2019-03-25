@@ -67,6 +67,10 @@ public:
 		view.setCenter(view.getCenter() + (sf::Vector2f)screenPos);
 		window.setView(view);
 	}
+	sf::Vector2f GetViewportLocation() const
+	{
+		return window.getView().getCenter();
+	}
 	b2Vec2 ScreenToWorldPos(const sf::Vector2f& screenPos) const
 	{
 		return b2Vec2((screenPos.x) / scalePixel, (-screenPos.y) / scalePixel);

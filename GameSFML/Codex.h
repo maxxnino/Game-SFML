@@ -8,14 +8,14 @@
 struct TextureLoader final : entt::ResourceLoader<TextureLoader, sf::Texture> {
 	std::shared_ptr<sf::Texture> load(entt::HashedString filename) const
 	{
-		auto texture = std::make_shared<sf::Texture>();
+		auto resource = std::make_shared<sf::Texture>();
 
-		if (!texture->loadFromFile(static_cast<const char *>(filename)))
+		if (!resource->loadFromFile(static_cast<const char *>(filename)))
 		{
 			assert(false);
 		}
 		
-		return texture;
+		return resource;
 	}
 };
 struct AnimationLoader final : entt::ResourceLoader<AnimationLoader, AnimationResource> {
@@ -112,6 +112,20 @@ struct MapLoader final : entt::ResourceLoader<MapLoader, MapResource> {
 			}
 		}
 
+
+		return resource;
+	}
+};
+struct FontLoader final : entt::ResourceLoader<FontLoader, sf::Font> {
+	std::shared_ptr<sf::Font> load(entt::HashedString filename) const
+	{
+		auto resource = std::make_shared<sf::Font>();
+
+		if (!resource->loadFromFile(static_cast<const char *>(filename)))
+		{
+			assert(false);
+		}
+
 		return resource;
 	}
 };
@@ -162,7 +176,16 @@ public:
 		mapCache.load<MapLoader>(filename, Json, GetTexture(texturePath));
 		return mapCache.handle(filename).get();
 	}
-	
+	const sf::Font& GetFont(entt::HashedString filename)
+	{
+		if (fontCache.contains(filename))
+		{
+			return fontCache.handle(filename).get();
+		}
+
+		fontCache.load<FontLoader>(filename, filename);
+		return fontCache.handle(filename).get();
+	}
 private:
 	const nlohmann::json GetJson(entt::HashedString filename) const
 	{
@@ -174,6 +197,7 @@ private:
 	}
 private:
 	entt::ResourceCache<sf::Texture> textureCache;
+	entt::ResourceCache<sf::Font> fontCache;
 	entt::ResourceCache<AnimationResource> animationCache;
 	entt::ResourceCache<MapResource> mapCache;
 };

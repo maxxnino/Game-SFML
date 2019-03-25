@@ -68,6 +68,7 @@ public:
 		}
 
 		//make vertex form tileObject
+		if (!resource.tilesWithObject.empty())
 		{
 			staticLayers.emplace_back(sf::VertexArray(sf::Quads, gridW * gridH * 4));
 			tileObjectLayer = &resource.tilesWithObject;
@@ -161,6 +162,7 @@ public:
 				}
 			}
 		}
+		if (tileObjectLayer == nullptr) return;
 		
 		for (int i = left; i < right; ++i)
 		{
@@ -178,6 +180,7 @@ public:
 				drawLayers.append(staticLayers.back()[cur + 3]);
 			}
 		}
+		
 		//std::cout << "Vertices: " << drawLayers.getVertexCount() << ", Tiles: " << drawLayers.getVertexCount() / 4 << std::endl;
 	}
 private:
@@ -196,7 +199,7 @@ private:
 	int tileSize = 40, gridW = 0, gridH = 0;
 	const sf::Texture* tileTexture = nullptr;
 	const std::vector<std::vector<unsigned int>>* layers;
-	const std::vector<unsigned int>* tileObjectLayer;
+	const std::vector<unsigned int>* tileObjectLayer = nullptr;
 	std::vector<sf::VertexArray> staticLayers;
 	sf::VertexArray drawLayers;
 	std::vector<MapResource::Object> staticObjects;

@@ -3,6 +3,7 @@
 #include "Box2DContactListener.h"
 #include "SystemInclude.h"
 #include "MyFreeFunction.h"
+#include "MaxxConsole.h"
 #include <random>
 class World
 {
@@ -16,6 +17,10 @@ public:
 		AddWall(b2Vec2(-100.0f, 50.0f), b2Vec2(-100.0f, -50.0f));
 		AddWall(b2Vec2(-100.0f, -50.0f), b2Vec2(100.0f, -50.0f));
 
+		
+		
+
+		
 		b2BodyDef bodyDef;
 		bodyDef.type = b2_dynamicBody;
 		const float size = 1.3f;
@@ -41,14 +46,20 @@ public:
 		fixtureDef1.restitution = 1.0f;
 
 		std::uniform_int_distribution<int> rangeID(0, 10);
-		std::uniform_real_distribution<float> rangeX(-1000.0f, 1000.0f);
-		std::uniform_real_distribution<float> rangeY(-1000.0f, 1000.0f);
+		std::uniform_real_distribution<float> rangeX(-100.0f, 100.0f);
+		std::uniform_real_distribution<float> rangeY(-100.0f, 100.0f);
 		std::uniform_real_distribution<float> speedRange(-20.0f, 20.0f);
 
 		auto& rng = Locator::Random::ref();
 		auto& ECS = Locator::ECS::ref();
-		auto shareEntity = ECS.create();
-		
+		//test text
+		{
+			auto entity = ECS.create();
+			const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
+			ECS.assign<sf::Text>(entity, "This is Text String", textFont,50);
+			ECS.assign<ScreenBaseUI>(entity);
+			ECS.assign<TextLocation>(entity, sf::Vector2f(-640.0f,-360.0f));
+		}
 		for (size_t i = 0; i < 1000; i++)
 		{
 			auto entity = ECS.create();
@@ -97,12 +108,13 @@ public:
 		auto& gfx = Locator::Graphic::ref();
 		for (auto sys : drawSystems)
 		{
-			if (sys != nullptr)
-			{
-				sys->Draw(gfx);
-			}
+			sys->Draw(gfx);
 		}
-		debugSystem.Draw(gfx);
+		if (MaxxConsole::r_showDebugPhysic > 0)
+		{
+			debugSystem.Draw(gfx);
+		}
+		
 	}
 	void AddECSSystem(std::unique_ptr<ISystemECS> newSystem)
 	{
@@ -145,6 +157,12 @@ private:
 		//render Sprite should be the last
 		{
 			auto newSystem = std::make_unique<RenderSpriteSystem>();
+			drawSystems.emplace_back(static_cast<IDrawSystem*>(newSystem.get()));
+			ecsSystems.emplace_back(std::move(newSystem));
+		}
+
+		{
+			auto newSystem = std::make_unique<RenderTextSystem>();
 			drawSystems.emplace_back(static_cast<IDrawSystem*>(newSystem.get()));
 			ecsSystems.emplace_back(std::move(newSystem));
 		}

@@ -141,6 +141,7 @@
     <ClInclude Include="CollidableUI.h" />
     <ClInclude Include="Component\AnimationComponent.h" />
     <ClInclude Include="Component\PlayerStateComponent.h" />
+    <ClInclude Include="Component\TextComponent.h" />
     <ClInclude Include="Component\TransitionStateComponent.h" />
     <ClInclude Include="Component\GameplayTags.h" />
     <ClInclude Include="Component\HealthComponent.h" />
@@ -157,6 +158,7 @@
     <ClInclude Include="ListenerBox2DGUI.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="MaxxConsole.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MenuManager.h" />
     <ClInclude Include="Mouse.h" />
@@ -166,6 +168,7 @@
     <ClInclude Include="PhysicObject.h" />
     <ClInclude Include="QuerySelectorBox2D.h" />
     <ClInclude Include="SystemInclude.h" />
+    <ClInclude Include="System\RenderTextSystem.h" />
     <ClInclude Include="System\TransitionStateSystem.h" />
     <ClInclude Include="System\AnimationSystem.h" />
     <ClInclude Include="System\CullingSystem.h" />
