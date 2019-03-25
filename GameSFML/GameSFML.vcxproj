@@ -140,6 +140,7 @@
     <ClInclude Include="Codex.h" />
     <ClInclude Include="CollidableUI.h" />
     <ClInclude Include="Component\AnimationComponent.h" />
+    <ClInclude Include="Component\CollisionCallbackComponent.h" />
     <ClInclude Include="Component\PlayerStateComponent.h" />
     <ClInclude Include="Component\TextComponent.h" />
     <ClInclude Include="Component\TransitionStateComponent.h" />
@@ -168,6 +169,8 @@
     <ClInclude Include="PhysicObject.h" />
     <ClInclude Include="QuerySelectorBox2D.h" />
     <ClInclude Include="SystemInclude.h" />
+    <ClInclude Include="System\CollisionCallbackSystem.h" />
+    <ClInclude Include="System\PhysicSystem.h" />
     <ClInclude Include="System\RenderTextSystem.h" />
     <ClInclude Include="System\TransitionStateSystem.h" />
     <ClInclude Include="System\AnimationSystem.h" />

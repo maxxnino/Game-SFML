@@ -12,13 +12,11 @@ public:
 	{
 		InitServiceLocator();
 		InitSystem();
-		AddWall(b2Vec2(100.0f,-50.0f),b2Vec2(100.0f, 50.0f));
-		AddWall(b2Vec2(100.0f, 50.0f), b2Vec2(-100.0f, 50.0f));
-		AddWall(b2Vec2(-100.0f, 50.0f), b2Vec2(-100.0f, -50.0f));
-		AddWall(b2Vec2(-100.0f, -50.0f), b2Vec2(100.0f, -50.0f));
-
-		
-		
+		const float worldSize = 200.0f;
+		AddWall(b2Vec2(worldSize,-worldSize),b2Vec2(worldSize, worldSize));
+		AddWall(b2Vec2(worldSize, worldSize), b2Vec2(-worldSize, worldSize));
+		AddWall(b2Vec2(-worldSize, worldSize), b2Vec2(-worldSize, -worldSize));
+		AddWall(b2Vec2(-worldSize, -worldSize), b2Vec2(worldSize, -worldSize));
 
 		
 		b2BodyDef bodyDef;
@@ -46,8 +44,8 @@ public:
 		fixtureDef1.restitution = 1.0f;
 
 		std::uniform_int_distribution<int> rangeID(0, 10);
-		std::uniform_real_distribution<float> rangeX(-100.0f, 100.0f);
-		std::uniform_real_distribution<float> rangeY(-100.0f, 100.0f);
+		std::uniform_real_distribution<float> rangeX(-worldSize + 5.0f, worldSize - 5.0f);
+		std::uniform_real_distribution<float> rangeY(-worldSize + 5.0f, worldSize - 5.0f);
 		std::uniform_real_distribution<float> speedRange(-20.0f, 20.0f);
 
 		auto& rng = Locator::Random::ref();
@@ -56,11 +54,11 @@ public:
 		{
 			auto entity = ECS.create();
 			const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
-			ECS.assign<sf::Text>(entity, "This is Text String", textFont,50);
+			ECS.assign<sf::Text>(entity, "This is qwertyuiop lkjhgfdsa zxcvbnm 1234567890", textFont,50);
 			ECS.assign<ScreenBaseUI>(entity);
 			ECS.assign<TextLocation>(entity, sf::Vector2f(-640.0f,-360.0f));
 		}
-		for (size_t i = 0; i < 1000; i++)
+		for (size_t i = 0; i < 2000; i++)
 		{
 			auto entity = ECS.create();
 			ECS.assign<HealthComponent>(entity, 50.0f);
@@ -94,7 +92,6 @@ public:
 	}
 	void Update(float dt)
 	{
-		Locator::Physic::ref().Step(dt, 4, 2);
 		if (Locator::ECS::empty()) return;
 		
 		for (auto& sys : ecsSystems)
@@ -124,21 +121,24 @@ private:
 	void InitServiceLocator()
 	{
 		Locator::Random::set(std::random_device{}());
-
-		Locator::Physic::set(b2Vec2(0.0f, 0.0f));
-		static Box2DContactListener mrListener;
-		Locator::Physic::ref().SetContactListener(&mrListener);
-
 		Locator::ECS::set();
 
-		Locator::Codex::set();
+		Locator::Physic::set(b2Vec2(0.0f, 0.0f));
+		if (!Locator::ECS::empty())
+		{
+			static Box2DContactListener mrListener{ Locator::ECS::ref() };
+			Locator::Physic::ref().SetContactListener(&mrListener);
+		}		
 
+		Locator::Codex::set();
 		Locator::Grid::set();
 		Locator::Grid::ref().LoadFromFile(Locator::Codex::ref(), Locator::ECS::ref());
 	}
 	void InitSystem()
 	{
+		AddECSSystem(std::make_unique<PhysicSystem>());
 		AddECSSystem(std::make_unique<SpawnStaticObjectSystem>());
+		AddECSSystem(std::make_unique<CollisionCallbackSystem>());
 		AddECSSystem(std::make_unique<HealthSystem>());
 		AddECSSystem(std::make_unique<SpawnEnemySystem>());
 		AddECSSystem(std::make_unique<CleanDeadSystem>());
