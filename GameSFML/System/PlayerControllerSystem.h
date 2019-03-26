@@ -3,7 +3,7 @@
 #include "../System/ISystemECS.h"
 #include "../Component/PlayerControllerComponent.h"
 #include "../MaxxConsole.h"
-class PlayerControllerSystem : public ISystemECS
+class PlayerControllerSystem final : public ISystemECS
 {
 public:
 	void Update(entt::DefaultRegistry& ECS, float dt) final

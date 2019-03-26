@@ -1,7 +1,7 @@
 #pragma once
 #include "../System/ISystemECS.h"
 #include "../Component/TransitionStateComponent.h"
-class TransitionStateSystem : public ISystemECS
+class TransitionStateSystem final : public ISystemECS
 {
 public:
 	void Update(entt::DefaultRegistry& ECS, float dt) final

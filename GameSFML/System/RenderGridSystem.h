@@ -2,7 +2,7 @@
 #include "../Locator.h"
 #include "../System/ISystemECS.h"
 #include "../System/IDrawSystem.h"
-class RenderGridSystem : public ISystemECS, public IDrawSystem
+class GridUpdateSystem final : public ISystemECS
 {
 public:
 	void Update(entt::DefaultRegistry& ECS, float dt) final
@@ -12,7 +12,11 @@ public:
 		auto viewport = Locator::Graphic::ref().GetViewportScreen();
 		Locator::Grid::ref().Culling(viewport.first, viewport.second);
 	}
-	void Draw(Graphics& gfx) const final
+};
+class RenderGridSystem final : public IDrawSystem
+{
+public:
+	void Draw(Graphics& gfx, entt::DefaultRegistry& ECS) const final
 	{
 		if (Locator::Grid::empty()) return;
 

@@ -2,15 +2,13 @@
 #include "../Locator.h"
 #include "../System/IDrawSystem.h"
 #include "../Component/UIComponent.h"
-class RenderScreenBaseUISystem : public IDrawSystem
+class RenderScreenBaseUISystem final : public IDrawSystem
 {
 public:
-	void Draw(Graphics& gfx) const final
+	void Draw(Graphics& gfx, entt::DefaultRegistry& ECS) const final
 	{
-		if (Locator::ECS::empty()) return;
-
-		Locator::ECS::ref().view<ProgressiveBarComponent, ScreenBaseUI>().each([&gfx](auto entity, ProgressiveBarComponent& bar, ScreenBaseUI& UI) {
-			const auto location = Locator::Graphic::ref().GetViewportLocation() + UI.offsetLocaion;
+		ECS.view<ScreenBaseUI, ProgressiveBarComponent>().each([&gfx](auto entity, ScreenBaseUI& UI, ProgressiveBarComponent& bar) {
+			const auto location = gfx.GetViewportLocation() + UI.offsetLocaion;
 
 			sf::RectangleShape rectBG;
 			sf::RectangleShape rectBase;
@@ -25,10 +23,8 @@ public:
 			gfx.Draw(rectBase);
 		});
 
-		Locator::ECS::ref().view<ScreenBaseUI, sf::Text>().each([&gfx](auto entity, ScreenBaseUI& UI, sf::Text& text) {
+		ECS.view<ScreenBaseUI, sf::Text>().each([&gfx](auto entity, ScreenBaseUI& UI, sf::Text& text) {
 			gfx.Draw(text);
 		});
-
-		
 	}
 };

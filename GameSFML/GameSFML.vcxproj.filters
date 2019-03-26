@@ -200,6 +200,9 @@
     <ClInclude Include="System\RenderScreenBaseUISystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="System\RenderWorldBaseUISystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
     <ClInclude Include="System\UpdateUISystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>

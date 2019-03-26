@@ -185,14 +185,27 @@ struct UpdateUI
 			ECS.destroy(e);
 		}
 	}
+	static void WorldBaseHealthBar(uint32_t entity, entt::DefaultRegistry& ECS)
+	{
+		if (!ECS.has<ProgressiveBarComponent>(entity) || !ECS.has<WorldBaseUI>(entity)) return;
+
+		auto& UI = ECS.get<WorldBaseUI>(entity);
+
+		if (!ECS.has<HealthComponent>(UI.ownerEntity)) return;
+
+		auto& progressBar = ECS.get<ProgressiveBarComponent>(entity);
+		auto& health = ECS.get<HealthComponent>(UI.ownerEntity);
+		progressBar.percent = health.curHealth / health.maxHealth;
+	}
 };
 struct UIFactory
 {
 	static uint32_t GetEntity(uint32_t entityOwner, entt::DefaultRegistry& ECS, bool bIsHaveOwner = true)
 	{
+		auto uiEntity = ECS.create();
 		if (bIsHaveOwner)
 		{
-			auto uiEntity = ECS.create();
+			
 			if (ECS.has<OwnedUIComponent>(entityOwner))
 			{
 				auto& ownedUICom = ECS.get<OwnedUIComponent>(entityOwner);
@@ -207,6 +220,6 @@ struct UIFactory
 			}
 		}
 
-		return ECS.create();
+		return uiEntity;
 	}
 };

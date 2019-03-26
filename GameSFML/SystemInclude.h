@@ -5,6 +5,7 @@
 #include "System/RenderGridSystem.h"
 #include "System/DrawDebugSystem.h"
 #include "System/RenderScreenBaseUISystem.h"
+#include "System/RenderWorldBaseUISystem.h"
 #include "System/HealthSystem.h"
 #include "System/SpawnAndCleanDeathSystem.h"
 #include "System/AnimationSystem.h"

@@ -3,7 +3,7 @@
 #include "../Component/PlayerControllerComponent.h"
 #include "../Component/PhysicComponent.h"
 #include "../Component/GameplayTags.h"
-class PlayerUpdateSystem : public ISystemECS
+class PlayerUpdateSystem final : public ISystemECS
 {
 public:
 	void Update(entt::DefaultRegistry& ECS, float dt) final

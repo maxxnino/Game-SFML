@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <execution>
 #include <iostream>
-class RenderSpriteSystem : public ISystemECS, public IDrawSystem
+class SpirteUpdateSystem final : public ISystemECS
 {
 public:
 	//update before Culling, animation, physic
@@ -36,9 +36,12 @@ public:
 			});
 		}
 	}
-	void Draw(Graphics& gfx) const final
+};
+class RenderSpriteSystem final : public IDrawSystem
+{
+public:
+	void Draw(Graphics& gfx, entt::DefaultRegistry& ECS) const final
 	{
-		auto& ECS = Locator::ECS::ref();
 		ECS.view<Viewable, sf::Sprite>().each([&gfx](auto entity, auto&, sf::Sprite &sprite) {
 			gfx.DrawSprite(sprite);
 		});

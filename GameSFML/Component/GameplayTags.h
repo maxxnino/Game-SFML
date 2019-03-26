@@ -2,6 +2,7 @@
 struct DeathTag {};
 struct SpawnEnemyInfo {};
 struct Viewable {};
+struct UIViewable {};
 struct PhysicDebug {};
 struct Overlaped {};
 struct CameraTracking {};

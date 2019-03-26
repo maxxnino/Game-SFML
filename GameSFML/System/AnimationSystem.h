@@ -1,7 +1,7 @@
 #pragma once
 #include "../System/ISystemECS.h"
 #include "../Component/AnimationComponent.h"
-class AnimationSystem : public ISystemECS
+class AnimationSystem final : public ISystemECS
 {
 public:
 	void Update(entt::DefaultRegistry& ECS, float dt) final

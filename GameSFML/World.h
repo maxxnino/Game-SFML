@@ -25,17 +25,22 @@ public:
 	}
 	void Draw()const
 	{
-		if (Locator::Graphic::empty()) return;
+		if (Locator::Graphic::empty() || Locator::ECS::empty()) return;
 		auto& gfx = Locator::Graphic::ref();
-		for (auto sys : drawSystems)
+		auto& ECS = Locator::ECS::ref();
+		for (auto& sys : drawSystems)
 		{
-			sys->Draw(gfx);
+			sys->Draw(gfx, ECS);
 		}
 		
 	}
 	void AddECSSystem(std::unique_ptr<ISystemECS> newSystem)
 	{
 		ecsSystems.emplace_back(std::move(newSystem));
+	}
+	void AddDrawSystem(std::unique_ptr<IDrawSystem> newSystem)
+	{
+		drawSystems.emplace_back(std::move(newSystem));
 	}
 	void AddEnemy(entt::DefaultRegistry& ECS, b2Vec2 position, b2Vec2 linerVel)
 	{
@@ -69,6 +74,15 @@ public:
 		ECS.assign<PhysicDebug>(entity);
 		ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
 		ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespond::Enemy>();
+
+		//Health Bar
+		{
+			auto entityUI = UIFactory::GetEntity(entity, ECS);
+			auto& progressBar = ECS.assign<ProgressiveBarComponent>(entityUI, sf::Vector2f(100.0f, 15.0f));
+			progressBar.colorBase = sf::Color::Blue;
+			ECS.assign<WorldBaseUI>(entityUI, entity);
+			ECS.assign<UpdateWorldBaseUIComponent>(entityUI).myDelegate.connect<&UpdateUI::WorldBaseHealthBar>();
+		}
 	}
 	void AddPlayer(entt::DefaultRegistry& ECS)
 	{
@@ -116,7 +130,7 @@ public:
 			const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
 			ECS.assign<sf::Text>(entityUI, "Health: ", textFont, 50);
 			ECS.assign<ScreenBaseUI>(entityUI, entity, sf::Vector2f(-640.0f, -360.0f));
-			ECS.assign<UpdateUIComponent>(entityUI).myDelegate.connect<&UpdateUI::ScreenBaseHealthText>();
+			ECS.assign<UpdateScreenBaseUIComponent>(entityUI).myDelegate.connect<&UpdateUI::ScreenBaseHealthText>();
 		}
 		
 
@@ -125,10 +139,8 @@ public:
 			auto entityUI = UIFactory::GetEntity(entity, ECS);
 			auto& progressBar = ECS.assign<ProgressiveBarComponent>(entityUI, sf::Vector2f(400.0f, 55.0f));
 			ECS.assign<ScreenBaseUI>(entityUI, entity, sf::Vector2f(-640.0f, -360.0f));
-			ECS.assign<UpdateUIComponent>(entityUI).myDelegate.connect<&UpdateUI::ScreenBaseHealthBar>();
+			ECS.assign<UpdateScreenBaseUIComponent>(entityUI).myDelegate.connect<&UpdateUI::ScreenBaseHealthBar>();
 		}
-		
-		
 	}
 private:
 	void SignalComponent(entt::DefaultRegistry& ECS)
@@ -162,27 +174,23 @@ private:
 		AddECSSystem(std::make_unique<CollisionRespondSystem>());
 		AddECSSystem(std::make_unique<HealthSystem>());
 		AddECSSystem(std::make_unique<MoveCameraSystem>());
-		AddECSSystem(std::make_unique<UpdateUISystem>());
+		AddECSSystem(std::make_unique<GridUpdateSystem>());
 		AddECSSystem(std::make_unique<SpawnEnemySystem>());
 		AddECSSystem(std::make_unique<CleanDeadSystem>());
 		AddECSSystem(std::make_unique<CullingSystem>());
+		AddECSSystem(std::make_unique<UpdateScreenBaseUISystem>());
+		AddECSSystem(std::make_unique<UpdateWorldBaseUISystem>());
 		AddECSSystem(std::make_unique<TransitionStateSystem>());
 		AddECSSystem(std::make_unique<AnimationSystem>());
+		AddECSSystem(std::make_unique<SpirteUpdateSystem>());
+
 		//render Grid should be before render sprite and after move camera;
-		{
-			auto newSystem = std::make_unique<RenderGridSystem>();
-			drawSystems.emplace_back(static_cast<IDrawSystem*>(newSystem.get()));
-			ecsSystems.emplace_back(std::move(newSystem));
-			
-		}
+		AddDrawSystem(std::make_unique<RenderGridSystem>());
 		//render Sprite should be the last
-		{
-			auto newSystem = std::make_unique<RenderSpriteSystem>();
-			drawSystems.emplace_back(static_cast<IDrawSystem*>(newSystem.get()));
-			ecsSystems.emplace_back(std::move(newSystem));
-		}
-		drawSystems.emplace_back(static_cast<IDrawSystem*>(&debugSystem));
-		drawSystems.emplace_back(static_cast<IDrawSystem*>(&renderScreenBaseUISystem));
+		AddDrawSystem(std::make_unique<RenderSpriteSystem>());
+		drawSystems.emplace_back(std::make_unique<DrawDebugSystem>());
+		drawSystems.emplace_back(std::make_unique<RenderWorldBaseUISystem>());
+		drawSystems.emplace_back(std::make_unique<RenderScreenBaseUISystem>());
 	}
 	void AddWall(b2Vec2 p1, b2Vec2 p2)
 	{
@@ -221,7 +229,5 @@ private:
 	}
 private:
 	std::vector<std::unique_ptr<ISystemECS>> ecsSystems;
-	std::vector<IDrawSystem*> drawSystems;
-	RenderScreenBaseUISystem renderScreenBaseUISystem;
-	DrawDebugSystem debugSystem;
+	std::vector<std::unique_ptr<IDrawSystem>> drawSystems;
 };
