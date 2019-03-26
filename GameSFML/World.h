@@ -110,13 +110,24 @@ public:
 		ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
 		ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespond::Player>();
 
-		//font
-		auto entityUI = ECS.create();
-		ECS.assign<OwnedUIComponent>(entity).entities.emplace_back(entityUI);
-		const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
-		ECS.assign<sf::Text>(entityUI, "Health: ", textFont, 50);
-		ECS.assign<ScreenBaseUI>(entityUI, entity, sf::Vector2f(-640.0f, -360.0f));
-		ECS.assign<UpdateUIComponent>(entityUI).myDelegate.connect<&UpdateUI::ScreenBaseHealthText>();
+		//health text
+		{
+			auto entityUI = UIFactory::GetEntity(entity, ECS);
+			const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
+			ECS.assign<sf::Text>(entityUI, "Health: ", textFont, 50);
+			ECS.assign<ScreenBaseUI>(entityUI, entity, sf::Vector2f(-640.0f, -360.0f));
+			ECS.assign<UpdateUIComponent>(entityUI).myDelegate.connect<&UpdateUI::ScreenBaseHealthText>();
+		}
+		
+
+		//Health Bar
+		{
+			auto entityUI = UIFactory::GetEntity(entity, ECS);
+			auto& progressBar = ECS.assign<ProgressiveBarComponent>(entityUI, sf::Vector2f(400.0f, 55.0f));
+			ECS.assign<ScreenBaseUI>(entityUI, entity, sf::Vector2f(-640.0f, -360.0f));
+			ECS.assign<UpdateUIComponent>(entityUI).myDelegate.connect<&UpdateUI::ScreenBaseHealthBar>();
+		}
+		
 		
 	}
 private:

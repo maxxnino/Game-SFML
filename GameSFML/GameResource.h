@@ -8,7 +8,7 @@ struct AnimationResource
 	const sf::Texture* texture = nullptr;
 	unsigned int width, height, tileWidth, tileHeight, frameTime;
 	//hold begin index and end index in farmes, each pair is 1 animation set
-	std::vector<std::pair<unsigned int, unsigned int>> animationSets;
+	std::vector<std::pair<unsigned char, unsigned char>> animationSets;
 };
 
 

@@ -4,6 +4,8 @@
 #include "Component/PlayerStateComponent.h"
 #include "Component/PlayerControllerComponent.h"
 #include "Component/AnimationComponent.h"
+#include "Component/UIComponent.h"
+#include "Component/HealthComponent.h"
 struct UpdateState
 {
 	static void Player(uint32_t entity, entt::DefaultRegistry& ECS)
@@ -163,6 +165,18 @@ struct UpdateUI
 
 		text.setPosition(Locator::Graphic::ref().GetViewportLocation() + UI.offsetLocaion);
 	}
+	static void ScreenBaseHealthBar(uint32_t entity, entt::DefaultRegistry& ECS)
+	{
+		if (!ECS.has<ProgressiveBarComponent>(entity) || !ECS.has<ScreenBaseUI>(entity)) return;
+
+		auto& UI = ECS.get<ScreenBaseUI>(entity);
+
+		if (!ECS.has<HealthComponent>(UI.ownerEntity)) return;
+
+		auto& progressBar = ECS.get<ProgressiveBarComponent>(entity);
+		auto& health = ECS.get<HealthComponent>(UI.ownerEntity);
+		progressBar.percent = health.curHealth / health.maxHealth;
+	}
 	static void DeleteOwnedUIComponent(entt::DefaultRegistry& ECS, uint32_t entity)
 	{
 		auto& owend = ECS.get<OwnedUIComponent>(entity);
@@ -170,5 +184,29 @@ struct UpdateUI
 		{
 			ECS.destroy(e);
 		}
+	}
+};
+struct UIFactory
+{
+	static uint32_t GetEntity(uint32_t entityOwner, entt::DefaultRegistry& ECS, bool bIsHaveOwner = true)
+	{
+		if (bIsHaveOwner)
+		{
+			auto uiEntity = ECS.create();
+			if (ECS.has<OwnedUIComponent>(entityOwner))
+			{
+				auto& ownedUICom = ECS.get<OwnedUIComponent>(entityOwner);
+				ownedUICom.entities.emplace_back(uiEntity);
+				return uiEntity;
+			}
+			else
+			{
+				auto& ownedUICom = ECS.assign<OwnedUIComponent>(entityOwner);
+				ownedUICom.entities.emplace_back(uiEntity);
+				return uiEntity;
+			}
+		}
+
+		return ECS.create();
 	}
 };

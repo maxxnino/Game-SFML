@@ -21,3 +21,10 @@ struct UpdateUIComponent
 {
 	entt::Delegate<void(uint32_t, entt::DefaultRegistry&)> myDelegate;
 };
+struct ProgressiveBarComponent
+{
+	sf::Vector2f size;
+	float percent = 1.0f;
+	sf::Color colorBase{ sf::Color::Green };
+	sf::Color colorBG{ sf::Color::Blue };
+};

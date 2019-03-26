@@ -13,8 +13,9 @@ struct AnimationComponent
 	{}
 	float holdTime;
 	float curFrameTime = 0.0f;
-	unsigned int iCurFrame = 0;
-	std::pair<unsigned int, unsigned int> rangeIndex;
+	unsigned char iCurFrame = 0;
+	std::pair<unsigned char, unsigned char> rangeIndex;
+	//will use share component in the next entt update
 	const std::vector<sf::IntRect>* frames = nullptr;
 	const AnimationResource* resource = nullptr;
 };

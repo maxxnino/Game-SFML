@@ -24,27 +24,3 @@ public:
 		});
 	}
 };
-/*
-void BackUp()
-{
-	ECS.view<ChangeDirection, Direction, AnimationComponent>().each([](auto entity, auto&, Direction& direction, AnimationComponent& animation) {
-		switch (direction)
-		{
-		case Direction::DOWN:
-			animation.frames = &Locator::Codex::ref().GetFramesRect("PlayerDown"_hs).frames;
-			break;
-		case Direction::UP:
-			animation.frames = &Locator::Codex::ref().GetFramesRect("PlayerUp"_hs).frames;
-			break;
-		case Direction::LEFT:
-			animation.frames = &Locator::Codex::ref().GetFramesRect("PlayerLeft"_hs).frames;
-			break;
-		case Direction::RIGHT:
-			animation.frames = &Locator::Codex::ref().GetFramesRect("PlayerRight"_hs).frames;
-			break;
-		default:
-			break;
-		}
-	});
-}
-*/

@@ -41,7 +41,7 @@ struct AnimationLoader final : entt::ResourceLoader<AnimationLoader, AnimationRe
 		
 		for (auto& set : Json["animationSets"])
 		{
-			resource->animationSets.emplace_back(set["index"].get<std::pair<unsigned int, unsigned int>>());
+			resource->animationSets.emplace_back(set["index"].get<std::pair<unsigned char, unsigned char>>());
 		}
 		return resource;
 	}
