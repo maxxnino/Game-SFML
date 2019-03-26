@@ -72,6 +72,20 @@ struct UpdateUI
 			ECS.destroy(e);
 		}
 	}
+	static void WorldScreenBaseHealthText(uint32_t entity, entt::DefaultRegistry& ECS)
+	{
+		if (!ECS.has<sf::Text>(entity) || !ECS.has<WorldBaseUI>(entity)) return;
+
+		auto& UI = ECS.get<WorldBaseUI>(entity);
+
+		if (!ECS.has<HealthComponent>(UI.ownerEntity)) return;
+
+		auto& text = ECS.get<sf::Text>(entity);
+		auto& health = ECS.get<HealthComponent>(UI.ownerEntity);
+		std::stringstream ss;
+		ss << (int)health.curHealth << " / " << (int)health.maxHealth;
+		text.setString(ss.str());
+	}
 	static void WorldBaseHealthBar(uint32_t entity, entt::DefaultRegistry& ECS)
 	{
 		if (!ECS.has<ProgressiveBarComponent>(entity) || !ECS.has<WorldBaseUI>(entity)) return;

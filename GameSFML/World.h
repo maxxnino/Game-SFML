@@ -65,7 +65,24 @@ public:
 
 		//sprite
 		{
-			auto& sprite = ECS.assign<sf::Sprite>(entity, Locator::Codex::ref().GetTexture(Database::TEnemy));
+			std::uniform_int_distribution<int> textID(0, 2);
+			const sf::Texture* texture;
+			switch (textID(Locator::Random::ref()))
+			{
+			case 0:
+				texture = &Locator::Codex::ref().GetTexture(Database::TEnemy01);
+				break;
+			case 1:
+				texture = &Locator::Codex::ref().GetTexture(Database::TEnemy02);
+				break;
+			case 2:
+				texture = &Locator::Codex::ref().GetTexture(Database::TEnemy03);
+				break;
+			default:
+				texture = &Locator::Codex::ref().GetTexture(Database::TEnemy01);
+				break;
+			}
+			auto& sprite = ECS.assign<sf::Sprite>(entity, *texture);
 			const auto textSize = sf::Vector2f(0.5f * (float)sprite.getTexture()->getSize().x, 0.5f * (float)sprite.getTexture()->getSize().y);
 			sprite.setOrigin(textSize);
 		}
@@ -81,6 +98,14 @@ public:
 			progressBar.colorBase = sf::Color::Blue;
 			ECS.assign<WorldBaseUI>(entityUI, entity);
 			ECS.assign<UpdateWorldBaseUIComponent>(entityUI).myDelegate.connect<&UpdateUI::WorldBaseHealthBar>();
+		}
+		//health Text
+		{
+			auto entityUI = UIFactory::GetEntity(entity, ECS);
+			const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
+			ECS.assign<sf::Text>(entityUI, "Health: ", textFont, 15);
+			ECS.assign<WorldBaseUI>(entityUI, entity);
+			ECS.assign<UpdateScreenBaseUIComponent>(entityUI).myDelegate.connect<&UpdateUI::WorldScreenBaseHealthText>();
 		}
 	}
 	void AddPlayer(entt::DefaultRegistry& ECS)
