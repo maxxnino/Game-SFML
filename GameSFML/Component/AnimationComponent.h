@@ -10,7 +10,9 @@ struct AnimationComponent
 		rangeIndex(resource.animationSets[iAnimationSet]),
 		frames(&resource.frames),
 		resource(&resource)
-	{}
+	{
+		rangeIndex.second = rangeIndex.first;
+	}
 	float holdTime;
 	float curFrameTime = 0.0f;
 	unsigned char iCurFrame = 0;

@@ -19,9 +19,6 @@
     <Filter Include="Source Files\Engine">
       <UniqueIdentifier>{460e4c03-87c8-4cc8-ab3c-ec333e59c03b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GUI">
-      <UniqueIdentifier>{ea8c2f4a-2a6d-46a5-8d9c-38ce276bc97e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Component">
       <UniqueIdentifier>{1eb12e05-1af1-43cf-8e44-5c25c80d469d}</UniqueIdentifier>
     </Filter>
@@ -59,33 +56,6 @@
     <ClInclude Include="World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CollidableUI.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ListenerBox2DGUI.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Menu.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuManager.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="MouseGui.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="MyBox2DListener.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="QuerySelectorBox2D.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Button.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicObject.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="Codex.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -93,9 +63,6 @@
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Locator.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="MyFreeFunction.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Box2DContactListener.h">

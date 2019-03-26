@@ -136,9 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box2DContactListener.h" />
-    <ClInclude Include="Button.h" />
     <ClInclude Include="Codex.h" />
-    <ClInclude Include="CollidableUI.h" />
     <ClInclude Include="Component\AnimationComponent.h" />
     <ClInclude Include="Component\CollisionRespondComponent.h" />
     <ClInclude Include="Component\PlayerStateComponent.h" />
@@ -156,18 +154,10 @@
     <ClInclude Include="HashStringDataBase.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="ListenerBox2DGUI.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="MaxxConsole.h" />
-    <ClInclude Include="Menu.h" />
-    <ClInclude Include="MenuManager.h" />
     <ClInclude Include="Mouse.h" />
-    <ClInclude Include="MouseGui.h" />
-    <ClInclude Include="MyBox2DListener.h" />
-    <ClInclude Include="MyFreeFunction.h" />
-    <ClInclude Include="PhysicObject.h" />
-    <ClInclude Include="QuerySelectorBox2D.h" />
     <ClInclude Include="SystemInclude.h" />
     <ClInclude Include="System\CollisionRespondSystem.h" />
     <ClInclude Include="System\LifeTimeSystem.h" />

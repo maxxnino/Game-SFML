@@ -1,4 +1,5 @@
 #pragma once
+#include <sstream>
 #include "../Locator.h"
 #include "../System/ISystemECS.h"
 #include "../Component/UIComponent.h"

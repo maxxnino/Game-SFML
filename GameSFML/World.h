@@ -2,7 +2,6 @@
 #include "HashStringDataBase.h"
 #include "Box2DContactListener.h"
 #include "SystemInclude.h"
-#include "MyFreeFunction.h"
 #include <random>
 class World
 {
@@ -100,7 +99,6 @@ public:
 		fixtureDef.density = 1.0f;
 		fixtureDef.friction = 0.0f;
 		fixtureDef.restitution = 1.0f;
-		
 		auto entity = ECS.create();
 		ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
 		ECS.assign<PlayerControllerComponent>(entity);
