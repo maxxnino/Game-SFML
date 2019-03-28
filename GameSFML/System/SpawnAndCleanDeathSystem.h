@@ -1,48 +1,34 @@
 #pragma once
 #include "../System/ISystemECS.h"
 #include "../Component/GameplayTags.h"
+#include "../Component/SpawnComponent.h"
 #include "../Locator.h"
 class CleanDeadSystem : public ISystemECS
 {
 public:
 	void Update(entt::DefaultRegistry& ECS, float dt) final
 	{
+		ECS.view<DeathTag, NotifyOnDead>().each([&ECS, dt](auto entity, auto&, NotifyOnDead& notifier) {
+			notifier.mySignal.publish(entity, ECS);
+			ECS.destroy(entity);
+		});
 		ECS.destroy<DeathTag>();
 	}
 };
-class SpawnEnemySystem : public ISystemECS
+class SpawnSystem : public ISystemECS
 {
 public:
-	/**
-	* Todo: add when spawn animationComponent...
-	*/
 	void Update(entt::DefaultRegistry& ECS, float dt) final
 	{
-		ECS.view<SpawnEnemyInfo, PhysicComponent, sf::Sprite>().each([&ECS](auto entity,
-			auto&, PhysicComponent& physicCom, sf::Sprite& sprite) {
+		ECS.view<SpawnComponent, UpdateSpawnComponent>().each([&ECS, dt](auto entity, SpawnComponent& spawn, UpdateSpawnComponent& update) {
+			if (!spawn.bIsEnable) return;
 
-			auto newEntity = ECS.create();
-			ECS.assign<HealthComponent>(newEntity, 50.0f);
-			if (ECS.has<AnimationComponent>(entity))
+			spawn.curTime += dt;
+			while (spawn.curTime >= spawn.interval)
 			{
-				ECS.assign<AnimationComponent>(newEntity, ECS.get<AnimationComponent>(entity));
-			}
-			
-			ECS.assign<sf::Sprite>(newEntity, sprite);
-
-			{
-				b2BodyDef bodyDef;
-				b2FixtureDef fixtureDef;
-				bodyDef.type = physicCom.body->GetType();
-				bodyDef.position = physicCom.body->GetPosition();
-				fixtureDef.shape = physicCom.body->GetFixtureList()->GetShape();
-				fixtureDef.filter = physicCom.body->GetFixtureList()->GetFilterData();
-				fixtureDef.density = physicCom.body->GetFixtureList()->GetDensity();
-				fixtureDef.friction = physicCom.body->GetFixtureList()->GetFriction();
-				fixtureDef.restitution = physicCom.body->GetFixtureList()->GetRestitution();
-				ECS.assign<PhysicComponent>(newEntity, newEntity, bodyDef, fixtureDef);
+				spawn.curTime -= spawn.interval;
+				update.myDelegate(entity, ECS);
 			}
 		});
-		ECS.reset<SpawnEnemyInfo>();
 	}
 };

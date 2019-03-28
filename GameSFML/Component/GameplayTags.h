@@ -1,6 +1,5 @@
 #pragma once
 struct DeathTag {};
-struct SpawnEnemyInfo {};
 struct Viewable {};
 struct UIViewable {};
 struct PhysicDebug {};

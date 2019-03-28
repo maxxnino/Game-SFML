@@ -11,10 +11,8 @@ struct CollisionRespondComponent
 {
 	//this will use by CollisionRespondSystem, and this system will use multi-thread don't remove or add new Component
 	entt::Delegate<void(uint32_t, entt::DefaultRegistry&)> myDelegate;
-};
 
-struct CollisionRespond
-{
+
 	static void Player(uint32_t entity, entt::DefaultRegistry& ECS)
 	{
 		auto& callbackData = ECS.get<CollisionCallbackData>(entity);

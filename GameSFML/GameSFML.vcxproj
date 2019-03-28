@@ -139,7 +139,7 @@
     <ClInclude Include="Codex.h" />
     <ClInclude Include="Component\AnimationComponent.h" />
     <ClInclude Include="Component\CollisionRespondComponent.h" />
-    <ClInclude Include="Component\PlayerStateComponent.h" />
+    <ClInclude Include="Component\SpawnComponent.h" />
     <ClInclude Include="Component\UIComponent.h" />
     <ClInclude Include="Component\TransitionStateComponent.h" />
     <ClInclude Include="Component\GameplayTags.h" />

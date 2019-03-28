@@ -54,7 +54,7 @@ public:
 				ECS.assign<PhysicDebug>(entityBullet);
 				auto& bulletPhysic = ECS.assign<PhysicComponent>(entityBullet, entityBullet, bodyDef, fixtureDef);
 				bulletPhysic.body->ApplyForceToCenter(5000.0f * direction, true);
-				ECS.assign<CollisionRespondComponent>(entityBullet).myDelegate.connect<&CollisionRespond::Bullet>();
+				ECS.assign<CollisionRespondComponent>(entityBullet).myDelegate.connect<&CollisionRespondComponent::Bullet>();
 			}
 		});
 	}

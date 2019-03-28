@@ -140,9 +140,6 @@
     <ClInclude Include="Component\TransitionStateComponent.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Component\PlayerStateComponent.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
     <ClInclude Include="MaxxConsole.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -172,6 +169,9 @@
     </ClInclude>
     <ClInclude Include="System\UpdateUISystem.h">
       <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SpawnComponent.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

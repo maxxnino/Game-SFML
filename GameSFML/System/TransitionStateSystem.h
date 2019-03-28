@@ -1,7 +1,6 @@
 #pragma once
 #include "../System/ISystemECS.h"
 #include "../Component/TransitionStateComponent.h"
-#include "../Component/PlayerStateComponent.h"
 class TransitionStateSystem final : public ISystemECS
 {
 public:

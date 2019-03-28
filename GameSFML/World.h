@@ -41,72 +41,22 @@ public:
 	{
 		drawSystems.emplace_back(std::move(newSystem));
 	}
-	void AddEnemy(entt::DefaultRegistry& ECS, b2Vec2 position, b2Vec2 linerVel)
+	void AddSpawner(entt::DefaultRegistry& ECS, float worldSize)
 	{
-		b2BodyDef bodyDef;
-		bodyDef.type = b2_dynamicBody;
-		bodyDef.position = position;
-		bodyDef.linearVelocity = linerVel;
-		const float size = 1.3f;
-		b2CircleShape circle;
-		circle.m_radius = size;
-
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &circle;
-		fixtureDef.filter.categoryBits = CollisionFillter::ENEMY;
-		fixtureDef.filter.maskBits = CollisionFillter::PLAYER | CollisionFillter::STATIC | CollisionFillter::BULLET;
-		//fixtureDef.isSensor = isSensor;
-		fixtureDef.density = 1.0f;
-		fixtureDef.friction = 0.0f;
-		fixtureDef.restitution = 1.0f;
-
 		auto entity = ECS.create();
-		ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
+		ECS.assign<SpawnComponent>(entity).interval = 1.0f;
+		ECS.assign<SpawnCapacity>(entity).maxEntity = 20;
+		ECS.assign<UpdateSpawnComponent>(entity).myDelegate.connect<UpdateSpawnComponent::Enemy>();
 
-		//sprite
-		{
-			std::uniform_int_distribution<int> textID(0, 2);
-			const sf::Texture* texture;
-			switch (textID(Locator::Random::ref()))
-			{
-			case 0:
-				texture = &Locator::Codex::ref().GetTexture(Database::TEnemy01);
-				break;
-			case 1:
-				texture = &Locator::Codex::ref().GetTexture(Database::TEnemy02);
-				break;
-			case 2:
-				texture = &Locator::Codex::ref().GetTexture(Database::TEnemy03);
-				break;
-			default:
-				texture = &Locator::Codex::ref().GetTexture(Database::TEnemy01);
-				break;
-			}
-			auto& sprite = ECS.assign<sf::Sprite>(entity, *texture);
-			const auto textSize = sf::Vector2f(0.5f * (float)sprite.getTexture()->getSize().x, 0.5f * (float)sprite.getTexture()->getSize().y);
-			sprite.setOrigin(textSize);
-		}
-
-		ECS.assign<PhysicDebug>(entity);
-		ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
-		ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespond::Enemy>();
-
-		//Health Bar
-		{
-			auto entityUI = UIFactory::GetEntity(entity, ECS);
-			auto& progressBar = ECS.assign<ProgressiveBarComponent>(entityUI, sf::Vector2f(100.0f, 15.0f));
-			progressBar.colorBase = sf::Color::Blue;
-			ECS.assign<WorldBaseUI>(entityUI, entity);
-			ECS.assign<UpdateWorldBaseUIComponent>(entityUI).myDelegate.connect<&UpdateUI::WorldBaseHealthBar>();
-		}
-		//health Text
-		{
-			auto entityUI = UIFactory::GetEntity(entity, ECS);
-			const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
-			ECS.assign<sf::Text>(entityUI, "Health: ", textFont, 15);
-			ECS.assign<WorldBaseUI>(entityUI, entity);
-			ECS.assign<UpdateScreenBaseUIComponent>(entityUI).myDelegate.connect<&UpdateUI::WorldScreenBaseHealthText>();
-		}
+		if (Locator::Random::empty()) return;
+		auto& rng = Locator::Random::ref();
+		std::uniform_real_distribution<float> posRange(-worldSize, worldSize);
+		std::uniform_real_distribution<float> speedRange(-20.0f, 20.0f);
+		auto& spawnPos = ECS.assign<SpawnPosition>(entity);
+		spawnPos.spawnPosition = b2Vec2(posRange(rng), posRange(rng));
+		spawnPos.variationX = 5;
+		spawnPos.variationX = 2;
+		spawnPos.speed = b2Vec2(speedRange(rng), speedRange(rng));
 	}
 	void AddPlayer(entt::DefaultRegistry& ECS)
 	{
@@ -132,7 +82,7 @@ public:
 			Locator::Codex::ref().GetAnimation(Database::PlayerAnimation),
 			ECS.assign<PlayerStateComponent>(entity).state);
 
-		ECS.assign<TransitionStateComponent>(entity).myDelegate.connect<&UpdateState::Player>();
+		ECS.assign<TransitionStateComponent>(entity).myDelegate.connect<&TransitionStateComponent::Player>();
 		//sprite
 		{
 			auto& sprite = ECS.assign<sf::Sprite>(entity);
@@ -145,7 +95,7 @@ public:
 		ECS.assign<PhysicDebug>(entity);
 		ECS.assign<CameraTracking>(entity);
 		ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
-		ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespond::Player>();
+		ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespondComponent::Player>();
 
 		//health text
 		{
@@ -153,7 +103,7 @@ public:
 			const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
 			ECS.assign<sf::Text>(entityUI, "Health: ", textFont, 50);
 			ECS.assign<ScreenBaseUI>(entityUI, entity, sf::Vector2f(-640.0f, -360.0f));
-			ECS.assign<UpdateScreenBaseUIComponent>(entityUI).myDelegate.connect<&UpdateUI::ScreenBaseHealthText>();
+			ECS.assign<UpdateScreenBaseUIComponent>(entityUI).myDelegate.connect<&UpdateScreenBaseUIComponent::HealthText>();
 		}
 		
 
@@ -162,13 +112,13 @@ public:
 			auto entityUI = UIFactory::GetEntity(entity, ECS);
 			auto& progressBar = ECS.assign<ProgressiveBarComponent>(entityUI, sf::Vector2f(400.0f, 55.0f));
 			ECS.assign<ScreenBaseUI>(entityUI, entity, sf::Vector2f(-640.0f, -360.0f));
-			ECS.assign<UpdateScreenBaseUIComponent>(entityUI).myDelegate.connect<&UpdateUI::ScreenBaseHealthBar>();
+			ECS.assign<UpdateScreenBaseUIComponent>(entityUI).myDelegate.connect<&UpdateScreenBaseUIComponent::HealthBar>();
 		}
 	}
 private:
 	void SignalComponent(entt::DefaultRegistry& ECS)
 	{
-		ECS.destruction<OwnedUIComponent>().connect<&UpdateUI::DeleteOwnedUIComponent>();
+		ECS.destruction<OwnedUIComponent>().connect<&OwnedUIComponent::Destruction>();
 	}
 	void InitServiceLocator()
 	{
@@ -198,7 +148,7 @@ private:
 		AddECSSystem(std::make_unique<HealthSystem>());
 		AddECSSystem(std::make_unique<MoveCameraSystem>());
 		AddECSSystem(std::make_unique<GridUpdateSystem>());
-		AddECSSystem(std::make_unique<SpawnEnemySystem>());
+		AddECSSystem(std::make_unique<SpawnSystem>());
 		AddECSSystem(std::make_unique<CleanDeadSystem>());
 		AddECSSystem(std::make_unique<CullingSystem>());
 		AddECSSystem(std::make_unique<UpdateScreenBaseUISystem>());
@@ -244,11 +194,10 @@ private:
 
 		std::uniform_real_distribution<float> pos(-worldSize + 5.0f, worldSize - 5.0f);
 		std::uniform_real_distribution<float> speed(-20.0f, 20.0f);
-		for (size_t i = 0; i < 500; i++)
+		for (size_t i = 0; i < 10; i++)
 		{
-			AddEnemy(ECS, b2Vec2(pos(rng), pos(rng)), b2Vec2(speed(rng), speed(rng)));
+			AddSpawner(ECS, worldSize - 10.0f);
 		}
-
 	}
 private:
 	std::vector<std::unique_ptr<ISystemECS>> ecsSystems;
